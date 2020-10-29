@@ -36,7 +36,7 @@ Project Team
     </tr>
     {% for item in site.data.committers %}
     <tr class="">
-      <td class="username">{{ item[0] }}</td>
+      <td class="username"><a href="https://people.apache.org/phonebook.html?uid={{ item[0] }}">{{ item[0] }}</a></td>
       <td class="fullname">{{ item[1] }}</td>
       <td>{{ item[2] }}</td>
       <td align="right">{{ item[3] }}</td>
