@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Dart</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>Dart Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen dart tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<p>TBD</p>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">html</span><span class="err">'</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_browser</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+
+<span class="c1">/// Adapted from the AS3 tutorial</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">new</span> <span class="n">CalculatorUI</span><span class="p">(</span><span class="n">querySelector</span><span class="p">(</span><span class="err">'#</span><span class="n">output</span><span class="err">'</span><span class="p">)).</span><span class="n">start</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">CalculatorUI</span> <span class="p">{</span>
+  <span class="k">final</span> <span class="n">DivElement</span> <span class="n">output</span><span class="p">;</span>
+
+  <span class="n">CalculatorUI</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">output</span><span class="p">);</span>
+
+  <span class="n">TTransport</span> <span class="n">_transport</span><span class="p">;</span>
+  <span class="n">Calculator</span> <span class="n">_calculatorClient</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">_buildInterface</span><span class="p">();</span>
+    <span class="n">_initConnection</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_validate</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_transport</span><span class="p">.</span><span class="n">isOpen</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">window</span><span class="p">.</span><span class="n">alert</span><span class="p">(</span><span class="s">"The transport is not open!"</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_initConnection</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">_transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TAsyncClientSocketTransport</span><span class="p">(</span>
+        <span class="k">new</span> <span class="n">TWebSocket</span><span class="p">(</span><span class="n">Uri</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="err">'</span><span class="n">ws</span><span class="o">:</span><span class="c1">//127.0.0.1:9090/ws')),</span>
+        <span class="k">new</span> <span class="n">TMessageReader</span><span class="p">(</span><span class="k">new</span> <span class="n">TBinaryProtocolFactory</span><span class="p">()));</span>
+    <span class="n">TProtocol</span> <span class="n">protocol</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">(</span><span class="n">_transport</span><span class="p">);</span>
+    <span class="n">_transport</span><span class="p">.</span><span class="n">open</span><span class="p">();</span>
+
+    <span class="n">_calculatorClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CalculatorClient</span><span class="p">(</span><span class="n">protocol</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_buildInterface</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">children</span><span class="p">.</span><span class="n">forEach</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">e</span><span class="p">.</span><span class="n">remove</span><span class="p">();</span>
+    <span class="p">});</span>
+
+    <span class="n">_buildPingComponent</span><span class="p">();</span>
+
+    <span class="n">_buildAddComponent</span><span class="p">();</span>
+
+    <span class="n">_buildCalculatorComponent</span><span class="p">();</span>
+
+    <span class="n">_buildGetStructComponent</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_buildPingComponent</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Ping"</span><span class="p">);</span>
+    <span class="n">ButtonElement</span> <span class="n">pingButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ButtonElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"PING"</span>
+      <span class="p">..</span><span class="n">onClick</span><span class="p">.</span><span class="n">listen</span><span class="p">(</span><span class="n">_onPingClick</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pingButton</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_onPingClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_validate</span><span class="p">();</span>
+
+    <span class="n">_calculatorClient</span><span class="p">.</span><span class="n">ping</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_buildAddComponent</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Add"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"add1"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">num1</span><span class="p">);</span>
+    <span class="n">SpanElement</span> <span class="n">op</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpanElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"+"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"add2"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2</span><span class="p">);</span>
+    <span class="n">ButtonElement</span> <span class="n">addButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ButtonElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"="</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span>
+      <span class="p">..</span><span class="n">onClick</span><span class="p">.</span><span class="n">listen</span><span class="p">(</span><span class="n">_onAddClick</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">addButton</span><span class="p">);</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpanElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"addResult"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_onAddClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_validate</span><span class="p">();</span>
+
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add1"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add2"</span><span class="p">);</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#addResult"</span><span class="p">);</span>
+
+    <span class="n">_calculatorClient</span>
+        <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span><span class="p">),</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">then</span><span class="p">((</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"$n"</span><span class="p">;</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_buildCalculatorComponent</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Calculator"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"calc1"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">num1</span><span class="p">);</span>
+    <span class="n">SelectElement</span> <span class="n">op</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SelectElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"calcOp"</span>
+      <span class="p">..</span><span class="n">multiple</span> <span class="o">=</span> <span class="nb">false</span>
+      <span class="p">..</span><span class="n">selectedIndex</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"16px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span><span class="p">;</span>
+    <span class="n">OptionElement</span> <span class="n">addOp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"+"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">.</span><span class="n">toString</span><span class="p">();</span>
+    <span class="n">op</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">addOp</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">OptionElement</span> <span class="n">subtractOp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"-"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span><span class="p">.</span><span class="n">toString</span><span class="p">();</span>
+    <span class="n">op</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">subtractOp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">OptionElement</span> <span class="n">multiplyOp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"*"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">MULTIPLY</span><span class="p">.</span><span class="n">toString</span><span class="p">();</span>
+    <span class="n">op</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">multiplyOp</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">OptionElement</span> <span class="n">divideOp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"/"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span><span class="p">.</span><span class="n">toString</span><span class="p">();</span>
+    <span class="n">op</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">divideOp</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"calc2"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2</span><span class="p">);</span>
+    <span class="n">ButtonElement</span> <span class="n">calcButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ButtonElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"="</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span>
+      <span class="p">..</span><span class="n">onClick</span><span class="p">.</span><span class="n">listen</span><span class="p">(</span><span class="n">_onCalcClick</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">calcButton</span><span class="p">);</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpanElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"calcResult"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">BRElement</span><span class="p">());</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">BRElement</span><span class="p">());</span>
+    <span class="n">LabelElement</span> <span class="n">logIdLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LabelElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Log ID:"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">logIdLabel</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">logId</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"logId"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="s">"1"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">logId</span><span class="p">);</span>
+    <span class="n">LabelElement</span> <span class="n">commentLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LabelElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Comment:"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">commentLabel</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">comment</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"comment"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"100px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">comment</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_onCalcClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_validate</span><span class="p">();</span>
+
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc1"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc2"</span><span class="p">);</span>
+    <span class="n">SelectElement</span> <span class="n">op</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcOp"</span><span class="p">);</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcResult"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">logId</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#logId"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">comment</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#comment"</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">logIdValue</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">logId</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">logId</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">logIdValue</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="n">toString</span><span class="p">();</span>
+
+    <span class="n">Work</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Work</span><span class="p">();</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">op</span><span class="p">.</span><span class="n">options</span><span class="p">[</span><span class="n">op</span><span class="p">.</span><span class="n">selectedIndex</span><span class="p">].</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+
+    <span class="n">_calculatorClient</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">logIdValue</span><span class="p">,</span> <span class="n">work</span><span class="p">).</span><span class="n">then</span><span class="p">((</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"$n"</span><span class="p">;</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_buildGetStructComponent</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Get Struct"</span><span class="p">);</span>
+    <span class="n">LabelElement</span> <span class="n">logIdLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LabelElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Struct Key:"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">logIdLabel</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">logId</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"structKey"</span>
+      <span class="p">..</span><span class="n">type</span> <span class="o">=</span> <span class="s">"number"</span>
+      <span class="p">..</span><span class="n">value</span> <span class="o">=</span> <span class="s">"1"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"50px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">logId</span><span class="p">);</span>
+    <span class="n">ButtonElement</span> <span class="n">getStructButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ButtonElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"GET"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span>
+      <span class="p">..</span><span class="n">onClick</span><span class="p">.</span><span class="n">listen</span><span class="p">(</span><span class="n">_onGetStructClick</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">getStructButton</span><span class="p">);</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">BRElement</span><span class="p">());</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">BRElement</span><span class="p">());</span>
+    <span class="n">TextAreaElement</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TextAreaElement</span><span class="p">()</span>
+      <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"getStructResult"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="s">"14px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">width</span> <span class="o">=</span> <span class="s">"300px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="s">"50px"</span>
+      <span class="p">..</span><span class="n">style</span><span class="p">.</span><span class="n">marginLeft</span> <span class="o">=</span> <span class="s">"10px"</span><span class="p">;</span>
+    <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">_onGetStructClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_validate</span><span class="p">();</span>
+
+    <span class="n">InputElement</span> <span class="n">structKey</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#structKey"</span><span class="p">);</span>
+    <span class="n">TextAreaElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#getStructResult"</span><span class="p">);</span>
+
+    <span class="n">_calculatorClient</span>
+        <span class="p">.</span><span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">structKey</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">then</span><span class="p">((</span><span class="n">SharedStruct</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"${s.toString()}"</span><span class="p">;</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/client/web/client.dart">tutorial/dart/client/web/client.dart</a>
+</p>
+
+<h3 id="client-web-page">Client web page</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"X-UA-Compatible"</span> <span class="na">content=</span><span class="s">"IE=edge"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Thrift Tutorial<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"styles.css"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">"client.dart.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+
+  <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"output"</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/client/web/index.html">tutorial/dart/client/web/index.html</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">async</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">io</span><span class="err">'</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">args</span><span class="o">/</span><span class="n">args</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">logging</span><span class="o">/</span><span class="n">logging</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_console</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+
+<span class="n">TProtocol</span> <span class="n">_protocol</span><span class="p">;</span>
+<span class="n">TProcessor</span> <span class="n">_processor</span><span class="p">;</span>
+<span class="n">WebSocket</span> <span class="n">_webSocket</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Logger</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">Level</span><span class="p">.</span><span class="n">ALL</span><span class="p">;</span>
+  <span class="n">Logger</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">onRecord</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">LogRecord</span> <span class="n">rec</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">level</span><span class="p">.</span><span class="n">name</span><span class="p">}</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">time</span><span class="p">}</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">message</span><span class="p">}</span><span class="err">'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="n">var</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArgParser</span><span class="p">();</span>
+  <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">port</span><span class="err">'</span><span class="p">,</span> <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="mi">9090</span><span class="err">'</span><span class="p">,</span> <span class="n">help</span><span class="o">:</span> <span class="err">'</span><span class="n">The</span> <span class="n">port</span> <span class="n">to</span> <span class="n">listen</span> <span class="n">on</span><span class="err">'</span><span class="p">);</span>
+  <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">type</span><span class="err">'</span><span class="p">,</span>
+      <span class="nl">defaultsTo:</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span>
+      <span class="nl">allowed:</span> <span class="p">[</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">],</span>
+      <span class="nl">help:</span> <span class="err">'</span><span class="n">The</span> <span class="n">type</span> <span class="n">of</span> <span class="n">socket</span><span class="err">'</span><span class="p">,</span>
+      <span class="nl">allowedHelp:</span> <span class="p">{</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">WebSocket</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">TCP</span> <span class="n">Socket</span><span class="err">'</span><span class="p">});</span>
+
+  <span class="n">ArgResults</span> <span class="n">results</span><span class="p">;</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">results</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">parser</span><span class="p">.</span><span class="n">usage</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="err">'</span><span class="n">port</span><span class="err">'</span><span class="p">]);</span>
+  <span class="n">String</span> <span class="n">socketType</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="err">'</span><span class="n">type</span><span class="err">'</span><span class="p">];</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">socketType</span> <span class="o">==</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_runTcpServer</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">socketType</span> <span class="o">==</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_runWebSocketServer</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">Future</span> <span class="nf">_runWebSocketServer</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">var</span> <span class="n">httpServer</span> <span class="o">=</span> <span class="n">await</span> <span class="n">HttpServer</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="err">'</span><span class="mf">127.0.0.1</span><span class="err">'</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">listening</span> <span class="k">for</span> <span class="n">WebSocket</span> <span class="n">connections</span> <span class="n">on</span> <span class="err">$</span><span class="n">port</span><span class="err">'</span><span class="p">);</span>
+
+  <span class="n">httpServer</span><span class="p">.</span><span class="n">listen</span><span class="p">((</span><span class="n">HttpRequest</span> <span class="n">request</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">uri</span><span class="p">.</span><span class="n">path</span> <span class="o">==</span> <span class="err">'</span><span class="o">/</span><span class="n">ws</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_webSocket</span> <span class="o">=</span> <span class="n">await</span> <span class="n">WebSocketTransformer</span><span class="p">.</span><span class="n">upgrade</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+      <span class="n">await</span> <span class="n">_initProcessor</span><span class="p">(</span><span class="k">new</span> <span class="n">TWebSocket</span><span class="p">(</span><span class="n">_webSocket</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">Invalid</span> <span class="n">path</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">request</span><span class="p">.</span><span class="n">uri</span><span class="p">.</span><span class="n">path</span><span class="p">}</span><span class="err">'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="err">}</span>
+
+<span class="n">Future</span> <span class="nf">_runTcpServer</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">var</span> <span class="n">serverSocket</span> <span class="o">=</span> <span class="n">await</span> <span class="n">ServerSocket</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="err">'</span><span class="mf">127.0.0.1</span><span class="err">'</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
+  <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">listening</span> <span class="k">for</span> <span class="n">TCP</span> <span class="n">connections</span> <span class="n">on</span> <span class="err">$</span><span class="n">port</span><span class="err">'</span><span class="p">);</span>
+
+  <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="n">await</span> <span class="n">serverSocket</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+  <span class="n">await</span> <span class="nf">_initProcessor</span><span class="p">(</span><span class="k">new</span> <span class="n">TTcpSocket</span><span class="p">(</span><span class="n">socket</span><span class="p">));</span>
+<span class="err">}</span>
+
+<span class="n">Future</span> <span class="nf">_initProcessor</span><span class="p">(</span><span class="n">TSocket</span> <span class="n">socket</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">TServerSocketTransport</span> <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TServerSocketTransport</span><span class="p">(</span><span class="n">socket</span><span class="p">);</span>
+  <span class="n">transport</span><span class="p">.</span><span class="n">onIncomingMessage</span><span class="p">.</span><span class="n">listen</span><span class="p">(</span><span class="n">_processMessage</span><span class="p">);</span>
+  <span class="n">_processor</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CalculatorProcessor</span><span class="p">(</span><span class="k">new</span> <span class="n">CalculatorServer</span><span class="p">());</span>
+  <span class="n">_protocol</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">);</span>
+  <span class="n">await</span> <span class="n">_protocol</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">open</span><span class="p">();</span>
+
+  <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">connected</span><span class="err">'</span><span class="p">);</span>
+<span class="err">}</span>
+
+<span class="n">Future</span> <span class="nf">_processMessage</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">_processor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">_protocol</span><span class="p">,</span> <span class="n">_protocol</span><span class="p">);</span>
+<span class="err">}</span>
+
+<span class="k">class</span> <span class="nc">CalculatorServer</span> <span class="n">implements</span> <span class="n">Calculator</span> <span class="p">{</span>
+  <span class="k">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">_log</span> <span class="o">=</span> <span class="p">{};</span>
+
+  <span class="n">Future</span> <span class="n">ping</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">ping</span><span class="p">()</span><span class="err">'</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">num1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">add</span><span class="p">(</span><span class="err">$</span><span class="n">num1</span><span class="p">,</span> <span class="err">$</span><span class="n">num2</span><span class="p">)</span><span class="err">'</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span> <span class="n">work</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">calulate</span><span class="p">(</span><span class="err">$</span><span class="n">logid</span><span class="p">,</span> <span class="err">$</span><span class="p">{</span><span class="n">work</span><span class="p">.</span><span class="n">toString</span><span class="p">()})</span><span class="err">'</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">+</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">-</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">MULTIPLY</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">*</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">var</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InvalidOperation</span><span class="p">();</span>
+          <span class="n">x</span><span class="p">.</span><span class="n">whatOp</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">;</span>
+          <span class="n">x</span><span class="p">.</span><span class="n">why</span> <span class="o">=</span> <span class="err">'</span><span class="n">Cannot</span> <span class="n">divide</span> <span class="n">by</span> <span class="mi">0</span><span class="err">'</span><span class="p">;</span>
+          <span class="k">throw</span> <span class="n">x</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">/</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">).</span><span class="n">floor</span><span class="p">();</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">var</span> <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SharedStruct</span><span class="p">();</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">logid</span><span class="p">;</span>
+    <span class="n">log</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="err">'$</span><span class="n">val</span> <span class="s">"${work.comment}"</span><span class="err">'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="n">_log</span><span class="p">[</span><span class="n">logid</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">val</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span> <span class="n">zip</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">zip</span><span class="p">()</span><span class="err">'</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span><span class="o">&lt;</span><span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">key</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+    <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">getStruct</span><span class="p">(</span><span class="err">$</span><span class="n">key</span><span class="p">)</span><span class="err">'</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">_log</span><span class="p">[</span><span class="n">key</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/server/bin/main.dart">tutorial/dart/server/bin/main.dart</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+<p>TBD</p>
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

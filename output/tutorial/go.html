@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Go</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>Go Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen go tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<ul>
+  <li>At least Go 1.7 is required to run the tutorial code.</li>
+  <li>The GOPATH may need to be adjusted, alternatively manually put the Go Thrift library files into a suitable location.</li>
+  <li>The Thrift library and compiler must be the same version. Applications might work even with a version mismatch, but this unsupported.
+To use a specific version of the library, either clone the repository for that version, or use a package manager like <a href="https://golang.github.io/dep/">dep</a> or <a href="https://github.com/golang/go/wiki/Modules">Go modules</a>.</li>
+</ul>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="p">(</span>
+	<span class="s">"context"</span>
+	<span class="s">"crypto/tls"</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"tutorial"</span>
+
+	<span class="s">"github.com/apache/thrift/lib/go/thrift"</span>
+<span class="p">)</span>
+
+<span class="n">var</span> <span class="n">defaultCtx</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Background</span><span class="p">()</span>
+
+<span class="n">func</span> <span class="nf">handleClient</span><span class="p">(</span><span class="n">client</span> <span class="o">*</span><span class="n">tutorial</span><span class="p">.</span><span class="n">CalculatorClient</span><span class="p">)</span> <span class="p">(</span><span class="n">err</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">client</span><span class="p">.</span><span class="n">Ping</span><span class="p">(</span><span class="n">defaultCtx</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"ping()"</span><span class="p">)</span>
+
+	<span class="n">sum</span><span class="p">,</span> <span class="n">_</span> <span class="o">:=</span> <span class="n">client</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">defaultCtx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"1+1="</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+
+	<span class="n">work</span> <span class="o">:=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">NewWork</span><span class="p">()</span>
+	<span class="n">work</span><span class="p">.</span><span class="n">Op</span> <span class="o">=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_DIVIDE</span>
+	<span class="n">work</span><span class="p">.</span><span class="n">Num1</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">work</span><span class="p">.</span><span class="n">Num2</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">quotient</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">client</span><span class="p">.</span><span class="n">Calculate</span><span class="p">(</span><span class="n">defaultCtx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="k">switch</span> <span class="n">v</span> <span class="o">:=</span> <span class="n">err</span><span class="p">.(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="o">*</span><span class="n">tutorial</span><span class="p">.</span><span class="n">InvalidOperation</span><span class="p">:</span>
+			<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Invalid operation:"</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+		<span class="nl">default:</span>
+			<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error during operation:"</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Whoa we can divide by 0 with new value:"</span><span class="p">,</span> <span class="n">quotient</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="n">work</span><span class="p">.</span><span class="n">Op</span> <span class="o">=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_SUBTRACT</span>
+	<span class="n">work</span><span class="p">.</span><span class="n">Num1</span> <span class="o">=</span> <span class="mi">15</span>
+	<span class="n">work</span><span class="p">.</span><span class="n">Num2</span> <span class="o">=</span> <span class="mi">10</span>
+	<span class="n">diff</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">client</span><span class="p">.</span><span class="n">Calculate</span><span class="p">(</span><span class="n">defaultCtx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="k">switch</span> <span class="n">v</span> <span class="o">:=</span> <span class="n">err</span><span class="p">.(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="o">*</span><span class="n">tutorial</span><span class="p">.</span><span class="n">InvalidOperation</span><span class="p">:</span>
+			<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Invalid operation:"</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+		<span class="nl">default:</span>
+			<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error during operation:"</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="n">err</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"15-10="</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="n">log</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">client</span><span class="p">.</span><span class="n">GetStruct</span><span class="p">(</span><span class="n">defaultCtx</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Unable to get struct:"</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">err</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Check log:"</span><span class="p">,</span> <span class="n">log</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">err</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="n">runClient</span><span class="p">(</span><span class="n">transportFactory</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TTransportFactory</span><span class="p">,</span> <span class="n">protocolFactory</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TProtocolFactory</span><span class="p">,</span> <span class="n">addr</span> <span class="n">string</span><span class="p">,</span> <span class="n">secure</span> <span class="kt">bool</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+	<span class="n">var</span> <span class="n">transport</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TTransport</span>
+	<span class="n">var</span> <span class="n">err</span> <span class="n">error</span>
+	<span class="k">if</span> <span class="n">secure</span> <span class="p">{</span>
+		<span class="n">cfg</span> <span class="o">:=</span> <span class="k">new</span><span class="p">(</span><span class="n">tls</span><span class="p">.</span><span class="n">Config</span><span class="p">)</span>
+		<span class="n">cfg</span><span class="p">.</span><span class="n">InsecureSkipVerify</span> <span class="o">=</span> <span class="nb">true</span>
+		<span class="n">transport</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">thrift</span><span class="p">.</span><span class="n">NewTSSLSocket</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">transport</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">thrift</span><span class="p">.</span><span class="n">NewTSocket</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error opening socket:"</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">err</span>
+	<span class="p">}</span>
+	<span class="n">transport</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">transportFactory</span><span class="p">.</span><span class="n">GetTransport</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">err</span>
+	<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/go/src/client.go">tutorial/go/src/client.go</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="p">(</span>
+	<span class="s">"crypto/tls"</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"github.com/apache/thrift/lib/go/thrift"</span>
+	<span class="s">"tutorial"</span>
+<span class="p">)</span>
+
+<span class="n">func</span> <span class="nf">runServer</span><span class="p">(</span><span class="n">transportFactory</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TTransportFactory</span><span class="p">,</span> <span class="n">protocolFactory</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TProtocolFactory</span><span class="p">,</span> <span class="n">addr</span> <span class="n">string</span><span class="p">,</span> <span class="n">secure</span> <span class="kt">bool</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+	<span class="n">var</span> <span class="n">transport</span> <span class="n">thrift</span><span class="p">.</span><span class="n">TServerTransport</span>
+	<span class="n">var</span> <span class="n">err</span> <span class="n">error</span>
+	<span class="k">if</span> <span class="n">secure</span> <span class="p">{</span>
+		<span class="n">cfg</span> <span class="o">:=</span> <span class="k">new</span><span class="p">(</span><span class="n">tls</span><span class="p">.</span><span class="n">Config</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">cert</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">tls</span><span class="p">.</span><span class="n">LoadX509KeyPair</span><span class="p">(</span><span class="s">"server.crt"</span><span class="p">,</span> <span class="s">"server.key"</span><span class="p">);</span> <span class="n">err</span> <span class="o">==</span> <span class="n">nil</span> <span class="p">{</span>
+			<span class="n">cfg</span><span class="p">.</span><span class="n">Certificates</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">Certificates</span><span class="p">,</span> <span class="n">cert</span><span class="p">)</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="n">err</span>
+		<span class="p">}</span>
+		<span class="n">transport</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">thrift</span><span class="p">.</span><span class="n">NewTSSLServerSocket</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+	<span class="err">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="n">transport</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">thrift</span><span class="p">.</span><span class="n">NewTServerSocket</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+	<span class="p">}</span>
+	
+	<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="n">err</span>
+	<span class="p">}</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%T</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">transport</span><span class="p">)</span>
+	<span class="n">handler</span> <span class="o">:=</span> <span class="n">NewCalculatorHandler</span><span class="p">()</span>
+	<span class="n">processor</span> <span class="o">:=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">NewCalculatorProcessor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+	<span class="n">server</span> <span class="o">:=</span> <span class="n">thrift</span><span class="p">.</span><span class="n">NewTSimpleServer4</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">transport</span><span class="p">,</span> <span class="n">transportFactory</span><span class="p">,</span> <span class="n">protocolFactory</span><span class="p">)</span>
+
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Starting the simple server... on "</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">server</span><span class="p">.</span><span class="n">Serve</span><span class="p">()</span>
+<span class="err">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/go/src/server.go">tutorial/go/src/server.go</a>
+</p>
+
+<h3 id="server-handler">Server Handler</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="p">(</span>
+	<span class="s">"context"</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"shared"</span>
+	<span class="s">"strconv"</span>
+	<span class="s">"tutorial"</span>
+<span class="p">)</span>
+
+<span class="n">type</span> <span class="n">CalculatorHandler</span> <span class="k">struct</span> <span class="p">{</span>
+	<span class="n">log</span> <span class="n">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="o">*</span><span class="n">shared</span><span class="p">.</span><span class="n">SharedStruct</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="nf">NewCalculatorHandler</span><span class="p">()</span> <span class="o">*</span><span class="n">CalculatorHandler</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="n">CalculatorHandler</span><span class="p">{</span><span class="n">log</span><span class="o">:</span> <span class="n">make</span><span class="p">(</span><span class="n">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="o">*</span><span class="n">shared</span><span class="p">.</span><span class="n">SharedStruct</span><span class="p">)}</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">CalculatorHandler</span><span class="p">)</span> <span class="n">Ping</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">err</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"ping()</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">CalculatorHandler</span><span class="p">)</span> <span class="n">Add</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">num1</span> <span class="n">int32</span><span class="p">,</span> <span class="n">num2</span> <span class="n">int32</span><span class="p">)</span> <span class="p">(</span><span class="n">retval17</span> <span class="n">int32</span><span class="p">,</span> <span class="n">err</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"add("</span><span class="p">,</span> <span class="n">num1</span><span class="p">,</span> <span class="s">","</span><span class="p">,</span> <span class="n">num2</span><span class="p">,</span> <span class="s">")</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">,</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">CalculatorHandler</span><span class="p">)</span> <span class="n">Calculate</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">logid</span> <span class="n">int32</span><span class="p">,</span> <span class="n">w</span> <span class="o">*</span><span class="n">tutorial</span><span class="p">.</span><span class="n">Work</span><span class="p">)</span> <span class="p">(</span><span class="n">val</span> <span class="n">int32</span><span class="p">,</span> <span class="n">err</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"calculate("</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="s">", {"</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">,</span> <span class="s">","</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span><span class="p">,</span> <span class="s">","</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">,</span> <span class="s">"})</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="k">switch</span> <span class="n">w</span><span class="p">.</span><span class="n">Op</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_ADD</span><span class="p">:</span>
+		<span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">+</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span>
+		<span class="k">break</span>
+	<span class="k">case</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_SUBTRACT</span><span class="p">:</span>
+		<span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">-</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span>
+		<span class="k">break</span>
+	<span class="k">case</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_MULTIPLY</span><span class="p">:</span>
+		<span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">*</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span>
+		<span class="k">break</span>
+	<span class="k">case</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Operation_DIVIDE</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+			<span class="n">ouch</span> <span class="o">:=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">NewInvalidOperation</span><span class="p">()</span>
+			<span class="n">ouch</span><span class="p">.</span><span class="n">WhatOp</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
+			<span class="n">ouch</span><span class="p">.</span><span class="n">Why</span> <span class="o">=</span> <span class="s">"Cannot divide by 0"</span>
+			<span class="n">err</span> <span class="o">=</span> <span class="n">ouch</span>
+			<span class="k">return</span>
+		<span class="p">}</span>
+		<span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">/</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span>
+		<span class="k">break</span>
+	<span class="nl">default:</span>
+		<span class="n">ouch</span> <span class="o">:=</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">NewInvalidOperation</span><span class="p">()</span>
+		<span class="n">ouch</span><span class="p">.</span><span class="n">WhatOp</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
+		<span class="n">ouch</span><span class="p">.</span><span class="n">Why</span> <span class="o">=</span> <span class="s">"Unknown operation"</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="n">ouch</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="n">entry</span> <span class="o">:=</span> <span class="n">shared</span><span class="p">.</span><span class="n">NewSharedStruct</span><span class="p">()</span>
+	<span class="n">entry</span><span class="p">.</span><span class="n">Key</span> <span class="o">=</span> <span class="n">logid</span>
+	<span class="n">entry</span><span class="p">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">strconv</span><span class="p">.</span><span class="n">Itoa</span><span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+	<span class="n">k</span> <span class="o">:=</span> <span class="kt">int</span><span class="p">(</span><span class="n">logid</span><span class="p">)</span>
+	<span class="cm">/*
+	   oldvalue, exists := p.log[k]
+	   if exists {
+	     fmt.Print("Replacing ", oldvalue, " with ", entry, " for key ", k, "\n")
+	   } else {
+	     fmt.Print("Adding ", entry, " for key ", k, "\n")
+	   }
+	*/</span>
+	<span class="n">p</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span>
+	<span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="n">err</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">CalculatorHandler</span><span class="p">)</span> <span class="n">GetStruct</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">key</span> <span class="n">int32</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="n">shared</span><span class="p">.</span><span class="n">SharedStruct</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"getStruct("</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="s">")</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="n">v</span><span class="p">,</span> <span class="n">_</span> <span class="o">:=</span> <span class="n">p</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="kt">int</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+	<span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">nil</span>
+<span class="p">}</span>
+
+<span class="n">func</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span><span class="n">CalculatorHandler</span><span class="p">)</span> <span class="n">Zip</span><span class="p">(</span><span class="n">ctx</span> <span class="n">context</span><span class="p">.</span><span class="n">Context</span><span class="p">)</span> <span class="p">(</span><span class="n">err</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="p">.</span><span class="n">Print</span><span class="p">(</span><span class="s">"zip()</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/go/src/handler.go">tutorial/go/src/handler.go</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+<ul>
+  <li>Try using one of the other available protocols, default is binary.</li>
+  <li>Try using the buffered and/or framed transport options.</li>
+  <li>Note that both server and client must use the exact same protocol and transport stack.</li>
+</ul>
+
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

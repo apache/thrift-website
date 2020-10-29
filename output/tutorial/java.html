@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Java</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>Java Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen java tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cm">/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */</span>
+
+<span class="c1">// Generated code</span>
+<span class="kn">import</span> <span class="nn">tutorial.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">shared.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.thrift.TException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TSSLTransportFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TTransport</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TSocket</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.protocol.TBinaryProtocol</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.protocol.TProtocol</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaClient</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">length</span> <span class="o">!=</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Please enter 'simple' or 'secure'"</span><span class="o">);</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="nc">TTransport</span> <span class="n">transport</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">contains</span><span class="o">(</span><span class="s">"simple"</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSocket</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">9090</span><span class="o">);</span>
+        <span class="n">transport</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+      <span class="o">}</span>
+      <span class="k">else</span> <span class="o">{</span>
+        <span class="cm">/*
+         * Similar to the server, you can use the parameters to setup client parameters or
+         * use the default settings. On the client side, you will need a TrustStore which
+         * contains the trusted certificate along with the public key. 
+         * For this example it's a self-signed cert. 
+         */</span>
+        <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">setTrustStore</span><span class="o">(</span><span class="s">"../../lib/java/test/.truststore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="s">"SunX509"</span><span class="o">,</span> <span class="s">"JKS"</span><span class="o">);</span>
+        <span class="cm">/*
+         * Get a client transport instead of a server transport. The connection is opened on
+         * invocation of the factory method, no need to specifically call open()
+         */</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="nc">TSSLTransportFactory</span><span class="o">.</span><span class="na">getClientSocket</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">9091</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">params</span><span class="o">);</span>
+      <span class="o">}</span>
+
+      <span class="nc">TProtocol</span> <span class="n">protocol</span> <span class="o">=</span> <span class="k">new</span>  <span class="nc">TBinaryProtocol</span><span class="o">(</span><span class="n">transport</span><span class="o">);</span>
+      <span class="nc">Calculator</span><span class="o">.</span><span class="na">Client</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Calculator</span><span class="o">.</span><span class="na">Client</span><span class="o">(</span><span class="n">protocol</span><span class="o">);</span>
+
+      <span class="n">perform</span><span class="o">(</span><span class="n">client</span><span class="o">);</span>
+
+      <span class="n">transport</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">TException</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">x</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span> 
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">perform</span><span class="o">(</span><span class="nc">Calculator</span><span class="o">.</span><span class="na">Client</span> <span class="n">client</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">TException</span>
+  <span class="o">{</span>
+    <span class="n">client</span><span class="o">.</span><span class="na">ping</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"ping()"</span><span class="o">);</span>
+
+    <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"1+1="</span> <span class="o">+</span> <span class="n">sum</span><span class="o">);</span>
+
+    <span class="nc">Work</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Work</span><span class="o">();</span>
+
+    <span class="n">work</span><span class="o">.</span><span class="na">op</span> <span class="o">=</span> <span class="nc">Operation</span><span class="o">.</span><span class="na">DIVIDE</span><span class="o">;</span>
+    <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="n">work</span><span class="o">.</span><span class="na">num2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">quotient</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">work</span><span class="o">);</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Whoa we can divide by 0"</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InvalidOperation</span> <span class="n">io</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Invalid operation: "</span> <span class="o">+</span> <span class="n">io</span><span class="o">.</span><span class="na">why</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="n">work</span><span class="o">.</span><span class="na">op</span> <span class="o">=</span> <span class="nc">Operation</span><span class="o">.</span><span class="na">SUBTRACT</span><span class="o">;</span>
+    <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">=</span> <span class="mi">15</span><span class="o">;</span>
+    <span class="n">work</span><span class="o">.</span><span class="na">num2</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">work</span><span class="o">);</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"15-10="</span> <span class="o">+</span> <span class="n">diff</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InvalidOperation</span> <span class="n">io</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Invalid operation: "</span> <span class="o">+</span> <span class="n">io</span><span class="o">.</span><span class="na">why</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nc">SharedStruct</span> <span class="n">log</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getStruct</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Check log: "</span> <span class="o">+</span> <span class="n">log</span><span class="o">.</span><span class="na">value</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/java/src/JavaClient.java">tutorial/java/src/JavaClient.java</a>
+</p>
+
+<h3 id="calculatorhandler">CalculatorHandler</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cm">/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.thrift.TException</span><span class="o">;</span>
+
+<span class="c1">// Generated code</span>
+<span class="kn">import</span> <span class="nn">tutorial.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">shared.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CalculatorHandler</span> <span class="kd">implements</span> <span class="nc">Calculator</span><span class="o">.</span><span class="na">Iface</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span><span class="nc">SharedStruct</span><span class="o">&gt;</span> <span class="n">log</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">CalculatorHandler</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">SharedStruct</span><span class="o">&gt;();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ping</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"ping()"</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">add</span><span class="o">(</span><span class="kt">int</span> <span class="n">n1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">n2</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"add("</span> <span class="o">+</span> <span class="n">n1</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">n2</span> <span class="o">+</span> <span class="s">")"</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">int</span> <span class="n">logid</span><span class="o">,</span> <span class="nc">Work</span> <span class="n">work</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InvalidOperation</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"calculate("</span> <span class="o">+</span> <span class="n">logid</span> <span class="o">+</span> <span class="s">", {"</span> <span class="o">+</span> <span class="n">work</span><span class="o">.</span><span class="na">op</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">work</span><span class="o">.</span><span class="na">num2</span> <span class="o">+</span> <span class="s">"})"</span><span class="o">);</span>
+    <span class="kt">int</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">work</span><span class="o">.</span><span class="na">op</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nl">ADD:</span>
+      <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">+</span> <span class="n">work</span><span class="o">.</span><span class="na">num2</span><span class="o">;</span>
+      <span class="k">break</span><span class="o">;</span>
+    <span class="k">case</span> <span class="nl">SUBTRACT:</span>
+      <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">-</span> <span class="n">work</span><span class="o">.</span><span class="na">num2</span><span class="o">;</span>
+      <span class="k">break</span><span class="o">;</span>
+    <span class="k">case</span> <span class="nl">MULTIPLY:</span>
+      <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">*</span> <span class="n">work</span><span class="o">.</span><span class="na">num2</span><span class="o">;</span>
+      <span class="k">break</span><span class="o">;</span>
+    <span class="k">case</span> <span class="nl">DIVIDE:</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">work</span><span class="o">.</span><span class="na">num2</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">InvalidOperation</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InvalidOperation</span><span class="o">();</span>
+        <span class="n">io</span><span class="o">.</span><span class="na">whatOp</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">op</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+        <span class="n">io</span><span class="o">.</span><span class="na">why</span> <span class="o">=</span> <span class="s">"Cannot divide by 0"</span><span class="o">;</span>
+        <span class="k">throw</span> <span class="n">io</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">num1</span> <span class="o">/</span> <span class="n">work</span><span class="o">.</span><span class="na">num2</span><span class="o">;</span>
+      <span class="k">break</span><span class="o">;</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="nc">InvalidOperation</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InvalidOperation</span><span class="o">();</span>
+      <span class="n">io</span><span class="o">.</span><span class="na">whatOp</span> <span class="o">=</span> <span class="n">work</span><span class="o">.</span><span class="na">op</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+      <span class="n">io</span><span class="o">.</span><span class="na">why</span> <span class="o">=</span> <span class="s">"Unknown operation"</span><span class="o">;</span>
+      <span class="k">throw</span> <span class="n">io</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nc">SharedStruct</span> <span class="n">entry</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SharedStruct</span><span class="o">();</span>
+    <span class="n">entry</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">logid</span><span class="o">;</span>
+    <span class="n">entry</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">logid</span><span class="o">,</span> <span class="n">entry</span><span class="o">);</span>
+
+    <span class="k">return</span> <span class="n">val</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="nc">SharedStruct</span> <span class="nf">getStruct</span><span class="o">(</span><span class="kt">int</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"getStruct("</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s">")"</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">log</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">zip</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"zip()"</span><span class="o">);</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/java/src/CalculatorHandler.java">tutorial/java/src/CalculatorHandler.java</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cm">/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.thrift.server.TServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.server.TServer.Args</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.server.TSimpleServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.server.TThreadPoolServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TSSLTransportFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TServerSocket</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TServerTransport</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters</span><span class="o">;</span>
+
+<span class="c1">// Generated code</span>
+<span class="kn">import</span> <span class="nn">tutorial.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">shared.*</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JavaServer</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="nc">CalculatorHandler</span> <span class="n">handler</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Calculator</span><span class="o">.</span><span class="na">Processor</span> <span class="n">processor</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">handler</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CalculatorHandler</span><span class="o">();</span>
+      <span class="n">processor</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Calculator</span><span class="o">.</span><span class="na">Processor</span><span class="o">(</span><span class="n">handler</span><span class="o">);</span>
+
+      <span class="nc">Runnable</span> <span class="n">simple</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+          <span class="n">simple</span><span class="o">(</span><span class="n">processor</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">};</span>      
+      <span class="nc">Runnable</span> <span class="n">secure</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Runnable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+          <span class="n">secure</span><span class="o">(</span><span class="n">processor</span><span class="o">);</span>
+        <span class="o">}</span>
+      <span class="o">};</span>
+
+      <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="n">simple</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="n">secure</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">x</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">simple</span><span class="o">(</span><span class="nc">Calculator</span><span class="o">.</span><span class="na">Processor</span> <span class="n">processor</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="nc">TServerTransport</span> <span class="n">serverTransport</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TServerSocket</span><span class="o">(</span><span class="mi">9090</span><span class="o">);</span>
+      <span class="nc">TServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSimpleServer</span><span class="o">(</span><span class="k">new</span> <span class="nc">Args</span><span class="o">(</span><span class="n">serverTransport</span><span class="o">).</span><span class="na">processor</span><span class="o">(</span><span class="n">processor</span><span class="o">));</span>
+
+      <span class="c1">// Use this for a multithreaded server</span>
+      <span class="c1">// TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));</span>
+
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Starting the simple server..."</span><span class="o">);</span>
+      <span class="n">server</span><span class="o">.</span><span class="na">serve</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">secure</span><span class="o">(</span><span class="nc">Calculator</span><span class="o">.</span><span class="na">Processor</span> <span class="n">processor</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="cm">/*
+       * Use TSSLTransportParameters to setup the required SSL parameters. In this example
+       * we are setting the keystore and the keystore password. Other things like algorithms,
+       * cipher suites, client auth etc can be set. 
+       */</span>
+      <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
+      <span class="c1">// The Keystore contains the private key</span>
+      <span class="n">params</span><span class="o">.</span><span class="na">setKeyStore</span><span class="o">(</span><span class="s">"../../lib/java/test/.keystore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+
+      <span class="cm">/*
+       * Use any of the TSSLTransportFactory to get a server transport with the appropriate
+       * SSL configuration. You can use the default settings if properties are set in the command line.
+       * Ex: -Djavax.net.ssl.keyStore=.keystore and -Djavax.net.ssl.keyStorePassword=thrift
+       * 
+       * Note: You need not explicitly call open(). The underlying server socket is bound on return
+       * from the factory class. 
+       */</span>
+      <span class="nc">TServerTransport</span> <span class="n">serverTransport</span> <span class="o">=</span> <span class="nc">TSSLTransportFactory</span><span class="o">.</span><span class="na">getServerSocket</span><span class="o">(</span><span class="mi">9091</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">params</span><span class="o">);</span>
+      <span class="nc">TServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSimpleServer</span><span class="o">(</span><span class="k">new</span> <span class="nc">Args</span><span class="o">(</span><span class="n">serverTransport</span><span class="o">).</span><span class="na">processor</span><span class="o">(</span><span class="n">processor</span><span class="o">));</span>
+
+      <span class="c1">// Use this for a multi threaded server</span>
+      <span class="c1">// TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));</span>
+
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Starting the secure server..."</span><span class="o">);</span>
+      <span class="n">server</span><span class="o">.</span><span class="na">serve</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/java/src/JavaServer.java">tutorial/java/src/JavaServer.java</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

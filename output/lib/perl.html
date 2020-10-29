@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Perl library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="using-thrift-with-perl">Using Thrift with Perl</h1>
+
+<p>Thrift requires Perl &gt;= 5.10.0</p>
+
+<p>Unexpected exceptions in a service handler are converted to
+TApplicationException with type INTERNAL ERROR and the string
+of the exception is delivered as the message.</p>
+
+<p>On the client side, exceptions are thrown with die, so be sure
+to wrap eval{} statments around any code that contains exceptions.</p>
+
+<p>Please see tutoral and test dirs for examples.</p>
+
+<p>The Perl ForkingServer ignores SIGCHLD allowing the forks to be
+reaped by the operating system naturally when they exit.  This means
+one cannot use a custom SIGCHLD handler in the consuming perl
+implementation that calls serve().  It is acceptable to use
+a custom SIGCHLD handler within a thrift handler implementation
+as the ForkingServer resets the forked child process to use
+default signal handling.</p>
+
+<h1 id="dependencies">Dependencies</h1>
+
+<p>The following modules are not provided by Perl 5.10.0 but are required
+to use Thrift.</p>
+
+<h2 id="runtime">Runtime</h2>
+
+<ul>
+  <li>Bit::Vector</li>
+  <li>Class::Accessor</li>
+</ul>
+
+<h2 id="test">Test</h2>
+
+<p>This is only required when running tests:</p>
+
+<ul>
+  <li>Test::Exception</li>
+</ul>
+
+<h3 id="httpclient-transport">HttpClient Transport</h3>
+
+<p>These are only required if using Thrift::HttpClient:</p>
+
+<ul>
+  <li>HTTP::Request</li>
+  <li>IO::String</li>
+  <li>LWP::UserAgent</li>
+</ul>
+
+<h3 id="ssltls">SSL/TLS</h3>
+
+<p>These are only required if using Thrift::SSLSocket or Thrift::SSLServerSocket:</p>
+
+<ul>
+  <li>IO::Socket::SSL</li>
+</ul>
+
+<h1 id="breaking-changes">Breaking Changes</h1>
+
+<h2 id="section">0.10.0</h2>
+
+<p>The socket classes were refactored in 0.10.0 so that there is one package per
+file.  This means <code>use Socket;</code> no longer defines SSLSocket.  You can use this
+technique to make your application run against 0.10.0 as well as earlier versions:</p>
+
+<p><code>eval { require Thrift::SSLSocket; } or do { require Thrift::Socket; }</code></p>
+
+<h2 id="section-1">0.11.0</h2>
+
+<ul>
+  <li>Namespaces of packages that were not scoped within Thrift have been fixed.
+  ** TApplicationException is now Thrift::TApplicationException
+  ** TException is now Thrift::TException
+  ** TMessageType is now Thrift::TMessageType
+  ** TProtocolException is now Thrift::TProtocolException
+  ** TProtocolFactory is now Thrift::TProtocolFactory
+  ** TTransportException is now Thrift::TTransportException
+  ** TType is now Thrift::TType</li>
+</ul>
+
+<p>If you need a single version of your code to work with both older and newer thrift
+namespace changes, you can make the new, correct namespaces behave like the old ones
+in your files with this technique to create an alias, which will allow you code to
+run against either version of the perl runtime for thrift:</p>
+
+<p><code>BEGIN {*TType:: = *Thrift::TType::}</code></p>
+
+<ul>
+  <li>Packages found in Thrift.pm were moved into the Thrift/ directory in separate files:
+  ** Thrift::TApplicationException is now in Thrift/Exception.pm
+  ** Thrift::TException is now in Thrift/Exception.pm
+  ** Thrift::TMessageType is now in Thrift/MessageType.pm
+  ** Thrift::TType is now in Thrift/Type.pm</li>
+</ul>
+
+<p>If you need to modify your code to work against both older or newer thrift versions,
+you can deal with these changes in a backwards compatible way in your projects using eval:</p>
+
+<p><code>eval  { require Thrift::Exception; require Thrift::MessageType; require Thrift::Type; }
+ or do { require Thrift; }</code></p>
+
+<h1 id="deprecations">Deprecations</h1>
+
+<h2 id="section-2">0.11.0</h2>
+
+<p>Thrift::HttpClient setRecvTimeout() and setSendTimeout() are deprecated. 
+Use setTimeout instead.</p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/perl/README.md">lib/perl/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

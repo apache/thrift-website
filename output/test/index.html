@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Test Suite</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="apache-thrift---integration-test-suite">Apache Thrift - integration test suite</h1>
+
+<p>This is the cross everything integration test suite for Apache Thrift.</p>
+
+<h2 id="run">Run</h2>
+
+<h3 id="a-using-make">A. Using Make</h3>
+
+<p>The test can be executed by:</p>
+
+<pre><code>make cross
+</code></pre>
+
+<p>This starts the <a href="test.py">test.py</a> script which does the real cross test with
+different transports, protocols and languages.</p>
+
+<p>Note that this skips any language that is not built locally. It also skips
+tests that are known to be failing. If you need more control over which tests
+to run, read following section.</p>
+
+<h3 id="b-using-test-script-directly">B. Using test script directly</h3>
+
+<p>Alternatively, you can invoke <a href="test.py">test.py</a> directly. You need to run<code>make
+precross</code> once before executing it for the first time.</p>
+
+<p>For example, if you changed something in <code>nodejs</code> library and need to verify
+the patch, you can skip everything except <code>nodejs</code> itself and some reference
+implementation (currently <code>cpp</code> and <code>java</code> are recommended) like this:</p>
+
+<pre><code>./configure --without-c_glib --without-erlang --without-lua ...
+make precross -j8
+test/test.py --server cpp,java --client nodejs
+test/test.py --server nodejs --client cpp,java
+</code></pre>
+
+<p>Another useful flag is &#8211;regex. For example, to run all tests that involve
+Java TBinaryProtocol:</p>
+
+<pre><code>test/test.py --regex "java.*binary"
+</code></pre>
+
+<h2 id="test-case-definition-file">Test case definition file</h2>
+
+<p>The cross test cases are defined in <a href="tests.json">tests.json</a>.
+The root element is collection of test target definitions.
+Each test target definition looks like this:</p>
+
+<pre><code>{
+  "name": "somelib",
+
+  "client": {
+    "command": ["somelib_client_executable"],
+    "workdir": "somelib/bin",
+    "protocols": ["binary"],
+    "transports": ["buffered"],
+    "sockets": ["ip"],
+  },
+  "server": {
+    "command": ["somelib_server_executable"],
+    "workdir": "somelib/bin",
+    "protocols": ["binary"],
+    "transports": ["buffered"],
+    "sockets": ["ip", "ip-ssl"],
+  }
+}
+</code></pre>
+
+<p>Either client or server definition or both should be present.</p>
+
+<p>Parameters that are common to both <code>client</code> and <code>server</code> can be put to target
+definition root:</p>
+
+<pre><code>{
+  "name": "somelib",
+
+  "workdir": "somelib/bin",
+  "protocols": ["binary"],
+  "transports": ["buffered"],
+  "sockets": ["ip"],
+
+  "client": { "command": ["somelib_client_executable"] },
+  "server": {
+    "command": ["somelib_server_executable"],
+    "sockets": ["ip-ssl"]
+  }
+}
+</code></pre>
+
+<p>For the complete list of supported keys and their effect, see source code
+comment at the opt of <a href="crossrunner/collect.py">crossrunner/collect.py</a>.</p>
+
+<h2 id="list-of-known-failures">List of known failures</h2>
+
+<p>Since many cross tests currently fail (mainly due to partial incompatibility
+around exception handling), the test script specifically report for &#8220;not known
+before&#8221; failures.</p>
+
+<p>For this purpose, test cases known to (occasionally) fail are listed in
+<code>known_failures_&lt;platform&gt;.json</code> where <code>&lt;platform&gt;</code> matches with python
+<code>platform.system()</code> string.</p>
+
+<p>Currently, only Linux version is included.</p>
+
+<p>FYI, the file is initially generated by</p>
+
+<pre><code>test/test.py --update-expected-failures=overwrite
+</code></pre>
+
+<p>after a full test run, then repeatedly</p>
+
+<pre><code>test/test.py --skip-known-failures
+test/test.py --update-expected-failures=merge
+</code></pre>
+
+<p>to update the known failures, run</p>
+
+<pre><code>make fail
+</code></pre>
+
+<h2 id="test-executable-specification">Test executable specification</h2>
+
+<h3 id="command-line-parameters">Command line parameters</h3>
+
+<p>Unit tests for languages are usually located under lib/<lang>/test/
+cross language tests according to [ThriftTest.thrift](ThriftTest.thrift) shall be
+provided for every language including executables with the following command
+line interface:</lang></p>
+
+<p><strong>Server command line interface:</strong></p>
+
+<pre><code>$ ./TestServer -h
+Allowed options:
+  -h | --help                  produce help message
+  --port=arg (9090)            Port number to listen
+  --domain-socket=arg          Unix Domain Socket (e.g. /tmp/ThriftTest.thrift)
+  --pipe=arg                   Windows Named Pipe (e.g. MyThriftPipe)
+  --server-type=arg (simple)   type of server, "simple", "thread-pool",
+                               "threaded", or "nonblocking"
+  --transport=arg (buffered)   transport: buffered, framed, http, anonpipe, zlib
+  --protocol=arg (binary)      protocol: binary, compact, header, json
+  --multiplex                  Add TMultiplexedProtocol service name "ThriftTest"
+  --abstract-namespace         Create the domain socket in the Abstract Namespace 
+                               (no connection with filesystem pathnames)
+  --ssl                        Encrypted Transport using SSL
+  --zlib                       Wrapped Transport using Zlib
+  --processor-events           processor-events
+  -n=arg | --workers=arg (=4)  Number of thread pools workers. Only valid for
+                               thread-pool server type
+</code></pre>
+
+<p><strong>Client command line interface:</strong></p>
+
+<pre><code>$ ./TestClient -h
+Allowed options:
+  -h | --help                  produce help message
+  --host=arg (localhost)       Host to connect
+  --port=arg (9090)            Port number to connect
+  --domain-socket=arg          Domain Socket (e.g. /tmp/ThriftTest.thrift),
+                               instead of host and port
+  --pipe=arg                   Windows Named Pipe (e.g. MyThriftPipe)
+  --anon-pipes hRead hWrite    Windows Anonymous Pipes pair (handles)
+  --abstract-namespace         Create the domain socket in the Abstract Namespace
+                               (no connection with filesystem pathnames)
+  --transport=arg (buffered)   Transport: buffered, framed, http, evhttp, zlib
+  --protocol=arg (binary)      Protocol: binary, compact, header, json
+  --multiplex                  Add TMultiplexedProtocol service name "ThriftTest"
+  --ssl                        Encrypted Transport using SSL
+  --zlib                       Wrap Transport with Zlib
+  -n=arg | --testloops=arg (1) Number of Tests
+  -t=arg | --threads=arg (1)   Number of Test threads
+</code></pre>
+
+<p>If you have executed the <strong>make check</strong> or <strong>make cross</strong> then you will be able to browse
+<a href="gen-html/ThriftTest.html">gen-html/ThriftTest.html</a> with the test documentation.</p>
+
+<h3 id="return-code">Return code</h3>
+
+<p>The return code (exit code) shall be 0 on success, or an integer in the range 1 - 255 on errors.
+In order to signal failed tests, the return code shall be composed from these bits to indicate
+failing tests:</p>
+
+<pre><code>  #define TEST_BASETYPES     1  // 0000 0001
+  #define TEST_STRUCTS       2  // 0000 0010
+  #define TEST_CONTAINERS    4  // 0000 0100
+  #define TEST_EXCEPTIONS    8  // 0000 1000
+  #define TEST_UNKNOWN      64  // 0100 0000 (Failed to prepare environment etc.)
+  #define TEST_TIMEOUT     128  // 1000 0000
+  #define TEST_NOTUSED      48  // 0011 0000 (reserved bits)
+</code></pre>
+
+<p>Tests that have not been executed at all count as errors.</p>
+
+<p><strong>Example:</strong></p>
+
+<p>During tests, the test client notices that some of the Struct tests fail.
+Furthermore, due to some other problem none of the Exception tests is executed.
+Therefore, the test client returns the code <code>10 = 2 | 8</code>, indicating the failure
+of both test 2 (TEST_STRUCTS) and test 8 (TEST_EXCEPTIONS).</p>
+
+<h2 id="ssl">SSL</h2>
+<p>Test Keys and Certificates are provided in multiple formats under the following
+directory <a href="keys">test/keys</a></p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=test/README.md">test/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

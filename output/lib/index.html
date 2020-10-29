@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h1 id="apache-thrift-libraries">Apache Thrift Libraries</h1>
+
+<h2 id="source-tree">Source Tree</h2>
+
+<p>Each supported language needs the Apache Thrift Libraries and the generated code made by the Apache Thrift Compiler.</p>
+
+<p>Some language specific documentation is for the Apache Thrift Libraries are generated from lib/${language}/README.md files:</p>
+
+<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/lib/c_glib.html">C GLib</a></li>
+
+
+
+
+
+
+
+  <li><a href="/lib/cl.html">Common Lisp Library README</a></li>
+
+
+
+
+
+
+
+  <li><a href="/lib/cpp.html">C++ library</a></li>
+
+
+
+
+
+  <li><a href="/lib/csharp.html">C# library</a></li>
+
+
+
+
+
+  <li><a href="/lib/d.html">D library</a></li>
+
+
+
+
+
+
+
+
+
+  <li><a href="/lib/delphi.html">Delphi library</a></li>
+
+
+
+
+
+
+
+
+
+  <li><a href="/lib/erl.html">Erlang library</a></li>
+
+
+
+
+
+  <li><a href="/lib/go.html">Go library</a></li>
+
+
+
+
+
+
+
+  <li><a href="/lib/haxe.html">Haxe library</a></li>
+
+
+
+
+
+  <li><a href="/lib/hs.html">Haskell library</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/lib/java.html">Java library</a></li>
+
+
+
+
+
+  <li><a href="/lib/js.html">JavaScript library</a></li>
+
+
+
+
+
+
+
+
+
+  <li><a href="/lib/netstd.html">.NET Standard library</a></li>
+
+
+
+
+
+  <li><a href="/lib/nodejs.html">node.js library</a></li>
+
+
+
+
+
+  <li><a href="/lib/ocaml.html">OCaml library</a></li>
+
+
+
+
+
+
+
+  <li><a href="/lib/perl.html">Perl library</a></li>
+
+
+
+
+
+  <li><a href="/lib/php.html">PHP library</a></li>
+
+
+
+
+
+  <li><a href="/lib/py.html">Python library</a></li>
+
+
+
+
+
+  <li><a href="/lib/rb.html">Ruby library</a></li>
+
+
+
+
+
+
+
+  <li><a href="/lib/st.html">SmallTalk library</a></li>
+
+
+
+
+
+
+</ul>
+
+<h2 id="package-manager-information-and-references">Package manager information and references</h2>
+
+<!-- place table outside filter/endfilter -->
+<div class="packages">
+    <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+            <td><b>Language Bindings</b></td>
+            <td><b>Package Manager</b></td>
+            <td><b>Direct link (URL)</b></td>
+            <td><b>Control file in source tree</b></td>
+            <td><b>Maintainer</b></td>
+            <td><b>Remarks</b></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">(all)</td>
+            <td class="packman">Docker</td>
+            <td class="packurl"><a href="https://hub.docker.com/_/thrift/">https://hub.docker.com/_/thrift/</a></td>
+            <td class="ctrlfile">Dockerfile</td>
+            <td class="maintainer"></td>
+            <td class="remarks">thrift compiler in /usr/local/bin/thrift</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">ActionScript</td>
+            <td class="packman">Maven</td>
+            <td class="packurl"><a href="https://repository.apache.org/#nexus-search;quick~libthrift-as3">https://repository.apache.org/#nexus-search;quick~libthrift-as3</a></td>
+            <td class="ctrlfile">lib/as3/build.xml</td>
+            <td class="maintainer">jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">C (glib)</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">language has no package manager</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">C++</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">see THRIFT-4800</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">C#</td>
+            <td class="packman">NuGet</td>
+            <td class="packurl"><a href="https://www.nuget.org/packages/ApacheThrift">https://www.nuget.org/packages/ApacheThrift</a></td>
+            <td class="ctrlfile">ApacheThrift.nuspec</td>
+            <td class="maintainer">jfarrell, codesf, jking</td>
+            <td class="remarks">multi-framework nupkg for csharp and netcore</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Cocoa</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">deprecated on 0.12.0 - use swift</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Common LISP</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">no official ASF package available</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">D</td>
+            <td class="packman">dub</td>
+            <td class="packurl"><a href="https://code.dlang.org/packages/apache-thrift">https://code.dlang.org/packages/apache-thrift</a></td>
+            <td class="ctrlfile">dub.json</td>
+            <td class="maintainer">jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Dart</td>
+            <td class="packman">Pub</td>
+            <td class="packurl"><a href="https://pub.dartlang.org/packages/thrift">https://pub.dartlang.org/packages/thrift</a></td>
+            <td class="ctrlfile">lib/dart/pubspec.yaml</td>
+            <td class="maintainer">jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">.NET Standard</td>
+            <td class="packman">NuGet</td>
+            <td class="packurl"><a href="https://www.nuget.org/packages/ApacheThrift">https://www.nuget.org/packages/ApacheThrift</a></td>
+            <td class="ctrlfile">ApacheThrift.nuspec</td>
+            <td class="maintainer">jfarrell, codesf, jking</td>
+            <td class="remarks">multi-framework nupkg for csharp and netcore</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Erlang</td>
+            <td class="packman">Hex PM</td>
+            <td class="packurl"><a href="https://hex.pm/packages?search=thrift&amp;sort=downloads">https://hex.pm/packages?search=thrift&amp;sort=downloads</a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">no official ASF package available</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Haskell</td>
+            <td class="packman">Hackage</td>
+            <td class="packurl"><a href="https://hackage.haskell.org/package/thrift">https://hackage.haskell.org/package/thrift</a></td>
+            <td class="ctrlfile">lib/hs/thrift.cabal</td>
+            <td class="maintainer">jfarrell, clavoie, jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Haxe</td>
+            <td class="packman">Haxelib</td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile">lib/haxe/haxelib.json</td>
+            <td class="maintainer">jensg</td>
+            <td class="remarks">no package uploaded - see THRIFT-3036</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Go</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">no official ASF package available</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Java</td>
+            <td class="packman">Maven</td>
+            <td class="packurl"><a href="https://repository.apache.org/#nexus-search;quick~org.apache.thrift">https://repository.apache.org/#nexus-search;quick~org.apache.thrift</a></td>
+            <td class="ctrlfile">lib/java/gradle.properties</td>
+            <td class="maintainer">jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">JavaScript</td>
+            <td class="packman">Bower</td>
+            <td class="packurl"><a href="https://libraries.io/bower/thrift">https://libraries.io/bower/thrift</a></td>
+            <td class="ctrlfile">bower.json</td>
+            <td class="maintainer"></td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Lua</td>
+            <td class="packman">LuaRocks</td>
+            <td class="packurl"><a href="https://luarocks.org/modules/drauschenbach/thrift">https://luarocks.org/modules/drauschenbach/thrift</a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">not official - stale at 0.10.0 - see THRIFT-4708</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Node.js</td>
+            <td class="packman">npm</td>
+            <td class="packurl"><a href="https://www.npmjs.com/package/thrift">https://www.npmjs.com/package/thrift</a></td>
+            <td class="ctrlfile">package.json</td>
+            <td class="maintainer">jfarrell, wadey, jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">OCaml</td>
+            <td class="packman">opam</td>
+            <td class="packurl"><a href="https://opam.ocaml.org/packages/thrift/">https://opam.ocaml.org/packages/thrift/</a></td>
+            <td class="ctrlfile">lib/ocaml/opam</td>
+            <td class="maintainer"></td>
+            <td class="remarks">stale at 0.9.0 (community provided) - see THRIFT-4706</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Perl</td>
+            <td class="packman">CPAN</td>
+            <td class="packurl"><a href="https://metacpan.org/release/Thrift">https://metacpan.org/release/Thrift</a></td>
+            <td class="ctrlfile">lib/perl/Makefile.PL</td>
+            <td class="maintainer">jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">PHP</td>
+            <td class="packman">Packagist</td>
+            <td class="packurl"><a href="https://packagist.org/packages/apache/thrift">https://packagist.org/packages/apache/thrift</a></td>
+            <td class="ctrlfile">composer.json</td>
+            <td class="maintainer">jfarrell, bufferoverflow, jking</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Python</td>
+            <td class="packman">pypi</td>
+            <td class="packurl"><a href="https://pypi.python.org/pypi/thrift">https://pypi.python.org/pypi/thrift</a></td>
+            <td class="ctrlfile">lib/py/setup.py</td>
+            <td class="maintainer">jfarrell</td>
+            <td class="remarks">stale at 0.11.0 - see THRIFT-4687</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Ruby</td>
+            <td class="packman">Ruby Gem</td>
+            <td class="packurl"><a href="https://rubygems.org/gems/thrift">https://rubygems.org/gems/thrift</a></td>
+            <td class="ctrlfile">lib/rb/Gemfile</td>
+            <td class="maintainer">jfarrell</td>
+            <td class="remarks">stale at 0.11.0 - see THRIFT-4707</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Rust</td>
+            <td class="packman">Cargo</td>
+            <td class="packurl"><a href="https://crates.io/crates/thrift">https://crates.io/crates/thrift</a></td>
+            <td class="ctrlfile">lib/rs/cargo.toml</td>
+            <td class="maintainer">all thrift committers</td>
+            <td class="remarks"></td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Smalltalk</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">no official ASF package available</td>
+        </tr>
+        
+        <tr class="">
+            <td class="language">Swift</td>
+            <td class="packman"></td>
+            <td class="packurl"><a href=""></a></td>
+            <td class="ctrlfile"></td>
+            <td class="maintainer"></td>
+            <td class="remarks">no official ASF package available</td>
+        </tr>
+        
+        </tbody>
+    </table>
+</div>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

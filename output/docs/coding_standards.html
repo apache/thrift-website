@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Coding standards</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="thrift-coding-standards">Thrift Coding Standards</h1>
+
+<p>Any fool can write code that a computer can understand.
+   Good programmers write code that humans can understand.
+                                  &#8211; Martin Fowler, 1999</p>
+
+<p>The purpose of this document is to make everyone&#8217;s life easier.</p>
+
+<p>It&#8217;s easier when you read good, well formatted, with clearly defined purpose, code.
+But the only way to read clean code is to write such.</p>
+
+<p>This document can help achieve that, but keep in mind that
+those are not silver-bullet, fix-all-at-once rules. Just think about readability while writing code.
+Write code like you would have to read it in ten years from now.</p>
+
+<h2 id="general-coding-standards">General Coding Standards</h2>
+
+<p>Thrift has some history. Not all existing code follows those rules.
+But we want to improve over time.
+When making small change / bugfix - like single line fix - do <em>not</em> refactor whole function.
+That disturbs code repository history.
+Whenever adding something new and / or making bigger refactoring
+ - follow those rules as strictly as you can.</p>
+
+<p>When in doubt - contact other developers (using dev@ mailing list or IRC).
+Code review is the best way to improve readability.</p>
+
+<h3 id="basics">Basics</h3>
+<ul>
+  <li>Use spaces not tabs</li>
+  <li>Use only ASCII characters in file and directory names</li>
+  <li>Commit to repository using Unix-style line endings (LF)
+  On Windows:
+    git config core.autocrlf true</li>
+  <li>Maximum line width - 100 characters</li>
+  <li>If not specified otherwise in language specific standard - use 2 spaces as indent/tab</li>
+</ul>
+
+<h3 id="comments">Comments</h3>
+<ul>
+  <li>Each file has to start with comment containing <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a></li>
+  <li>Public API of library should be documented, preferably using format native for language specific documentation generation tools (Javadoc, Doxygen etc.)</li>
+  <li>Other comments are discouraged - comments are lies. When one has to make comment it means one failed to write readable code. Instead of &#8220;I should write a comment here&#8221; think &#8220;I should clean it up&#8221;</li>
+  <li>Do not leave &#8220;TODO/FIXME&#8221; comments - file <a href="http://issues.apache.org/jira/browse/THRIFT">Jira</a> issue instead</li>
+</ul>
+
+<h3 id="naming">Naming</h3>
+<p>Finding proper names is the most important and most difficult task in software development.</p>
+
+<h2 id="language-specific-coding-standards">Language Specific Coding Standards</h2>
+
+<p>For detailed information see <code>lib/LANG/coding_standards.md</code></p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/coding_standards.md">doc/coding_standards.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

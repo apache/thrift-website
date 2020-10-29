@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Javascript</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>Javascript Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen js tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<ul>
+  <li>This tutorial depends on an existing Thrift server. See either the <a href="/tutorial/java">Java tutorial</a> or <a href="/tutorial/nodejs">node.js tutorial</a> for how to build and setup one of these servers. Out of the box, a Thrift HTTP server using the JSON protocol is expected. To learn more about how to use other transports and/or protocols refer to the “Additional Information” section below.</li>
+</ul>
+
+<h3 id="client">Client</h3>
+
+<pre><code class="language-js">
+function calc() {
+  var transport = new Thrift.Transport("/thrift/service/tutorial/");
+  var protocol  = new Thrift.Protocol(transport);
+  var client    = new CalculatorClient(protocol);
+
+  var work = new Work()
+  work.num1 = $("#num1").val();
+  work.num2 = $("#num2").val();
+  work.op = $("#op").val();
+
+  try {
+    result = client.calculate(1, work);
+    $('#result').val(result);
+    $('#result').css('color', 'black');
+  } catch(ouch){
+    $('#result').val(ouch.why);
+    $('#result').css('color', 'red');
+  }
+}
+</code></pre>
+
+<h3 id="server">Server</h3>
+
+<p>Use either the <a href="/tutorial/java">Java tutorial</a> or <a href="/tutorial/cpp">C++ tutorial</a> server</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+<h3 id="inspecting-the-generated-javascript-code-and-html-code">Inspecting the generated Javascript code and HTML code</h3>
+
+<p>Inside the html file is the entry point of using the Thrift.js and compiled Javascript files. The main section code from the tutorial.html file is the Thrift client as shown above.</p>
+
+<p>The first thing for using the Thrift files is setting up your Transport protocol. At this time, it only supports AJAX and is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var transport = new Thrift.Transport("/thrift/service/tutorial/");
+</code></pre></div></div>
+
+<p>After that the protocol needs setup using the transport object, which for Javascript is JSON:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var protocol  = new Thrift.Protocol(transport);
+</code></pre></div></div>
+
+<p>Now we are setup for the full Thrift communications, so we can start instantiating the Thrift objects, which define our Services and Objects.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var client    = new CalculatorClient(protocol);
+</code></pre></div></div>
+
+<p>Now that we have a functional Service Interface object created, we can can setup the JSON object, which gets is needed by the service routine and gets passed to it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var work = new Work()
+work.num1 = $("#num1").val();
+work.num2 = $("#num2").val();
+work.op = $("#op").val();
+</code></pre></div></div>
+
+<p>Once the object is created, we can now pass</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>try {
+    result = client.calculate(1, work);
+    //etc......
+</code></pre></div></div>
+
+<p>Now, when the calculate button on the html page is clicked, the calc() function as defined above is called and we get an AJAX call, which blocks and waits for the response. This then updates the result from the calculation.</p>
+
+<h3 id="inspecting-the-generated-tutorial_typesjs-file">Inspecting the generated tutorial_types.js file</h3>
+
+<p>Each Thrift struct will have properties associated with it.  For our tutorial object, Work, this is as shown above. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var work = new Work();
+work.num1 = 1;
+work.num2 = 2;
+work.op = ADD;
+</code></pre></div></div>
+
+<p>In addition, there is a read(input) and write(output) function created on the object as well. For the end user, these are not functions to be used as they are mainly just used by the Thrift.js file for accessing objects.</p>
+
+<h3 id="inspecting-the-generated-calculatorjs-file">Inspecting the generated Calculator.js file</h3>
+<p>The Calculator.js file is the services created and defined in the .thrift file. The two services defined are:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i32 add(1:i32 num1, 2:i32 num2),
+i32 calculate(1:i32 logid, 2:Work w) throws (1:InvalidOperation ouch),
+</code></pre></div></div>
+
+<p>To start using this, the Calculator object has to be created and accessed as shown above. The Javascript Object, whichi is your interface to the services created looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CalculatorClient = function(input, output){}
+</code></pre></div></div>
+
+<p>Then, to access your defined services, the functions created look like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CalculatorClient.prototype.add = function(num1, num2) {}
+</code></pre></div></div>
+
+<p>and</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CalculatorClient.prototype.calculate = function(logid, w) {}
+</code></pre></div></div>
+
+<p>Unfortunately, the Javascript object isn’t just called Calculator and there are a lot of other functions defined as well, but how those are used are out of the scope of this tutorial.</p>
+
+<h3 id="inspecting-the-thriftjs-file">Inspecting the Thrift.js file</h3>
+
+<ul>
+  <li>The main goal of the library is to define the Transport and Protocol layers.</li>
+  <li>The Transport layer can use AJAX or WebSockets.</li>
+  <li>The Protocol layer handles the encoding/decoding to JSON or Binary format.</li>
+  <li>There are also the Thrift object types and call functions defined here as well.</li>
+  <li>The Thrift.js library can use jQuery.js if provided.</li>
+</ul>
+
+<h4 id="jquery-api">jQuery API</h4>
+
+<p>jQuery aware JS source files can generated using the <em>jquery</em> compiler option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift --gen js:jquery tutorial.thrift
+</code></pre></div></div>
+
+<p>This does not change the default behavior of the library, i.e. service calls will be done synchronously. However, services will use jQuery.ajax if a callback function is provided as showed below.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client.calculate(1, work, function(result) { alert(result); } );
+</code></pre></div></div>
+
+<p>This method call will immediately return but the callback function (and its <em>alert</em> message) will be called as soon as a response is received from the server. The service call also returns a jqXHR object, which has more callback options:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client.calculate(1, work, function(){} )
+.fail( function(jqXHR, status, error) {  alert(error.message); } )
+.done( function(result) { /* success! do something */ } )
+.always( function() { /* do something more */ } );
+</code></pre></div></div>
+
+<p>For more information refer to the <a href="http://api.jquery.com/jquery.ajax/">jQuery API documentation</a>.</p>
+
+<p>Note: Synchronously calls are easy to debug and good for testing but should not be used on a front-end browser in production, as it will normally result on a full browser freeze until the response has returned from the server.</p>
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

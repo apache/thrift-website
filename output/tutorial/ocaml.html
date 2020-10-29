@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - OCaml</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>OCaml Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen ocaml tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">open</span> <span class="n">Arg</span>
+<span class="n">open</span> <span class="n">Thrift</span>
+<span class="n">open</span> <span class="n">Tutorial_types</span>
+<span class="n">open</span> <span class="n">Shared_types</span>
+
+<span class="n">exception</span> <span class="n">Die</span><span class="p">;;</span>
+<span class="n">let</span> <span class="n">sod</span> <span class="o">=</span> <span class="n">function</span>
+    <span class="n">Some</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">v</span>
+  <span class="o">|</span> <span class="n">None</span> <span class="o">-&gt;</span> <span class="n">raise</span> <span class="n">Die</span><span class="p">;;</span>
+
+<span class="n">type</span> <span class="n">connection</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">trans</span> <span class="o">:</span> <span class="n">Transport</span><span class="p">.</span><span class="n">t</span> <span class="p">;</span>
+  <span class="n">proto</span> <span class="o">:</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">.</span><span class="n">t</span><span class="p">;</span>
+  <span class="n">calc</span> <span class="o">:</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">client</span> <span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">let</span> <span class="n">connect</span> <span class="o">~</span><span class="n">host</span> <span class="n">port</span> <span class="o">=</span>
+  <span class="n">let</span> <span class="n">tx</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSocket</span><span class="p">.</span><span class="n">t</span> <span class="n">host</span> <span class="n">port</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">proto</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">t</span> <span class="n">tx</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">calc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">client</span> <span class="n">proto</span> <span class="n">proto</span> <span class="n">in</span>
+    <span class="n">tx</span><span class="err">#</span><span class="n">opn</span><span class="p">;</span>
+    <span class="p">{</span> <span class="n">trans</span> <span class="o">=</span> <span class="n">tx</span> <span class="p">;</span> <span class="n">proto</span> <span class="o">=</span> <span class="n">proto</span><span class="p">;</span> <span class="n">calc</span> <span class="o">=</span> <span class="n">calc</span> <span class="p">}</span>
+<span class="p">;;</span>
+
+<span class="n">let</span> <span class="n">doclient</span> <span class="p">()</span> <span class="o">=</span>
+  <span class="n">let</span> <span class="n">cli</span> <span class="o">=</span> <span class="n">connect</span> <span class="o">~</span><span class="n">host</span><span class="o">:</span><span class="s">"127.0.0.1"</span> <span class="mi">9090</span> <span class="n">in</span>
+  <span class="k">try</span>
+    <span class="n">cli</span><span class="p">.</span><span class="n">calc</span><span class="err">#</span><span class="n">ping</span> <span class="p">;</span>
+    <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"ping()</span><span class="se">\n</span><span class="s">"</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span> <span class="p">;</span>
+    <span class="p">(</span><span class="n">let</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">cli</span><span class="p">.</span><span class="n">calc</span><span class="err">#</span><span class="n">add</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span>
+       <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"1+1=%ld</span><span class="se">\n</span><span class="s">"</span> <span class="n">sum</span> <span class="p">;</span>
+       <span class="n">flush</span> <span class="n">stdout</span><span class="p">)</span> <span class="p">;</span>
+    <span class="p">(</span><span class="n">let</span> <span class="n">w</span> <span class="o">=</span> <span class="k">new</span> <span class="n">work</span> <span class="n">in</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_op</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span> <span class="p">;</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_num1</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="p">;</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_num2</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">0</span><span class="p">)</span> <span class="p">;</span>
+       <span class="k">try</span>
+	 <span class="n">let</span> <span class="n">quotient</span> <span class="o">=</span> <span class="n">cli</span><span class="p">.</span><span class="n">calc</span><span class="err">#</span><span class="n">calculate</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="n">w</span> <span class="n">in</span>
+	   <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"Whoa? We can divide by zero!</span><span class="se">\n</span><span class="s">"</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span>
+       <span class="n">with</span> <span class="n">InvalidOperation</span> <span class="n">io</span> <span class="o">-&gt;</span>
+	 <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"InvalidOperation: %s</span><span class="se">\n</span><span class="s">"</span> <span class="n">io</span><span class="err">#</span><span class="n">grab_why</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span><span class="p">)</span> <span class="p">;</span>
+    <span class="p">(</span><span class="n">let</span> <span class="n">w</span> <span class="o">=</span> <span class="k">new</span> <span class="n">work</span> <span class="n">in</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_op</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span> <span class="p">;</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_num1</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">15</span><span class="p">)</span> <span class="p">;</span>
+       <span class="n">w</span><span class="err">#</span><span class="n">set_num2</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">10</span><span class="p">)</span> <span class="p">;</span>
+       <span class="n">let</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">cli</span><span class="p">.</span><span class="n">calc</span><span class="err">#</span><span class="n">calculate</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="n">w</span> <span class="n">in</span>
+	 <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"15-10=%ld</span><span class="se">\n</span><span class="s">"</span> <span class="n">diff</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span><span class="p">)</span> <span class="p">;</span>
+    <span class="p">(</span><span class="n">let</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">cli</span><span class="p">.</span><span class="n">calc</span><span class="err">#</span><span class="n">getStruct</span> <span class="p">(</span><span class="n">Int32</span><span class="p">.</span><span class="n">of_int</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span>
+       <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"Check log: %s</span><span class="se">\n</span><span class="s">"</span> <span class="n">ss</span><span class="err">#</span><span class="n">grab_value</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span><span class="p">)</span> <span class="p">;</span>
+    <span class="n">cli</span><span class="p">.</span><span class="n">trans</span><span class="err">#</span><span class="n">close</span>
+  <span class="n">with</span> <span class="n">Transport</span><span class="p">.</span><span class="n">E</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="n">what</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"ERROR: %s</span><span class="se">\n</span><span class="s">"</span> <span class="n">what</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span>
+<span class="p">;;</span>
+
+<span class="n">doclient</span><span class="p">();;</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/ocaml/CalcClient.ml">tutorial/ocaml/CalcClient.ml</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="n">open</span> <span class="n">Arg</span>
+<span class="n">open</span> <span class="n">Thrift</span>
+<span class="n">open</span> <span class="n">Tutorial_types</span>
+<span class="n">open</span> <span class="n">Shared_types</span>
+
+<span class="n">exception</span> <span class="n">Die</span><span class="p">;;</span>
+<span class="n">let</span> <span class="n">sod</span> <span class="o">=</span> <span class="n">function</span>
+    <span class="n">Some</span> <span class="n">v</span> <span class="o">-&gt;</span> <span class="n">v</span>
+  <span class="o">|</span> <span class="n">None</span> <span class="o">-&gt;</span> <span class="n">raise</span> <span class="n">Die</span><span class="p">;;</span>
+
+<span class="k">class</span> <span class="nc">calc_handler</span> <span class="o">=</span>
+<span class="n">object</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span>
+  <span class="n">inherit</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">iface</span>
+  <span class="n">val</span> <span class="n">log</span> <span class="o">=</span> <span class="n">Hashtbl</span><span class="p">.</span><span class="n">create</span> <span class="mi">23</span>
+  <span class="n">method</span> <span class="n">ping</span>  <span class="o">=</span> <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"ping()</span><span class="se">\n</span><span class="s">"</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span>
+  <span class="n">method</span> <span class="n">add</span> <span class="n">a</span> <span class="n">b</span> <span class="o">=</span>
+    <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span><span class="s">"add(%ld,%ld)</span><span class="se">\n</span><span class="s">"</span> <span class="p">(</span><span class="n">sod</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">sod</span> <span class="n">b</span><span class="p">);</span> <span class="n">flush</span> <span class="n">stdout</span> <span class="p">;</span>
+    <span class="n">Int32</span><span class="p">.</span><span class="n">add</span> <span class="p">(</span><span class="n">sod</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="n">sod</span> <span class="n">b</span><span class="p">)</span>
+  <span class="n">method</span> <span class="n">calculate</span> <span class="n">logid</span> <span class="n">w</span> <span class="o">=</span>
+    <span class="n">let</span> <span class="n">w</span> <span class="o">=</span> <span class="n">sod</span> <span class="n">w</span> <span class="n">in</span>
+      <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"calculate(%ld,{%ld,%ld,%ld})</span><span class="se">\n</span><span class="s">"</span> <span class="p">(</span><span class="n">sod</span> <span class="n">logid</span><span class="p">)</span> <span class="p">(</span><span class="n">Operation</span><span class="p">.</span><span class="n">to_i</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_op</span><span class="p">)</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num1</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span><span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span> <span class="p">;</span>
+    <span class="n">let</span> <span class="n">rv</span> <span class="o">=</span>
+      <span class="n">match</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_op</span> <span class="n">with</span>
+	  <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span> <span class="o">-&gt;</span>
+	    <span class="n">Int32</span><span class="p">.</span><span class="n">add</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num1</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span>
+	<span class="o">|</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span> <span class="o">-&gt;</span>
+	    <span class="n">Int32</span><span class="p">.</span><span class="n">sub</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num1</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span>
+	<span class="o">|</span> <span class="n">Operation</span><span class="p">.</span><span class="n">MULTIPLY</span> <span class="o">-&gt;</span>
+	    <span class="n">Int32</span><span class="p">.</span><span class="n">mul</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num1</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span>
+	<span class="o">|</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span> <span class="o">-&gt;</span>
+	    <span class="k">if</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span> <span class="o">=</span> <span class="n">Int32</span><span class="p">.</span><span class="n">zero</span> <span class="n">then</span>
+	      <span class="n">let</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="n">invalidOperation</span> <span class="n">in</span>
+		<span class="n">io</span><span class="err">#</span><span class="n">set_whatOp</span> <span class="p">(</span><span class="n">Operation</span><span class="p">.</span><span class="n">to_i</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_op</span><span class="p">)</span> <span class="p">;</span>
+		<span class="n">io</span><span class="err">#</span><span class="n">set_why</span> <span class="s">"Cannot divide by 0"</span> <span class="p">;</span>
+		<span class="n">raise</span> <span class="p">(</span><span class="n">InvalidOperation</span> <span class="n">io</span><span class="p">)</span>
+	    <span class="k">else</span>
+	      <span class="n">Int32</span><span class="p">.</span><span class="n">div</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num1</span> <span class="n">w</span><span class="err">#</span><span class="n">grab_num2</span> <span class="n">in</span>
+
+    <span class="n">let</span> <span class="n">ss</span> <span class="o">=</span> <span class="k">new</span> <span class="n">sharedStruct</span> <span class="n">in</span>
+      <span class="n">ss</span><span class="err">#</span><span class="n">set_key</span> <span class="p">(</span><span class="n">sod</span> <span class="n">logid</span><span class="p">)</span> <span class="p">;</span>
+    <span class="n">let</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">Int32</span><span class="p">.</span><span class="n">to_string</span> <span class="n">rv</span> <span class="n">in</span>
+      <span class="n">ss</span><span class="err">#</span><span class="n">set_value</span> <span class="n">buffer</span> <span class="p">;</span>
+      <span class="n">Hashtbl</span><span class="p">.</span><span class="n">add</span> <span class="n">log</span> <span class="p">(</span><span class="n">sod</span> <span class="n">logid</span><span class="p">)</span> <span class="n">ss</span> <span class="p">;</span>
+      <span class="n">rv</span>
+
+  <span class="n">method</span> <span class="n">zip</span> <span class="o">=</span>
+    <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"zip()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span>
+
+  <span class="n">method</span> <span class="n">getStruct</span> <span class="n">logid</span> <span class="o">=</span>
+    <span class="n">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s">"getStruct(%ld)</span><span class="se">\n</span><span class="s">"</span> <span class="p">(</span><span class="n">sod</span> <span class="n">logid</span><span class="p">)</span> <span class="p">;</span> <span class="n">flush</span> <span class="n">stdout</span> <span class="p">;</span>
+    <span class="n">Hashtbl</span><span class="p">.</span><span class="n">find</span> <span class="n">log</span> <span class="p">(</span><span class="n">sod</span> <span class="n">logid</span><span class="p">)</span>
+
+<span class="n">end</span>
+
+<span class="n">let</span> <span class="n">doserver</span> <span class="p">()</span> <span class="o">=</span>
+  <span class="n">let</span> <span class="n">h</span> <span class="o">=</span> <span class="k">new</span> <span class="n">calc_handler</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">proc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">processor</span> <span class="n">h</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">9090</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">pf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">factory</span> <span class="n">in</span>
+  <span class="n">let</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TThreadedServer</span><span class="p">.</span><span class="n">t</span>
+		 <span class="n">proc</span>
+		 <span class="p">(</span><span class="k">new</span> <span class="n">TServerSocket</span><span class="p">.</span><span class="n">t</span> <span class="n">port</span><span class="p">)</span>
+		 <span class="p">(</span><span class="k">new</span> <span class="n">Transport</span><span class="p">.</span><span class="n">factory</span><span class="p">)</span>
+		 <span class="n">pf</span>
+		 <span class="n">pf</span>
+  <span class="n">in</span>
+    <span class="n">server</span><span class="err">#</span><span class="n">serve</span>
+<span class="p">;;</span>
+
+<span class="n">doserver</span><span class="p">();;</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/ocaml/CalcServer.ml">tutorial/ocaml/CalcServer.ml</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

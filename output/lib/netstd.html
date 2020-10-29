@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - .NET Standard library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="apache-thrift-netstd">Apache Thrift netstd</h1>
+
+<p>Thrift client library for Microsoft .NET Standard</p>
+
+<h1 id="build-the-library">Build the library</h1>
+
+<h2 id="how-to-build-on-windows">How to build on Windows</h2>
+<ul>
+  <li>Get Thrift IDL compiler executable, add to some folder and add path to this folder into PATH variable</li>
+  <li>Open the Thrift.sln project with Visual Studio and build.
+or</li>
+  <li>Build with scripts</li>
+</ul>
+
+<h2 id="how-to-build-on-unixlinux">How to build on Unix/Linux</h2>
+<ul>
+  <li>Ensure you have .NET Core SDK 3.1 (LTS) installed, or use the <a href="../../build/docker/README.md">Ubuntu docker image</a></li>
+  <li>Follow common automake build practice: <code>./ bootstrap &amp;&amp; ./ configure &amp;&amp; make</code></li>
+</ul>
+
+<h2 id="known-issues">Known issues</h2>
+<ul>
+  <li>In trace logging mode you can see some not important internal exceptions</li>
+</ul>
+
+<h1 id="migration-to-netstd">Migration to netstd</h1>
+
+<h2 id="from-netcore">&#8230; from netcore</h2>
+
+<p>If you are migrating your code from netcore library, you will have to:</p>
+
+<ul>
+  <li>Switch to <code>thrift -gen netstd</code></li>
+  <li>the following compiler flags are no longer needed or supported: <code>hashcode</code> is now standard, while <code>nullable</code> is no longer supported.</li>
+  <li>the <code>Thrift.Transport</code> and <code>Thrift.Protocol</code> namespaces now use the singular form</li>
+  <li>add <code>using Thrift.Processor;</code> in the server code where appropriate</li>
+  <li>rename all <code>T*ClientTransport</code> to <code>T*Transport</code></li>
+  <li>rename all <code>TBaseServer</code> occurrences in your code to <code>TServer</code></li>
+  <li>the <code>SingletonTProcessorFactory</code> is now called <code>TSingletonProcessorFactory</code></li>
+  <li>and the <code>AsyncBaseServer</code> is now the <code>TSimpleAsyncServer</code></li>
+</ul>
+
+<p>You may wonder why we changed so many names. The naming scheme has been revised for two reasons: First, we want to get back the established, well-known naming consistency across the Thrift libraries which the netcore library did not fully respect. Second, by achieving that first objective, we get the additional benefit of making migration at least a bit easier for C# projects.</p>
+
+<h2 id="from-csharp">&#8230; from csharp</h2>
+
+<p>Because of the different environment requirements, migration from C# takes slightly more efforts. While the code changes related to Thrift itself are moderate, you may need to upgrade certain dependencies, components or even modules to more recent versions.</p>
+
+<ol>
+  <li>Client and server applications must use at least framework 4.6.1, any version below will not work.</li>
+  <li>Switch to <code>thrift -gen netstd</code>. The following compiler flags are no longer needed or supported: <code>hashcode</code> and <code>async</code> are now standard, while <code>nullable</code> is no longer supported.</li>
+  <li><a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Familiarize yourself with the <code>async/await</code> model</a>, if you have not already done so. As netstd does not support <code>ISync</code> anymore, async is mandatory. The synchronous model is simply no longer available (that&#8217;s also the reason why we don&#8217;t need the <code>async</code> flag anymore).</li>
+  <li>Consider proper use of <code>cancellationToken</code> parameters. They are optional but may be quite helpful.</li>
+  <li>As you probably already guessed, there are a few names that have been changed:
+- add <code>using Thrift.Processor;</code> in the server code where appropriate
+- the <code>TServerSocket</code> is now called <code>TServerSocketTransport</code>
+- change <code>IProtocolFactory</code> into <code>ITProtocolFactory</code>
+- if you are looking for <code>TSimpleServer</code>, try <code>TSimpleAsyncServer</code> instead
+- similarly, the <code>TThreadPoolServer</code> is now a <code>TThreadPoolAsyncServer</code> 
+- the server&#8217;s <code>Serve()</code> method does now <code>ServeAsync()</code>
+- In case you are using Thrift server event handlers: the <code>SetEventHandler</code> method now starts with an uppercase letter
+- and you will also have to revise the method names of all <code>TServerEventHandler</code> descendants you have in your code</li>
+</ol>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/netstd/README.md">lib/netstd/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

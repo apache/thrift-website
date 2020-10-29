@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - c_glib</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>c_glib Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen c_glib tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;glib-object.h&gt;
+</span>
+<span class="cp">#include &lt;thrift/c_glib/protocol/thrift_binary_protocol.h&gt;
+#include &lt;thrift/c_glib/transport/thrift_buffered_transport.h&gt;
+#include &lt;thrift/c_glib/transport/thrift_socket.h&gt;
+</span>
+<span class="cp">#include "gen-c_glib/calculator.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">ThriftSocket</span> <span class="o">*</span><span class="n">socket</span><span class="p">;</span>
+  <span class="n">ThriftTransport</span> <span class="o">*</span><span class="n">transport</span><span class="p">;</span>
+  <span class="n">ThriftProtocol</span> <span class="o">*</span><span class="n">protocol</span><span class="p">;</span>
+  <span class="n">CalculatorIf</span> <span class="o">*</span><span class="n">client</span><span class="p">;</span>
+
+  <span class="n">GError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="n">InvalidOperation</span> <span class="o">*</span><span class="n">invalid_operation</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+  <span class="n">Work</span> <span class="o">*</span><span class="n">work</span><span class="p">;</span>
+
+  <span class="n">gint32</span> <span class="n">sum</span><span class="p">;</span>
+  <span class="n">gint32</span> <span class="n">diff</span><span class="p">;</span>
+
+  <span class="kt">int</span> <span class="n">exit_status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="cp">#if (!GLIB_CHECK_VERSION (2, 36, 0))
+</span>  <span class="n">g_type_init</span> <span class="p">();</span>
+<span class="cp">#endif
+</span>
+  <span class="n">socket</span>    <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_SOCKET</span><span class="p">,</span>
+                            <span class="s">"hostname"</span><span class="p">,</span>  <span class="s">"localhost"</span><span class="p">,</span>
+                            <span class="s">"port"</span><span class="p">,</span>      <span class="mi">9090</span><span class="p">,</span>
+                            <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">transport</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_BUFFERED_TRANSPORT</span><span class="p">,</span>
+                            <span class="s">"transport"</span><span class="p">,</span> <span class="n">socket</span><span class="p">,</span>
+                            <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">protocol</span>  <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_BINARY_PROTOCOL</span><span class="p">,</span>
+                            <span class="s">"transport"</span><span class="p">,</span> <span class="n">transport</span><span class="p">,</span>
+                            <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="n">thrift_transport_open</span> <span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error</span><span class="p">);</span>
+
+
+  <span class="cm">/* In the C (GLib) implementation of Thrift, service methods on the
+     server are accessed via a generated client class that implements
+     the service interface. In this tutorial, we access a Calculator
+     service through an instance of CalculatorClient, which implements
+     CalculatorIf. */</span>
+  <span class="n">client</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_CALCULATOR_CLIENT</span><span class="p">,</span>
+                         <span class="s">"input_protocol"</span><span class="p">,</span>  <span class="n">protocol</span><span class="p">,</span>
+                         <span class="s">"output_protocol"</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span>
+                         <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Each of the client methods requires at least two parameters: A
+     pointer to the client-interface implementation (the client
+     object), and a handle to a GError structure to receive
+     information about any error that occurs.
+
+     On success, client methods return TRUE. A return value of FALSE
+     indicates an error occurred and the error parameter has been
+     set. */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span> <span class="o">&amp;&amp;</span> <span class="n">calculator_if_ping</span> <span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">puts</span> <span class="p">(</span><span class="s">"ping()"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* Service methods that return a value do so by passing the result
+     back via an output parameter (here, "sum"). */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span> <span class="o">&amp;&amp;</span> <span class="n">calculator_if_add</span> <span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sum</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">"1+1=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* Thrift structs are implemented as GObjects, with each of the
+     struct's members exposed as an object property. */</span>
+  <span class="n">work</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_WORK</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">g_object_set</span> <span class="p">(</span><span class="n">work</span><span class="p">,</span>
+                  <span class="s">"num1"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                  <span class="s">"num2"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s">"op"</span><span class="p">,</span>   <span class="n">OPERATION_DIVIDE</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="cm">/* Exceptions are passed back from service methods in a manner
+       similar to return values. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">calculator_if_calculate</span> <span class="p">(</span><span class="n">client</span><span class="p">,</span>
+                                 <span class="nb">NULL</span><span class="p">,</span>
+                                 <span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">work</span><span class="p">,</span>
+                                 <span class="o">&amp;</span><span class="n">invalid_operation</span><span class="p">,</span>
+                                 <span class="o">&amp;</span><span class="n">error</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">puts</span> <span class="p">(</span><span class="s">"Whoa? We can divide by zero!"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">invalid_operation</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">gchar</span> <span class="o">*</span><span class="n">why</span><span class="p">;</span>
+
+        <span class="cm">/* Like structs, exceptions are implemented as objects with
+           properties. */</span>
+        <span class="n">g_object_get</span> <span class="p">(</span><span class="n">invalid_operation</span><span class="p">,</span> <span class="s">"why"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">why</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+        <span class="n">printf</span> <span class="p">(</span><span class="s">"InvalidOperation: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">why</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">why</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+          <span class="n">g_free</span> <span class="p">(</span><span class="n">why</span><span class="p">);</span>
+        <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">invalid_operation</span><span class="p">);</span>
+        <span class="n">invalid_operation</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="n">g_clear_error</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">error</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Struct objects can be reused across method invocations. */</span>
+    <span class="n">g_object_set</span> <span class="p">(</span><span class="n">work</span><span class="p">,</span>
+                  <span class="s">"num1"</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span>
+                  <span class="s">"num2"</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+                  <span class="s">"op"</span><span class="p">,</span>   <span class="n">OPERATION_SUBTRACT</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">calculator_if_calculate</span> <span class="p">(</span><span class="n">client</span><span class="p">,</span>
+                                 <span class="o">&amp;</span><span class="n">diff</span><span class="p">,</span>
+                                 <span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">work</span><span class="p">,</span>
+                                 <span class="o">&amp;</span><span class="n">invalid_operation</span><span class="p">,</span>
+                                 <span class="o">&amp;</span><span class="n">error</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">printf</span> <span class="p">(</span><span class="s">"15-10=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">diff</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">work</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">SharedStruct</span> <span class="o">*</span><span class="n">shared_struct</span><span class="p">;</span>
+    <span class="n">gchar</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
+
+    <span class="n">shared_struct</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_SHARED_STRUCT</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="cm">/* As defined in the Thrift file, the Calculator service extends
+       the SharedService service. Correspondingly, in the generated
+       code CalculatorIf inherits from SharedServiceIf, and the parent
+       service's methods are accessible through a simple cast. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">shared_service_client_get_struct</span> <span class="p">(</span><span class="n">SHARED_SERVICE_IF</span> <span class="p">(</span><span class="n">client</span><span class="p">),</span>
+                                          <span class="o">&amp;</span><span class="n">shared_struct</span><span class="p">,</span>
+                                          <span class="mi">1</span><span class="p">,</span>
+                                          <span class="o">&amp;</span><span class="n">error</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">g_object_get</span> <span class="p">(</span><span class="n">shared_struct</span><span class="p">,</span> <span class="s">"value"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+      <span class="n">printf</span> <span class="p">(</span><span class="s">"Check log: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+      <span class="n">g_free</span> <span class="p">(</span><span class="n">value</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">shared_struct</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">"ERROR: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">error</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">);</span>
+    <span class="n">g_clear_error</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">error</span><span class="p">);</span>
+
+    <span class="n">exit_status</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">thrift_transport_close</span> <span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">client</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">protocol</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">transport</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">socket</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">exit_status</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/c_glib/c_glib_client.c">tutorial/c_glib/c_glib_client.c</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;glib-object.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="cp">#include &lt;thrift/c_glib/thrift.h&gt;
+#include &lt;thrift/c_glib/protocol/thrift_binary_protocol_factory.h&gt;
+#include &lt;thrift/c_glib/protocol/thrift_protocol_factory.h&gt;
+#include &lt;thrift/c_glib/server/thrift_server.h&gt;
+#include &lt;thrift/c_glib/server/thrift_simple_server.h&gt;
+#include &lt;thrift/c_glib/transport/thrift_buffered_transport_factory.h&gt;
+#include &lt;thrift/c_glib/transport/thrift_server_socket.h&gt;
+#include &lt;thrift/c_glib/transport/thrift_server_transport.h&gt;
+</span>
+<span class="cp">#include "gen-c_glib/calculator.h"
+</span>
+<span class="n">G_BEGIN_DECLS</span>
+
+<span class="cm">/* In the C (GLib) implementation of Thrift, the actual work done by a
+   server---that is, the code that runs when a client invokes a
+   service method---is defined in a separate "handler" class that
+   implements the service interface. Here we define the
+   TutorialCalculatorHandler class, which implements the CalculatorIf
+   interface and provides the behavior expected by tutorial clients.
+   (Typically this code would be placed in its own module but for
+   clarity this tutorial is presented entirely in a single file.)
+
+   For each service the Thrift compiler generates an abstract base
+   class from which handler implementations should inherit. In our
+   case TutorialCalculatorHandler inherits from CalculatorHandler,
+   defined in gen-c_glib/calculator.h.
+
+   If you're new to GObject, try not to be intimidated by the quantity
+   of code here---much of it is boilerplate and can mostly be
+   copied-and-pasted from existing work. For more information refer to
+   the GObject Reference Manual, available online at
+   https://developer.gnome.org/gobject/. */</span>
+
+<span class="cp">#define TYPE_TUTORIAL_CALCULATOR_HANDLER \
+  (tutorial_calculator_handler_get_type ())
+</span>
+<span class="cp">#define TUTORIAL_CALCULATOR_HANDLER(obj)                                \
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj),                                   \
+                               TYPE_TUTORIAL_CALCULATOR_HANDLER,        \
+                               TutorialCalculatorHandler))
+#define TUTORIAL_CALCULATOR_HANDLER_CLASS(c)                    \
+  (G_TYPE_CHECK_CLASS_CAST ((c),                                \
+                            TYPE_TUTORIAL_CALCULATOR_HANDLER,   \
+                            TutorialCalculatorHandlerClass))
+#define IS_TUTORIAL_CALCULATOR_HANDLER(obj)                             \
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj),                                   \
+                               TYPE_TUTORIAL_CALCULATOR_HANDLER))
+#define IS_TUTORIAL_CALCULATOR_HANDLER_CLASS(c)                 \
+  (G_TYPE_CHECK_CLASS_TYPE ((c),                                \
+                            TYPE_TUTORIAL_CALCULATOR_HANDLER))
+#define TUTORIAL_CALCULATOR_HANDLER_GET_CLASS(obj)              \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj),                            \
+                              TYPE_TUTORIAL_CALCULATOR_HANDLER, \
+                              TutorialCalculatorHandlerClass))
+</span>
+<span class="k">struct</span> <span class="n">_TutorialCalculatorHandler</span> <span class="p">{</span>
+  <span class="n">CalculatorHandler</span> <span class="n">parent_instance</span><span class="p">;</span>
+
+  <span class="cm">/* private */</span>
+  <span class="n">GHashTable</span> <span class="o">*</span><span class="n">log</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_TutorialCalculatorHandler</span> <span class="n">TutorialCalculatorHandler</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">_TutorialCalculatorHandlerClass</span> <span class="p">{</span>
+  <span class="n">CalculatorHandlerClass</span> <span class="n">parent_class</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">_TutorialCalculatorHandlerClass</span> <span class="n">TutorialCalculatorHandlerClass</span><span class="p">;</span>
+
+<span class="n">GType</span> <span class="nf">tutorial_calculator_handler_get_type</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="n">G_END_DECLS</span>
+
+<span class="cm">/* ---------------------------------------------------------------- */</span>
+
+<span class="cm">/* The implementation of TutorialCalculatorHandler follows. */</span>
+
+<span class="n">G_DEFINE_TYPE</span> <span class="p">(</span><span class="n">TutorialCalculatorHandler</span><span class="p">,</span>
+               <span class="n">tutorial_calculator_handler</span><span class="p">,</span>
+               <span class="n">TYPE_CALCULATOR_HANDLER</span><span class="p">)</span>
+
+<span class="cm">/* Each of a handler's methods accepts at least two parameters: A
+   pointer to the service-interface implementation (the handler object
+   itself) and a handle to a GError structure to receive information
+   about any error that occurs.
+
+   On success, a handler method returns TRUE. A return value of FALSE
+   indicates an error occurred and the error parameter has been
+   set. (Methods should not return FALSE without first setting the
+   error parameter.) */</span>
+<span class="k">static</span> <span class="n">gboolean</span>
+<span class="nf">tutorial_calculator_handler_ping</span> <span class="p">(</span><span class="n">CalculatorIf</span>  <span class="o">*</span><span class="n">iface</span><span class="p">,</span>
+                                  <span class="n">GError</span>       <span class="o">**</span><span class="n">error</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">iface</span><span class="p">);</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="n">puts</span> <span class="p">(</span><span class="s">"ping()"</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* Service-method parameters are passed through as parameters to the
+   handler method.
+
+   If the service method returns a value an output parameter, _return,
+   is additionally passed to the handler method. This parameter should
+   be set appropriately before the method returns, whenever it
+   succeeds.
+
+   The return value from this method happens to be of a base type,
+   i32, but note if a method returns a complex type such as a map or
+   list *_return will point to a pre-allocated data structure that
+   does not need to be re-allocated and should not be destroyed. */</span>
+<span class="k">static</span> <span class="n">gboolean</span>
+<span class="nf">tutorial_calculator_handler_add</span> <span class="p">(</span><span class="n">CalculatorIf</span>  <span class="o">*</span><span class="n">iface</span><span class="p">,</span>
+                                 <span class="n">gint32</span>        <span class="o">*</span><span class="n">_return</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">gint32</span>   <span class="n">num1</span><span class="p">,</span>
+                                 <span class="k">const</span> <span class="n">gint32</span>   <span class="n">num2</span><span class="p">,</span>
+                                 <span class="n">GError</span>       <span class="o">**</span><span class="n">error</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">iface</span><span class="p">);</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="n">printf</span> <span class="p">(</span><span class="s">"add(%d,%d)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">_return</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* Any handler method can return a ThriftApplicationException to the
+   client by setting its error parameter appropriately and returning
+   FALSE. See the ThriftApplicationExceptionError enumeration defined
+   in thrift_application_exception.h for a list of recognized
+   exception types (GError codes).
+
+   If a service method can also throw a custom exception (that is, one
+   defined in the .thrift file) an additional output parameter will be
+   provided (here, "ouch") to hold an instance of the exception, when
+   necessary. Note there will be a separate parameter added for each
+   type of exception the method can throw.
+
+   Unlike return values, exception objects are never pre-created; this
+   is always the responsibility of the handler method. */</span>
+<span class="k">static</span> <span class="n">gboolean</span>
+<span class="nf">tutorial_calculator_handler_calculate</span> <span class="p">(</span><span class="n">CalculatorIf</span>      <span class="o">*</span><span class="n">iface</span><span class="p">,</span>
+                                       <span class="n">gint32</span>            <span class="o">*</span><span class="n">_return</span><span class="p">,</span>
+                                       <span class="k">const</span> <span class="n">gint32</span>       <span class="n">logid</span><span class="p">,</span>
+                                       <span class="k">const</span> <span class="n">Work</span>        <span class="o">*</span><span class="n">w</span><span class="p">,</span>
+                                       <span class="n">InvalidOperation</span> <span class="o">**</span><span class="n">ouch</span><span class="p">,</span>
+                                       <span class="n">GError</span>           <span class="o">**</span><span class="n">error</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">TutorialCalculatorHandler</span> <span class="o">*</span><span class="n">self</span><span class="p">;</span>
+
+  <span class="n">gint</span> <span class="o">*</span><span class="n">log_key</span><span class="p">;</span>
+  <span class="n">gchar</span> <span class="n">log_value</span><span class="p">[</span><span class="mi">12</span><span class="p">];</span>
+  <span class="n">SharedStruct</span> <span class="o">*</span><span class="n">log_struct</span><span class="p">;</span>
+
+  <span class="n">gint</span> <span class="n">num1</span><span class="p">;</span>
+  <span class="n">gint</span> <span class="n">num2</span><span class="p">;</span>
+  <span class="n">Operation</span> <span class="n">op</span><span class="p">;</span>
+  <span class="n">gboolean</span> <span class="n">result</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="n">g_return_val_if_fail</span> <span class="p">(</span><span class="n">IS_TUTORIAL_CALCULATOR_HANDLER</span> <span class="p">(</span><span class="n">iface</span><span class="p">),</span>
+                        <span class="n">FALSE</span><span class="p">);</span>
+  <span class="n">self</span> <span class="o">=</span> <span class="n">TUTORIAL_CALCULATOR_HANDLER</span> <span class="p">(</span><span class="n">iface</span><span class="p">);</span>
+
+  <span class="cm">/* Remember: Exception objects are never pre-created */</span>
+  <span class="n">g_assert</span> <span class="p">(</span><span class="o">*</span><span class="n">ouch</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Fetch the contents of our Work parameter.
+
+     Note that integer properties of thirty-two bits or fewer in width
+     are _always_ of type gint, regardless of the range of values they
+     hold. A common error is trying to retrieve, say, a structure
+     member defined in the .thrift file as type i16 into a variable of
+     type gint16, which will clobber variables adjacent on the
+     stack. Remember: If you're retrieving an integer property the
+     receiving variable must be of either type gint or gint64, as
+     appropriate. */</span>
+  <span class="n">g_object_get</span> <span class="p">((</span><span class="n">Work</span> <span class="o">*</span><span class="p">)</span><span class="n">w</span><span class="p">,</span>
+                <span class="s">"num1"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">num1</span><span class="p">,</span>
+                <span class="s">"num2"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">num2</span><span class="p">,</span>
+                <span class="s">"op"</span><span class="p">,</span>   <span class="o">&amp;</span><span class="n">op</span><span class="p">,</span>
+                <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="n">printf</span> <span class="p">(</span><span class="s">"calculate(%d,{%d,%d,%d})</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">);</span>
+
+  <span class="k">switch</span> <span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="n">OPERATION_ADD</span><span class="p">:</span>
+    <span class="o">*</span><span class="n">_return</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">case</span> <span class="n">OPERATION_SUBTRACT</span><span class="p">:</span>
+    <span class="o">*</span><span class="n">_return</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">-</span> <span class="n">num2</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">case</span> <span class="n">OPERATION_MULTIPLY</span><span class="p">:</span>
+    <span class="o">*</span><span class="n">_return</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">*</span> <span class="n">num2</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="k">case</span> <span class="n">OPERATION_DIVIDE</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="cm">/* For each custom exception type a subclass of ThriftStruct is
+         generated by the Thrift compiler. Throw an exception by
+         setting the corresponding output parameter to a new instance
+         of its type and returning FALSE. */</span>
+      <span class="o">*</span><span class="n">ouch</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_INVALID_OPERATION</span><span class="p">,</span>
+                            <span class="s">"whatOp"</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span>
+                            <span class="s">"why"</span><span class="p">,</span>  <span class="n">g_strdup</span> <span class="p">(</span><span class="s">"Cannot divide by 0"</span><span class="p">),</span>
+                            <span class="nb">NULL</span><span class="p">);</span>
+      <span class="n">result</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+
+      <span class="cm">/* Note the call to g_strdup above: All the memory used by a
+         ThriftStruct's properties belongs to the object itself and
+         will be freed on destruction. Removing this call to g_strdup
+         will lead to a segmentation fault as the object tries to
+         release memory allocated statically to the program. */</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="o">*</span><span class="n">_return</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">/</span> <span class="n">num2</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+
+  <span class="nl">default:</span>
+    <span class="o">*</span><span class="n">ouch</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_INVALID_OPERATION</span><span class="p">,</span>
+                          <span class="s">"whatOp"</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span>
+                          <span class="s">"why"</span><span class="p">,</span>  <span class="n">g_strdup</span> <span class="p">(</span><span class="s">"Invalid Operation"</span><span class="p">),</span>
+                          <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* On success, log a record of the result to our hash table */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log_key</span> <span class="o">=</span> <span class="n">g_malloc</span> <span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">log_key</span><span class="p">);</span>
+    <span class="o">*</span><span class="n">log_key</span> <span class="o">=</span> <span class="n">logid</span><span class="p">;</span>
+
+    <span class="n">snprintf</span> <span class="p">(</span><span class="n">log_value</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">log_value</span><span class="p">,</span> <span class="s">"%d"</span><span class="p">,</span> <span class="o">*</span><span class="n">_return</span><span class="p">);</span>
+
+    <span class="n">log_struct</span> <span class="o">=</span> <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_SHARED_STRUCT</span><span class="p">,</span>
+                               <span class="s">"key"</span><span class="p">,</span>   <span class="o">*</span><span class="n">log_key</span><span class="p">,</span>
+                               <span class="s">"value"</span><span class="p">,</span>  <span class="n">g_strdup</span> <span class="p">(</span><span class="n">log_value</span><span class="p">),</span>
+                               <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">g_hash_table_replace</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">log</span><span class="p">,</span> <span class="n">log_key</span><span class="p">,</span> <span class="n">log_struct</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* A one-way method has the same signature as an equivalent, regular
+   method that returns no value. */</span>
+<span class="k">static</span> <span class="n">gboolean</span>
+<span class="nf">tutorial_calculator_handler_zip</span> <span class="p">(</span><span class="n">CalculatorIf</span>  <span class="o">*</span><span class="n">iface</span><span class="p">,</span>
+                                 <span class="n">GError</span>       <span class="o">**</span><span class="n">error</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">iface</span><span class="p">);</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="n">puts</span> <span class="p">(</span><span class="s">"zip()"</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* As specified in the .thrift file (tutorial.thrift), the Calculator
+   service extends the SharedService service. Correspondingly, in the
+   generated code the Calculator interface, CalculatorIf, extends the
+   SharedService interface, SharedServiceIf, and subclasses of
+   CalculatorHandler should implement its methods as well.
+
+   Here we provide an implementation for the getStruct method from the
+   parent service. */</span>
+<span class="k">static</span> <span class="n">gboolean</span>
+<span class="nf">tutorial_calculator_handler_get_struct</span> <span class="p">(</span><span class="n">SharedServiceIf</span>  <span class="o">*</span><span class="n">iface</span><span class="p">,</span>
+                                        <span class="n">SharedStruct</span>    <span class="o">**</span><span class="n">_return</span><span class="p">,</span>
+                                        <span class="k">const</span> <span class="n">gint32</span>      <span class="n">key32</span><span class="p">,</span>
+                                        <span class="n">GError</span>          <span class="o">**</span><span class="n">error</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">gint</span> <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">gint</span><span class="p">)</span><span class="n">key32</span><span class="p">;</span>
+  <span class="n">TutorialCalculatorHandler</span> <span class="o">*</span><span class="n">self</span><span class="p">;</span>
+  <span class="n">SharedStruct</span> <span class="o">*</span><span class="n">log_struct</span><span class="p">;</span>
+  <span class="n">gint</span> <span class="n">log_key</span><span class="p">;</span>
+  <span class="n">gchar</span> <span class="o">*</span><span class="n">log_value</span><span class="p">;</span>
+
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="n">g_return_val_if_fail</span> <span class="p">(</span><span class="n">IS_TUTORIAL_CALCULATOR_HANDLER</span> <span class="p">(</span><span class="n">iface</span><span class="p">),</span>
+                        <span class="n">FALSE</span><span class="p">);</span>
+  <span class="n">self</span> <span class="o">=</span> <span class="n">TUTORIAL_CALCULATOR_HANDLER</span> <span class="p">(</span><span class="n">iface</span><span class="p">);</span>
+
+  <span class="cm">/* Remember: Complex return types are always pre-created and need
+     only be populated */</span>
+  <span class="n">g_assert</span> <span class="p">(</span><span class="o">*</span><span class="n">_return</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="n">printf</span> <span class="p">(</span><span class="s">"getStruct(%d)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+
+  <span class="cm">/* If the key exists in our log, return the corresponding logged
+     data (or an empty SharedStruct structure if it does not).
+
+     Incidentally, note we _must_ here copy the values from the hash
+     table into the return structure. All memory used by the return
+     structure belongs to the structure itself and will be freed once
+     a response is sent to the client. If we merely freed *_return and
+     set it to point to our hash-table entry, that would mean memory
+     would be released (effectively, data erased) out of the hash
+     table! */</span>
+  <span class="n">log_struct</span> <span class="o">=</span> <span class="n">g_hash_table_lookup</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">log</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">key</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">log_struct</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">g_object_get</span> <span class="p">(</span><span class="n">log_struct</span><span class="p">,</span>
+                  <span class="s">"key"</span><span class="p">,</span>   <span class="o">&amp;</span><span class="n">log_key</span><span class="p">,</span>
+                  <span class="s">"value"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">log_value</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">g_object_set</span> <span class="p">(</span><span class="o">*</span><span class="n">_return</span><span class="p">,</span>
+                  <span class="s">"key"</span><span class="p">,</span>   <span class="n">log_key</span><span class="p">,</span>
+                  <span class="s">"value"</span><span class="p">,</span> <span class="n">g_strdup</span> <span class="p">(</span><span class="n">log_value</span><span class="p">),</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">TRUE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* TutorialCalculatorHandler's instance finalizer (destructor) */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">tutorial_calculator_handler_finalize</span> <span class="p">(</span><span class="n">GObject</span> <span class="o">*</span><span class="n">object</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">TutorialCalculatorHandler</span> <span class="o">*</span><span class="n">self</span> <span class="o">=</span>
+    <span class="n">TUTORIAL_CALCULATOR_HANDLER</span> <span class="p">(</span><span class="n">object</span><span class="p">);</span>
+
+  <span class="cm">/* Free our calculation-log hash table */</span>
+  <span class="n">g_hash_table_unref</span> <span class="p">(</span><span class="n">self</span><span class="o">-&gt;</span><span class="n">log</span><span class="p">);</span>
+  <span class="n">self</span><span class="o">-&gt;</span><span class="n">log</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+  <span class="cm">/* Chain up to the parent class */</span>
+  <span class="n">G_OBJECT_CLASS</span> <span class="p">(</span><span class="n">tutorial_calculator_handler_parent_class</span><span class="p">)</span><span class="o">-&gt;</span>
+    <span class="n">finalize</span> <span class="p">(</span><span class="n">object</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* TutorialCalculatorHandler's instance initializer (constructor) */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">tutorial_calculator_handler_init</span> <span class="p">(</span><span class="n">TutorialCalculatorHandler</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="cm">/* Create our calculation-log hash table */</span>
+  <span class="n">self</span><span class="o">-&gt;</span><span class="n">log</span> <span class="o">=</span> <span class="n">g_hash_table_new_full</span> <span class="p">(</span><span class="n">g_int_hash</span><span class="p">,</span>
+                                     <span class="n">g_int_equal</span><span class="p">,</span>
+                                     <span class="n">g_free</span><span class="p">,</span>
+                                     <span class="n">g_object_unref</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* TutorialCalculatorHandler's class initializer */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">tutorial_calculator_handler_class_init</span> <span class="p">(</span><span class="n">TutorialCalculatorHandlerClass</span> <span class="o">*</span><span class="n">klass</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">GObjectClass</span> <span class="o">*</span><span class="n">gobject_class</span> <span class="o">=</span> <span class="n">G_OBJECT_CLASS</span> <span class="p">(</span><span class="n">klass</span><span class="p">);</span>
+  <span class="n">SharedServiceHandlerClass</span> <span class="o">*</span><span class="n">shared_service_handler_class</span> <span class="o">=</span>
+    <span class="n">SHARED_SERVICE_HANDLER_CLASS</span> <span class="p">(</span><span class="n">klass</span><span class="p">);</span>
+  <span class="n">CalculatorHandlerClass</span> <span class="o">*</span><span class="n">calculator_handler_class</span> <span class="o">=</span>
+    <span class="n">CALCULATOR_HANDLER_CLASS</span> <span class="p">(</span><span class="n">klass</span><span class="p">);</span>
+
+  <span class="cm">/* Register our destructor */</span>
+  <span class="n">gobject_class</span><span class="o">-&gt;</span><span class="n">finalize</span> <span class="o">=</span> <span class="n">tutorial_calculator_handler_finalize</span><span class="p">;</span>
+
+  <span class="cm">/* Register our implementations of CalculatorHandler's methods */</span>
+  <span class="n">calculator_handler_class</span><span class="o">-&gt;</span><span class="n">ping</span> <span class="o">=</span>
+    <span class="n">tutorial_calculator_handler_ping</span><span class="p">;</span>
+  <span class="n">calculator_handler_class</span><span class="o">-&gt;</span><span class="n">add</span> <span class="o">=</span>
+    <span class="n">tutorial_calculator_handler_add</span><span class="p">;</span>
+  <span class="n">calculator_handler_class</span><span class="o">-&gt;</span><span class="n">calculate</span> <span class="o">=</span>
+    <span class="n">tutorial_calculator_handler_calculate</span><span class="p">;</span>
+  <span class="n">calculator_handler_class</span><span class="o">-&gt;</span><span class="n">zip</span> <span class="o">=</span>
+    <span class="n">tutorial_calculator_handler_zip</span><span class="p">;</span>
+
+  <span class="cm">/* Register our implementation of SharedServiceHandler's method */</span>
+  <span class="n">shared_service_handler_class</span><span class="o">-&gt;</span><span class="n">get_struct</span> <span class="o">=</span>
+    <span class="n">tutorial_calculator_handler_get_struct</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ---------------------------------------------------------------- */</span>
+
+<span class="cm">/* That ends the implementation of TutorialCalculatorHandler.
+   Everything below is fairly generic code that sets up a minimal
+   Thrift server for tutorial clients. */</span>
+
+
+<span class="cm">/* Our server object, declared globally so it is accessible within the
+   SIGINT signal handler */</span>
+<span class="n">ThriftServer</span> <span class="o">*</span><span class="n">server</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+<span class="cm">/* A flag that indicates whether the server was interrupted with
+   SIGINT (i.e. Ctrl-C) so we can tell whether its termination was
+   abnormal */</span>
+<span class="n">gboolean</span> <span class="n">sigint_received</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+
+<span class="cm">/* Handle SIGINT ("Ctrl-C") signals by gracefully stopping the
+   server */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">sigint_handler</span> <span class="p">(</span><span class="kt">int</span> <span class="n">signal_number</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">THRIFT_UNUSED_VAR</span> <span class="p">(</span><span class="n">signal_number</span><span class="p">);</span>
+
+  <span class="cm">/* Take note we were called */</span>
+  <span class="n">sigint_received</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+
+  <span class="cm">/* Shut down the server gracefully */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">server</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="n">thrift_server_stop</span> <span class="p">(</span><span class="n">server</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">TutorialCalculatorHandler</span> <span class="o">*</span><span class="n">handler</span><span class="p">;</span>
+  <span class="n">CalculatorProcessor</span> <span class="o">*</span><span class="n">processor</span><span class="p">;</span>
+
+  <span class="n">ThriftServerTransport</span> <span class="o">*</span><span class="n">server_transport</span><span class="p">;</span>
+  <span class="n">ThriftTransportFactory</span> <span class="o">*</span><span class="n">transport_factory</span><span class="p">;</span>
+  <span class="n">ThriftProtocolFactory</span> <span class="o">*</span><span class="n">protocol_factory</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="n">sigaction</span> <span class="n">sigint_action</span><span class="p">;</span>
+
+  <span class="n">GError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">exit_status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="cp">#if (!GLIB_CHECK_VERSION (2, 36, 0))
+</span>  <span class="n">g_type_init</span> <span class="p">();</span>
+<span class="cp">#endif
+</span>
+  <span class="cm">/* Create an instance of our handler, which provides the service's
+     methods' implementation */</span>
+  <span class="n">handler</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_TUTORIAL_CALCULATOR_HANDLER</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Create an instance of the service's processor, automatically
+     generated by the Thrift compiler, which parses incoming messages
+     and dispatches them to the appropriate method in the handler */</span>
+  <span class="n">processor</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">TYPE_CALCULATOR_PROCESSOR</span><span class="p">,</span>
+                  <span class="s">"handler"</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Create our server socket, which binds to the specified port and
+     listens for client connections */</span>
+  <span class="n">server_transport</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_SERVER_SOCKET</span><span class="p">,</span>
+                  <span class="s">"port"</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Create our transport factory, used by the server to wrap "raw"
+     incoming connections from the client (in this case with a
+     ThriftBufferedTransport to improve performance) */</span>
+  <span class="n">transport_factory</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_BUFFERED_TRANSPORT_FACTORY</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Create our protocol factory, which determines which wire protocol
+     the server will use (in this case, Thrift's binary protocol) */</span>
+  <span class="n">protocol_factory</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_BINARY_PROTOCOL_FACTORY</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Create the server itself */</span>
+  <span class="n">server</span> <span class="o">=</span>
+    <span class="n">g_object_new</span> <span class="p">(</span><span class="n">THRIFT_TYPE_SIMPLE_SERVER</span><span class="p">,</span>
+                  <span class="s">"processor"</span><span class="p">,</span>                <span class="n">processor</span><span class="p">,</span>
+                  <span class="s">"server_transport"</span><span class="p">,</span>         <span class="n">server_transport</span><span class="p">,</span>
+                  <span class="s">"input_transport_factory"</span><span class="p">,</span>  <span class="n">transport_factory</span><span class="p">,</span>
+                  <span class="s">"output_transport_factory"</span><span class="p">,</span> <span class="n">transport_factory</span><span class="p">,</span>
+                  <span class="s">"input_protocol_factory"</span><span class="p">,</span>   <span class="n">protocol_factory</span><span class="p">,</span>
+                  <span class="s">"output_protocol_factory"</span><span class="p">,</span>  <span class="n">protocol_factory</span><span class="p">,</span>
+                  <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Install our SIGINT handler, which handles Ctrl-C being pressed by
+     stopping the server gracefully (not strictly necessary, but a
+     nice touch) */</span>
+  <span class="n">memset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">sigint_action</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">sigint_action</span><span class="p">));</span>
+  <span class="n">sigint_action</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">sigint_handler</span><span class="p">;</span>
+  <span class="n">sigint_action</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="n">SA_RESETHAND</span><span class="p">;</span>
+  <span class="n">sigaction</span> <span class="p">(</span><span class="n">SIGINT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sigint_action</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+
+  <span class="cm">/* Start the server, which will run until its stop method is invoked
+     (from within the SIGINT handler, in this case) */</span>
+  <span class="n">puts</span> <span class="p">(</span><span class="s">"Starting the server..."</span><span class="p">);</span>
+  <span class="n">thrift_server_serve</span> <span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">error</span><span class="p">);</span>
+
+  <span class="cm">/* If the server stopped for any reason other than having been
+     interrupted by the user, report the error */</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sigint_received</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">g_message</span> <span class="p">(</span><span class="s">"thrift_server_serve: %s"</span><span class="p">,</span>
+               <span class="n">error</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">?</span> <span class="n">error</span><span class="o">-&gt;</span><span class="n">message</span> <span class="o">:</span> <span class="s">"(null)"</span><span class="p">);</span>
+    <span class="n">g_clear_error</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">error</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">puts</span> <span class="p">(</span><span class="s">"done."</span><span class="p">);</span>
+
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">server</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">transport_factory</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">protocol_factory</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">server_transport</span><span class="p">);</span>
+
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">processor</span><span class="p">);</span>
+  <span class="n">g_object_unref</span> <span class="p">(</span><span class="n">handler</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="n">exit_status</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/c_glib/c_glib_server.c">tutorial/c_glib/c_glib_server.c</a>
+</p>
+
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

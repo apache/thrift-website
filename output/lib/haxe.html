@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Haxe library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="using-thrift-with-haxe">Using Thrift with Haxe</h1>
+
+<h2 id="haxe-setup">Haxe setup</h2>
+
+<p>Thrift requires Haxe 3.1.3. Installers for Windows and OSX
+platforms are available at <code>http://haxe.org/download</code>.</p>
+
+<p>Depending on the desired targets, you may have to install the appropriate HaxeLibs 
+after installing Haxe itself. For example, if you plan to target C#, Java and C++,
+enter the following commands after installing Haxe:</p>
+
+<pre><code>haxelib install hxcpp
+haxelib install hxjava
+haxelib install hxcs
+</code></pre>
+
+<p>For other targets, please consult the Haxe documentation whether or not any additional
+target libraries need to be installed and how to achieve this.</p>
+
+<h2 id="haxe-on-linux">Haxe on Linux</h2>
+
+<p>For Linux platforms it is recommended to use the distro-specific package
+manager, where possible. More detailed information can be found at the 
+Haxe Linux download section: http://haxe.org/download/linux</p>
+
+<p>If you run into the error message</p>
+
+<pre><code>Uncaught exception - load.c(237) : Failed to load library : /usr/lib/neko/regexp.ndll  
+(libpcre.so.3: cannot open shared object file: No such file or directory)
+</code></pre>
+
+<p>this can be solved depending on your OSes bitness by either</p>
+
+<pre><code>sudo ln -sf /usr/lib/libpcre.so.1 /usr/lib/libpcre.so.3
+sudo ldconfig
+</code></pre>
+
+<p>or</p>
+
+<pre><code>sudo ln -sf /usr/lib64/libpcre.so.1 /usr/lib64/libpcre.so.3
+sudo ldconfig
+</code></pre>
+
+<h2 id="thrift-haxe-bindings">Thrift Haxe bindings</h2>
+
+<p>Thrift Haxe bindings can be set up via the <code>haxelib</code> tool<br />
+either from the official ASF repo, or via the github mirror.</p>
+
+<ul>
+  <li>
+    <p>To set up any <strong>stable version</strong>, choose the appropriate branch (e.g. <code>0.12.0</code>):</p>
+
+    <ul>
+      <li><code>haxelib git thrift https://github.com/apache/thrift.git 0.12.0 lib/haxe</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>To set up the current <strong>development version</strong>, use the <code>master</code> branch:</p>
+
+    <ul>
+      <li><code>haxelib git thrift https://github.com/apache/thrift.git master lib/haxe</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>As usual, the installed library can be updated using <code>haxelib upgrade</code> 
+or <code>haxelib update thrift</code>.</p>
+
+<p>In order to work with Thrift, you will need to install the Thrift compiler 
+or build from source, depending on your operating system. Appropriate 
+downloads and more information can be found at http://thrift.apache.org</p>
+
+<p>To get started, visit the /tutorial/haxe and /test/haxe dirs for examples. 
+If you are using HIDE or the FlashDevelop IDE, you&#8217;ll find appropriate 
+project files in these folders.</p>
+
+<h1 id="current-status">Current status</h1>
+<ul>
+  <li>tested with Haxe C++ target</li>
+  <li>tested with Haxe PHP target (console/web server, binary protocols)</li>
+  <li>transports: Socket, HTTP (servers run inside PHP server/PHP target only), Stream</li>
+  <li>protocols: Binary, JSON, Multiplex, Compact</li>
+  <li>tutorial client and server available</li>
+  <li>cross-test client and server available</li>
+</ul>
+
+<h1 id="further-developments">Further developments</h1>
+<ul>
+  <li>improve to work with C#, Java and JavaScript Haxe/OpenFL targets</li>
+  <li>improve to work with more (ideally all) Haxe/OpenFL targets</li>
+  <li>add HTTP server, update tutorial and tests accordingly</li>
+</ul>
+
+<h1 id="known-restrictions">Known restrictions</h1>
+
+<p>Although designed with maximum portability in mind, for technical reasons some platforms
+may only support parts of the library, or not be compatible at all.</p>
+
+<p>Javascript:
+- tutorial fails to build because of unsupported Sys.args</p>
+
+<h1 id="php-http-server-notes">PHP HTTP Server notes</h1>
+
+<ul>
+  <li>
+    <p>you have to import PHP files generated by haxe into PHP
+<code>php
+require_once  dirname(__FILE__) . '/bin/php-web-server/Main-debug.php';
+</code></p>
+  </li>
+  <li>
+    <p>trace() by default outputs into stdout (http response), so you have to redirect it to stderr or you own logs, something like
+<code>haxe
+//remap trace to error log
+haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) 
+{ 
+  //simulate normal trace https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/Log.hx
+  var newValue : Dynamic;
+  if (infos != null &amp;&amp; infos.customParams!=null) {
+      var extra:String = "";
+      for( v in infos.customParams )
+          extra += "," + v;
+      newValue = v + extra;
+  }
+  else {
+      newValue = v;
+  }
+  var msg = infos != null ? infos.fileName + ':' + infos.lineNumber + ': ' : '';
+  Sys.stderr().writeString('${msg}${newValue}\n');
+}
+</code></p>
+  </li>
+  <li>
+    <p>to allow thrift server to read/write HTTP request/response, it should be pointed out to php streams
+<code>haxe
+transport =	new TWrappingServerTransport(
+              new TStreamTransport(
+                  new TFileStream("php://input", Read),
+                  new TFileStream("php://output", Append)
+                  )
+              );
+</code></p>
+  </li>
+  <li>
+    <p>TSimpleServer doesn&#8217;t stop after first call, so processor.process() should be called instead, or use runOnce property 
+<code>haxe
+var server = new TSimpleServer( processor, transport, transfactory, protfactory);
+server.runOnce = true;
+</code></p>
+  </li>
+</ul>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/haxe/README.md">lib/haxe/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Features</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2 id="apache-thrift-features">Apache Thrift Features</h2>
+
+<ul>
+  <li>interface description language - Everything is specified in an IDL file from which bindings for many languages can be generated. See <a href="/docs/idl">Thrift IDL</a></li>
+  <li>language bindings - Thrift is supported in many languages and environments
+    <ul>
+      <li>C++</li>
+      <li>C#</li>
+      <li>Cocoa</li>
+      <li>D</li>
+      <li>Delphi</li>
+      <li>Erlang</li>
+      <li>Haskell</li>
+      <li>Java</li>
+      <li>OCaml</li>
+      <li>Perl</li>
+      <li>PHP</li>
+      <li>Python</li>
+      <li>Ruby</li>
+      <li>Smalltalk</li>
+    </ul>
+  </li>
+  <li>namespaces - Each Thrift file is in its own namespace allowing you to use the same identifier in multiple Thrift files</li>
+  <li>language namespaces - Per Thrift file you can specify which namespace should be used for each programming language</li>
+  <li>base types - Thrift has a small set of base types. See <a href="/docs/types">Thrift Types</a></li>
+  <li>constants and enumerations - Constant values can be assigned logical names</li>
+  <li>structs - Use structs to group related data. Structs can have fields of any type. See <a href="/docs/types">Thrift Types</a></li>
+  <li>sparse structs - Optional base fields that have not been set and reference fields that are null will not be sent across the wire</li>
+  <li>struct evolution - The addition and removal of fields is handled without breaking existing clients by using integer identifiers for fields</li>
+  <li>containers - You can use sets, lists and maps of any type: base types, structs and other containers. See <a href="/docs/types">Thrift Types</a></li>
+  <li>type definitions - Any type can be given a name that better describes it</li>
+  <li>services - A service is a group of functions</li>
+  <li>service inheritance - Subservices implement all functions of their base services and can have additional functions</li>
+  <li>asynchronous invocations - Functions that do not return a result can be invoked asynchronously so the client is not blocked until the server has finished processing the request. The server may execute asynchronous invocations of the same client in parallel/out of order</li>
+  <li>exceptions - If an error occurs a function can throw a standard or user-defined exception. See <a href="/docs/types">Thrift Types</a></li>
+  <li>cyclic structs - Starting with version 0.9.2, Thrift supports structs that contain themselves, or other structs to be declared later.</li>
+</ul>
+
+<h2 id="non-features">Non-features</h2>
+<p>The following are not supported by Apache Thrift:</p>
+
+<ul>
+  <li>struct inheritance - Use struct composition instead</li>
+  <li>polymorphism - As there is no inheritance, polymorphism is also not supported</li>
+  <li>overloading - All methods within a service must be uniquely named</li>
+  <li>heterogeneous containers - All items in a container must be of the same type</li>
+  <li>Null return - null cannot be returned directly from a function. Use a wrapper struct or a marker value instead</li>
+</ul>
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

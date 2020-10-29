@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Go library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="using-thrift-with-go">Using Thrift with Go</h1>
+
+<p>Thrift supports Go 1.7+</p>
+
+<p>In following Go conventions, we recommend you use the &#8216;go&#8217; tool to install
+Thrift for go.</p>
+
+<pre><code>$ go get github.com/apache/thrift/lib/go/thrift/...
+</code></pre>
+
+<p>Will retrieve and install the most recent version of the package.</p>
+
+<h1 id="a-note-about-optional-fields">A note about optional fields</h1>
+
+<p>The thrift-to-Go compiler tries to represent thrift IDL structs as Go structs.
+We must be able to distinguish between optional fields that are set to their
+default value and optional values which are actually unset, so the generated
+code represents optional fields via pointers.</p>
+
+<p>This is generally intuitive and works well much of the time, but Go does not
+have a syntax for creating a pointer to a constant in a single expression. That
+is, given a struct like</p>
+
+<pre><code>struct SomeIDLType {
+	OptionalField *int32
+}
+</code></pre>
+
+<p>, the following will not compile:</p>
+
+<pre><code>x := &amp;SomeIDLType{
+	OptionalField: &amp;(3),
+}
+</code></pre>
+
+<p>(Nor is there any other syntax that&#8217;s built in to the language)</p>
+
+<p>As such, we provide some helpers that do just this under lib/go/thrift/. E.g.,</p>
+
+<pre><code>x := &amp;SomeIDLType{
+	OptionalField: thrift.Int32Ptr(3),
+}
+</code></pre>
+
+<p>And so on. The code generator also creates analogous helpers for user-defined
+typedefs and enums.</p>
+
+<h1 id="adding-custom-tags-to-generated-thrift-structs">Adding custom tags to generated Thrift structs</h1>
+
+<p>You can add tags to the auto-generated thrift structs using the following format:</p>
+
+<pre><code>struct foo {
+  1: required string Bar (go.tag = "some_tag:\"some_tag_value\"")
+}
+</code></pre>
+
+<p>which will generate:</p>
+
+<pre><code>type Foo struct {
+  Bar string `thrift:"bar,1,required" some_tag:"some_tag_value"`
+}
+</code></pre>
+
+<h1 id="a-note-about-server-handler-implementations">A note about server handler implementations</h1>
+
+<p>The context object passed into the server handler function will be canceled when
+the client closes the connection (this is a best effort check, not a guarantee
+&#8211; there&#8217;s no guarantee that the context object is always canceled when client
+closes the connection, but when it&#8217;s canceled you can always assume the client
+closed the connection). When implementing Go Thrift server, you can take
+advantage of that to abandon requests that&#8217;s no longer needed:</p>
+
+<pre><code>func MyEndpoint(ctx context.Context, req *thriftRequestType) (*thriftResponseType, error) {
+    ...
+    if ctx.Err() == context.Canceled {
+        return nil, thrift.ErrAbandonRequest
+    }
+    ...
+}
+</code></pre>
+
+<p>This feature would add roughly 1 millisecond of latency overhead to the server
+handlers (along with roughly 2 goroutines per request).
+If that is unacceptable, it can be disabled by having this line early in your
+main function:</p>
+
+<pre><code>thrift.ServerConnectivityCheckInterval = 0
+</code></pre>
+
+<p>Please be advised that due to a
+<a href="https://github.com/golang/go/issues/27707">Go runtime bug</a>, currently
+if this interval is set to a value too low (for example, 1ms), it might cause
+excessive cpu overhead.</p>
+
+<p>This feature is also only enabled on non-oneway endpoints.</p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/go/README.md">lib/go/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

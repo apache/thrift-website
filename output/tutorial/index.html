@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Index of tutorial/</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2 id="apache-thrift-tutorial">Apache Thrift Tutorial</h2>
+
+<ul>
+  <li>
+    <h3 id="download-apache-thrift">Download Apache Thrift</h3>
+    <p>To get started, <a href="/download">download</a> a copy of Thrift.</p>
+  </li>
+  <li>
+    <h3 id="build-and-install-the-apache-thrift-compiler-and-libraries">Build and Install the Apache Thrift compiler and libraries</h3>
+    <p>You will then need to build the Apache Thrift compiler and libraries.</p>
+
+    <p>./configure &amp;&amp; make</p>
+  </li>
+</ul>
+
+<p>This will also compile the tutorial client and server for several languages.
+See the <a href="/docs/BuildingFromSource">Building from source</a> guide for any help with this step.</p>
+
+<ul>
+  <li>
+    <h3 id="writing-a-thrift-file">Writing a .thrift file</h3>
+    <p>After the Thrift compiler is installed you will need to create a .thrift file. This file is an <a href="/docs/idl">interface definition</a> made up of <a href="/docs/types">thrift types</a> and Services. The services you define in this file are implemented by the server and are called by any clients.</p>
+  </li>
+  <li>
+    <h3 id="generate-thrift-file-to-source-code">Generate Thrift file to source code</h3>
+    <p>The Thrift compiler is used to generate your Thrift file into source code which is used by the different client libraries and the server you write. To generate the source from a Thrift file run</p>
+
+    <p>thrift –gen <language> <Thrift filename=""></Thrift></language></p>
+  </li>
+</ul>
+
+<p>To recursivly generate source code from a Thrift file and all other Thrift files included by it, run</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift -r --gen &lt;language&gt; &lt;Thrift filename&gt;
+</code></pre></div></div>
+
+<p>The sample <a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/tutorial.thrift">tutorial.thrift</a>
+file defines a basic calculator service. This sample calculator service .thrift file includes another file called
+<a href="https://git-wip-us.apache.org/repos/asf?p=thrift.git;a=blob_plain;f=tutorial/shared.thrift">shared.thrift</a>.
+Both files will be used to demonstrate how to build a Thrift client and server pair.</p>
+
+<h2 id="examples-clients-and-servers">Examples Clients and Servers</h2>
+
+<ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/tutorial/as3.html">Actionscript 3.0</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/c_glib.html">c_glib</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/tutorial/cpp.html">C++</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/csharp.html">CSharp</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/d.html">D</a></li>
+
+
+
+  <li><a href="/tutorial/dart.html">Dart</a></li>
+
+
+
+
+
+
+
+  <li><a href="/tutorial/delphi.html">Delphi</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/tutorial/go.html">Go</a></li>
+
+
+
+  <li><a href="/tutorial/graphviz.html">Graphviz</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/haxe.html">Haxe Framework</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/hs.html">Haskell</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <li><a href="/tutorial/java.html">Java</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/js.html">Javascript</a></li>
+
+
+
+
+
+
+
+
+
+  <li><a href="/tutorial/netstd.html">.NET Standard</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/nodejs.html">Node.js</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/ocaml.html">OCaml</a></li>
+
+
+
+
+
+
+
+  <li><a href="/tutorial/perl.html">Perl</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/php.html">PHP</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/py.html">Python</a></li>
+
+
+
+
+
+  <li><a href="/tutorial/rb.html">Ruby</a></li>
+
+
+
+
+
+
+
+
+
+
+</ul>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

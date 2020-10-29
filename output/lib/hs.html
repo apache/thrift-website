@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Haskell library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="compile">Compile</h1>
+
+<p>Use Cabal to compile and install; ./configure uses Cabal underneath, and that
+path is not yet well tested. Thrift&#8217;s library and generated code should compile
+with pretty much any GHC extensions or warnings you enable (or disable).
+Please report this not being the case as a bug on
+https://issues.apache.org/jira/secure/CreateIssue!default.jspa</p>
+
+<p>Chances you&#8217;ll need to muck a bit with Cabal flags to install Thrift:</p>
+
+<p>CABAL_CONFIGURE_FLAGS=&#8221;&#8211;user&#8221; ./configure</p>
+
+<h1 id="base-types">Base Types</h1>
+
+<p>The mapping from Thrift types to Haskell&#8217;s is:</p>
+
+<ul>
+  <li>double -&gt; Double</li>
+  <li>byte -&gt; Data.Int.Int8</li>
+  <li>i16 -&gt; Data.Int.Int16</li>
+  <li>i32 -&gt; Data.Int.Int32</li>
+  <li>i64 -&gt; Data.Int.Int64</li>
+  <li>string -&gt; Text</li>
+  <li>binary -&gt; Data.ByteString.Lazy</li>
+  <li>bool -&gt; Boolean</li>
+</ul>
+
+<h1 id="enums">Enums</h1>
+
+<p>Become Haskell &#8216;data&#8217; types. Use fromEnum to get out the int value.</p>
+
+<h1 id="lists">Lists</h1>
+
+<p>Become Data.Vector.Vector from the vector package.</p>
+
+<h1 id="maps-and-sets">Maps and Sets</h1>
+
+<p>Become Data.HashMap.Strict.Map and Data.HashSet.Set from the
+unordered-containers package.</p>
+
+<h1 id="structs">Structs</h1>
+
+<p>Become records. Field labels are ugly, of the form f_STRUCTNAME_FIELDNAME. All
+fields are Maybe types.</p>
+
+<h1 id="exceptions">Exceptions</h1>
+
+<p>Identical to structs. Use them with throw and catch from Control.Exception.</p>
+
+<h1 id="client">Client</h1>
+
+<p>Just a bunch of functions. You may have to import a bunch of client files to
+deal with inheritance.</p>
+
+<h1 id="interface">Interface</h1>
+
+<p>You should only have to import the last one in the chain of inheritors. To make
+an interface, declare a label:</p>
+
+<p>data MyIface = MyIface</p>
+
+<p>and then declare it an instance of each iface class, starting with the superest
+class and proceeding down (all the while defining the methods).  Then pass your
+label to process as the handler.</p>
+
+<h1 id="processor">Processor</h1>
+
+<p>Just a function that takes a handler label, protocols. It calls the
+superclasses process if there is a superclass.</p>
+
+<h1 id="releasing-to-hackage">Releasing to Hackage</h1>
+
+<p>Using the <a href="../../build/docker/README.md">Docker Container for Ubuntu Bionic</a>, run:</p>
+
+<pre><code>root@e941f5311545:/thrift/src# ./bootstrap.sh &amp;&amp; ./configure
+root@e941f5311545:/thrift/src# cd lib/hs &amp;&amp; make dist-local
+</code></pre>
+
+<p>This will produce a <code>lib/hs/dist/thrift-&lt;version&gt;.tar.gz</code> file.  Take this
+file and upload it as a Haskell Hackage
+<a href="https://hackage.haskell.org/upload#candidates">package candidate</a> and 
+check to make sure all the information is correct.  Assuming all is satisfactory,
+you can upload the package as official using the link at the top of the page.</p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/hs/README.md">lib/hs/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

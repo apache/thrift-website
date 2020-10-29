@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - JavaScript library</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h2 id="grunt-build">Grunt Build</h2>
+<p>This is the base directory for the Apache Thrift JavaScript
+library. This directory contains a Gruntfile.js and a
+package.json. Many of the build and test tools used here
+require a recent version of Node.js to be installed. To 
+install the support files for the Grunt build tool execute
+the command:</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>This reads the package.json and pulls in the appropriate
+sources from the internet. To build the JavaScript branch
+of Apache Thrift execute the command:</p>
+
+<pre><code>npx grunt
+</code></pre>
+
+<p>This runs the grunt build tool (from within <code>./node_modules/.bin/</code>),
+linting all of the source files, setting up and running the
+tests, concatenating and minifying the main libraries and
+generating the html documentation.</p>
+
+<h2 id="tree">Tree</h2>
+<p>The following directories are present (some only after the
+grunt build):
+  /src  - The JavaScript Apache Thrift source
+  /doc  - HTML documentation
+  /dist - Distribution files (thrift.js and thrift.min.js)
+  /test - Various tests, this is a good place to look for
+          example code
+  /node_modules - Build support files installed by npm</p>
+
+<h2 id="example-javascript-client-and-server">Example JavaScript Client and Server</h2>
+<p>The listing below demonstrates a simple browser based JavaScript
+Thrift client and Node.js JavaScript server for the hello_svc 
+service.</p>
+
+<h3 id="hellothrift---service-idl">hello.thrift - Service IDL</h3>
+<p>### build with: $ thrift -gen js -gen js:node hello.thrift
+    service hello_svc {
+      string get_message(1: string name)
+    }</p>
+
+<h3 id="hellohtml---browser-client">hello.html - Browser Client</h3>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Hello Thrift&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Name: &lt;input type="text" id="name_in"&gt;
+    &lt;input type="button" id="get_msg" value="Get Message" &gt;
+    &lt;div id="output"&gt;&lt;/div&gt;
+  
+    &lt;script src="thrift.js"&gt;&lt;/script&gt;
+    &lt;script src="gen-js/hello_svc.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+      (function() {
+        var transport = new Thrift.TXHRTransport("/hello");
+        var protocol  = new Thrift.TJSONProtocol(transport);
+        var client    = new hello_svcClient(protocol);
+        var nameElement = document.getElementById("name_in");
+        var outputElement = document.getElementById("output");
+        document.getElementById("get_msg")
+          .addEventListener("click", function(){
+            client.get_message(nameElement.value, function(result) {
+              outputElement.innerHTML = result;
+            });
+          });
+      })();
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3 id="hellojs---node-server">hello.js - Node Server</h3>
+<pre><code>var thrift = require('thrift');
+var hello_svc = require('./gen-nodejs/hello_svc.js');
+
+var hello_handler = {
+  get_message: function(name, result) {
+    var msg = "Hello " + name + "!";
+    result(null, msg);
+  }
+}
+
+var hello_svc_opt = {
+  transport: thrift.TBufferedTransport,
+  protocol: thrift.TJSONProtocol,
+  processor: hello_svc,
+  handler: hello_handler
+};
+
+var server_opt = {
+  staticFilePath: ".",
+  services: {
+    "/hello": hello_svc_opt
+  }
+}
+
+var server = Thrift.createWebServer(server_opt);
+var port = 9099;
+server.listen(port);
+console.log("Http/Thrift Server running on port: " + port);
+</code></pre>
+
+<h2 id="typescript">TypeScript</h2>
+<p>TypeScript definition files can also be generated by running:</p>
+
+<pre><code>thrift --gen js:ts file.thrift
+</code></pre>
+
+<h1 id="breaking-changes">Breaking Changes</h1>
+
+<h2 id="section">0.13.0</h2>
+
+<ol>
+  <li>64-bit integer constants are now generatd using node-int64 e.g.: var x = new Int64(&#8220;7fffffffffffffff&#8221;);</li>
+</ol>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/js/README.md">lib/js/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

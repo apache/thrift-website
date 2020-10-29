@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Perl</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>Perl Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen perl tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="c1">#</span>
+
+<span class="k">use</span> <span class="nv">strict</span><span class="p">;</span>
+<span class="k">use</span> <span class="nv">warnings</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nv">lib</span> <span class="p">'</span><span class="s1">../../lib/perl/lib</span><span class="p">';</span>
+<span class="k">use</span> <span class="nv">lib</span> <span class="p">'</span><span class="s1">gen-perl</span><span class="p">';</span>
+
+<span class="k">use</span> <span class="nv">Thrift</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">BinaryProtocol</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">Socket</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">BufferedTransport</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nn">shared::</span><span class="nv">SharedService</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">tutorial::</span><span class="nv">Calculator</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">shared::</span><span class="nv">Types</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">tutorial::</span><span class="nv">Types</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nn">Data::</span><span class="nv">Dumper</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">$socket</span>    <span class="o">=</span> <span class="nn">Thrift::</span><span class="nv">Socket</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">('</span><span class="s1">localhost</span><span class="p">',</span><span class="mi">9090</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$transport</span> <span class="o">=</span> <span class="nn">Thrift::</span><span class="nv">BufferedTransport</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="nv">$socket</span><span class="p">,</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$protocol</span>  <span class="o">=</span> <span class="nn">Thrift::</span><span class="nv">BinaryProtocol</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="nv">$transport</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$client</span>    <span class="o">=</span> <span class="nn">tutorial::</span><span class="nv">CalculatorClient</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="nv">$protocol</span><span class="p">);</span>
+
+
+<span class="nb">eval</span><span class="p">{</span>
+    <span class="nv">$transport</span><span class="o">-&gt;</span><span class="nb">open</span><span class="p">();</span>
+
+    <span class="nv">$client</span><span class="o">-&gt;</span><span class="nv">ping</span><span class="p">();</span>
+    <span class="k">print</span> <span class="p">"</span><span class="s2">ping()</span><span class="se">\n</span><span class="p">";</span>
+
+
+    <span class="k">my</span> <span class="nv">$sum</span> <span class="o">=</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="nv">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">print</span> <span class="p">"</span><span class="s2">1+1=</span><span class="si">$sum</span><span class="se">\n</span><span class="p">";</span>
+
+    <span class="k">my</span> <span class="nv">$work</span> <span class="o">=</span> <span class="nn">tutorial::</span><span class="nv">Work</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">op</span><span class="p">(</span><span class="nn">tutorial::Operation::</span><span class="nv">DIVIDE</span><span class="p">);</span>
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">num1</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">num2</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="nb">eval</span> <span class="p">{</span>
+        <span class="nv">$client</span><span class="o">-&gt;</span><span class="nv">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$work</span><span class="p">);</span>
+        <span class="k">print</span> <span class="p">"</span><span class="s2">Whoa! We can divide by zero?</span><span class="se">\n</span><span class="p">";</span>
+    <span class="p">};</span> <span class="k">if</span><span class="p">(</span><span class="vg">$@</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">warn</span> <span class="p">'</span><span class="s1">InvalidOperation: </span><span class="p">'</span><span class="o">.</span><span class="nv">Dumper</span><span class="p">(</span><span class="vg">$@</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">op</span><span class="p">(</span><span class="nn">tutorial::Operation::</span><span class="nv">SUBTRACT</span><span class="p">);</span>
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">num1</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+    <span class="nv">$work</span><span class="o">-&gt;</span><span class="nv">num2</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+    <span class="k">my</span> <span class="nv">$diff</span> <span class="o">=</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="nv">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$work</span><span class="p">);</span>
+    <span class="k">print</span> <span class="p">"</span><span class="s2">15-10=</span><span class="si">$diff</span><span class="se">\n</span><span class="p">";</span>
+
+    <span class="k">my</span> <span class="nv">$log</span> <span class="o">=</span> <span class="nv">$client</span><span class="o">-&gt;</span><span class="nv">getStruct</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">print</span> <span class="p">"</span><span class="s2">Log: </span><span class="si">$log</span><span class="s2">-&gt;{value}</span><span class="se">\n</span><span class="p">";</span>
+
+    <span class="nv">$transport</span><span class="o">-&gt;</span><span class="nb">close</span><span class="p">();</span>
+
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/perl/PerlClient.pl">tutorial/perl/PerlClient.pl</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="c1">#</span>
+
+<span class="k">use</span> <span class="nv">strict</span><span class="p">;</span>
+<span class="k">use</span> <span class="nv">lib</span> <span class="p">'</span><span class="s1">../../lib/perl/lib</span><span class="p">';</span>
+<span class="k">use</span> <span class="nv">lib</span> <span class="p">'</span><span class="s1">gen-perl</span><span class="p">';</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">Socket</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">Server</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Thrift::</span><span class="nv">ServerSocket</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">tutorial::</span><span class="nv">Calculator</span><span class="p">;</span>
+
+<span class="nb">package</span> <span class="nv">CalculatorHandler</span><span class="p">;</span>
+<span class="k">use</span> <span class="nv">base</span> <span class="sx">qw(tutorial::CalculatorIf)</span><span class="p">;</span>
+
+<span class="k">sub </span><span class="nf">new</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="nv">$classname</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+    <span class="k">my</span> <span class="nv">$self</span>      <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">return</span> <span class="nb">bless</span><span class="p">(</span><span class="nv">$self</span><span class="p">,</span><span class="nv">$classname</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="k">sub </span><span class="nf">ping</span>
+<span class="p">{</span>
+  <span class="k">print</span> <span class="p">"</span><span class="s2">ping()</span><span class="se">\n</span><span class="p">";</span>
+<span class="p">}</span>
+
+<span class="k">sub </span><span class="nf">add</span>
+<span class="p">{</span>
+  <span class="k">my</span><span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$n1</span><span class="p">,</span> <span class="nv">$n2</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
+  <span class="nb">printf</span><span class="p">("</span><span class="s2">add(%d,%d)</span><span class="se">\n</span><span class="p">",</span> <span class="nv">$n1</span><span class="p">,</span> <span class="nv">$n2</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nv">$n1</span> <span class="o">+</span> <span class="nv">$n2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">sub </span><span class="nf">calculate</span>
+<span class="p">{</span>
+  <span class="k">my</span><span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$logid</span><span class="p">,</span> <span class="nv">$work</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
+  <span class="k">my</span> <span class="nv">$op</span>   <span class="o">=</span> <span class="nv">$work</span><span class="o">-&gt;</span><span class="p">{</span><span class="nv">op</span><span class="p">};</span>
+  <span class="k">my</span> <span class="nv">$num1</span> <span class="o">=</span> <span class="nv">$work</span><span class="o">-&gt;</span><span class="p">{</span><span class="nv">num1</span><span class="p">};</span>
+  <span class="k">my</span> <span class="nv">$num2</span> <span class="o">=</span> <span class="nv">$work</span><span class="o">-&gt;</span><span class="p">{</span><span class="nv">num2</span><span class="p">};</span>
+  <span class="nb">printf</span><span class="p">("</span><span class="s2">calculate(%d, %d %d %d)</span><span class="se">\n</span><span class="p">",</span> <span class="nv">$logid</span><span class="p">,</span> <span class="nv">$num1</span><span class="p">,</span> <span class="nv">$num2</span><span class="p">,</span> <span class="nv">$op</span><span class="p">);</span>
+
+  <span class="k">my</span> <span class="nv">$val</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$op</span> <span class="o">==</span> <span class="nn">tutorial::Operation::</span><span class="nv">ADD</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$val</span> <span class="o">=</span> <span class="nv">$num1</span> <span class="o">+</span> <span class="nv">$num2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">elsif</span> <span class="p">(</span><span class="nv">$op</span> <span class="o">==</span> <span class="nn">tutorial::Operation::</span><span class="nv">SUBTRACT</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$val</span> <span class="o">=</span> <span class="nv">$num1</span> <span class="o">-</span> <span class="nv">$num2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">elsif</span> <span class="p">(</span><span class="nv">$op</span> <span class="o">==</span> <span class="nn">tutorial::Operation::</span><span class="nv">MULTIPLY</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$val</span> <span class="o">=</span> <span class="nv">$num1</span> <span class="o">*</span> <span class="nv">$num2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">elsif</span> <span class="p">(</span><span class="nv">$op</span> <span class="o">==</span> <span class="nn">tutorial::Operation::</span><span class="nv">DIVIDE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$num2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="k">my</span> <span class="nv">$x</span> <span class="o">=</span> <span class="nn">tutorial::</span><span class="nv">InvalidOperation</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+      <span class="nv">$x</span><span class="o">-&gt;</span><span class="nv">whatOp</span><span class="p">(</span><span class="nv">$op</span><span class="p">);</span>
+      <span class="nv">$x</span><span class="o">-&gt;</span><span class="nv">why</span><span class="p">('</span><span class="s1">Cannot divide by 0</span><span class="p">');</span>
+      <span class="nb">die</span> <span class="nv">$x</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nv">$val</span> <span class="o">=</span> <span class="nv">$num1</span> <span class="o">/</span> <span class="nv">$num2</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="nv">$x</span> <span class="o">=</span> <span class="nn">tutorial::</span><span class="nv">InvalidOperation</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+    <span class="nv">$x</span><span class="o">-&gt;</span><span class="nv">whatOp</span><span class="p">(</span><span class="nv">$op</span><span class="p">);</span>
+    <span class="nv">$x</span><span class="o">-&gt;</span><span class="nv">why</span><span class="p">('</span><span class="s1">Invalid operation</span><span class="p">');</span>
+    <span class="nb">die</span> <span class="nv">$x</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">my</span> <span class="nv">$log</span> <span class="o">=</span> <span class="nn">shared::</span><span class="nv">SharedStruct</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">();</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/perl/PerlServer.pl">tutorial/perl/PerlServer.pl</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Centos 6.5 Install</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="building-apache-thrift-on-centos-65">Building Apache Thrift on CentOS 6.5</h1>
+
+<p>Starting with a minimal installation, the following steps are required to build Apache Thrift on Centos 6.5. This example builds from source, using the current development master branch. These instructions should also work with Apache Thrift releases beginning with 0.9.2.</p>
+
+<h2 id="update-the-system">Update the System</h2>
+
+<pre><code>sudo yum -y update
+</code></pre>
+
+<h2 id="install-the-platform-development-tools">Install the Platform Development Tools</h2>
+
+<pre><code>sudo yum -y groupinstall "Development Tools"
+</code></pre>
+
+<h2 id="upgrade-autoconfautomakebison">Upgrade autoconf/automake/bison</h2>
+
+<pre><code>sudo yum install -y wget
+</code></pre>
+
+<h3 id="upgrade-autoconf">Upgrade autoconf</h3>
+
+<pre><code>wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+tar xvf autoconf-2.69.tar.gz
+cd autoconf-2.69
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+</code></pre>
+
+<h3 id="upgrade-automake">Upgrade automake</h3>
+
+<pre><code>wget http://ftp.gnu.org/gnu/automake/automake-1.14.tar.gz
+tar xvf automake-1.14.tar.gz
+cd automake-1.14
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+</code></pre>
+
+<h3 id="upgrade-bison">Upgrade bison</h3>
+
+<pre><code>wget http://ftp.gnu.org/gnu/bison/bison-2.5.1.tar.gz
+tar xvf bison-2.5.1.tar.gz
+cd bison-2.5.1
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+</code></pre>
+
+<h2 id="add-optional-c-language-library-dependencies">Add Optional C++ Language Library Dependencies</h2>
+
+<p>All languages require the Apache Thrift IDL Compiler and at this point everything needed to make the IDL Compiler is installed (if you only need the compiler you can skip to the Build step).</p>
+
+<p>If you will be developing Apache Thrift clients/servers in C++ you will also need additional packages to support the C++ shared library build.</p>
+
+<h3 id="install-c-lib-dependencies">Install C++ Lib Dependencies</h3>
+
+<pre><code>sudo yum -y install libevent-devel zlib-devel openssl-devel
+</code></pre>
+
+<h3 id="upgrade-boost--156">Upgrade Boost &gt;= 1.56</h3>
+
+<pre><code>wget http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.gz
+tar xvf boost_1_56_0.tar.gz
+cd boost_1_56_0
+./bootstrap.sh
+sudo ./b2 install
+</code></pre>
+
+<h2 id="build-and-install-the-apache-thrift-idl-compiler">Build and Install the Apache Thrift IDL Compiler</h2>
+
+<pre><code>git clone https://github.com/apache/thrift.git
+cd thrift
+./bootstrap.sh
+./configure --with-lua=no
+make
+sudo make install
+</code></pre>
+
+<p>This will build the compiler (thrift/compiler/cpp/thrift &#8211;version) and any language libraries supported. The make install step installs the compiler on the path: /usr/local/bin/thrift
+You can use the ./configure &#8211;enable-libs=no switch to build the Apache Thrift IDL Compiler only without lib builds. To run tests use &#8220;make check&#8221;.</p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/install/centos.md">doc/install/centos.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

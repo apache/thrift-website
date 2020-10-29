@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Interface Description Language (IDL)</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h2 id="thrift-interface-description-language">Thrift interface description language</h2>
+
+<p>For Thrift version 0.14.0.</p>
+
+<p>The Thrift interface definition language (IDL) allows for the definition of <a href="/docs/types">Thrift Types</a>. A Thrift IDL file is processed by the Thrift code generator to produce code for the various target languages to support the defined structs and services in the IDL file.</p>
+
+<h2 id="description">Description</h2>
+
+<p>Here is a description of the Thrift IDL.</p>
+
+<h2 id="document">Document</h2>
+
+<p>Every Thrift document contains 0 or more headers followed by 0 or more definitions.</p>
+
+<pre><code>[1]  Document        ::=  Header* Definition*
+</code></pre>
+
+<h2 id="header">Header</h2>
+
+<p>A header is either a Thrift include, a C++ include, or a namespace declaration.</p>
+
+<pre><code>[2]  Header          ::=  Include | CppInclude | Namespace
+</code></pre>
+
+<h3 id="thrift-include">Thrift Include</h3>
+
+<p>An include makes all the symbols from another file visible (with a prefix) and adds corresponding include statements into the code generated for this Thrift document.</p>
+
+<pre><code>[3]  Include         ::=  'include' Literal
+</code></pre>
+
+<h3 id="c-include">C++ Include</h3>
+
+<p>A C++ include adds a custom C++ include to the output of the C++ code generator for this Thrift document.</p>
+
+<pre><code>[4]  CppInclude      ::=  'cpp_include' Literal
+</code></pre>
+
+<h3 id="namespace">Namespace</h3>
+
+<p>A namespace declares which namespaces/package/module/etc. the type definitions in this file will be declared in for the target languages. The namespace scope indicates which language the namespace applies to; a scope of &#8216;*&#8217; indicates that the namespace applies to all target languages.</p>
+
+<pre><code>[5]  Namespace       ::=  ( 'namespace' ( NamespaceScope Identifier ) )
+
+[6]  NamespaceScope  ::=  '*' | 'c_glib' | 'cpp' | 'delphi' | 'haxe' | 'go' | 'java' | 'js' | 'lua' | 'netstd' | 'perl' | 'php' | 'py' | 'py.twisted' | 'rb' | 'st' | 'xsd'
+</code></pre>
+
+<h2 id="definition">Definition</h2>
+
+<pre><code>[7]  Definition      ::=  Const | Typedef | Enum | Senum | Struct | Union | Exception | Service
+</code></pre>
+
+<h3 id="const">Const</h3>
+
+<pre><code>[8]  Const           ::=  'const' FieldType Identifier '=' ConstValue ListSeparator?
+</code></pre>
+
+<h3 id="typedef">Typedef</h3>
+
+<p>A typedef creates an alternate name for a type.</p>
+
+<pre><code>[9]  Typedef         ::=  'typedef' DefinitionType Identifier
+</code></pre>
+
+<h3 id="enum">Enum</h3>
+
+<p>An enum creates an enumerated type, with named values. If no constant value is supplied, the value is either 0 for the first element, or one greater than the preceding value for any subsequent element. Any constant value that is supplied must be non-negative.</p>
+
+<pre><code>[10] Enum            ::=  'enum' Identifier '{' (Identifier ('=' IntConstant)? ListSeparator?)* '}'
+</code></pre>
+
+<h3 id="senum">Senum</h3>
+
+<p>Senum (and Slist) are now deprecated and should both be replaced with String.</p>
+
+<pre><code>[11] Senum           ::=  'senum' Identifier '{' (Literal ListSeparator?)* '}'
+</code></pre>
+
+<h3 id="struct">Struct</h3>
+
+<p>Structs are the fundamental compositional type in Thrift. The name of each field must be unique within the struct.</p>
+
+<pre><code>[12] Struct          ::=  'struct' Identifier 'xsd_all'? '{' Field* '}'
+</code></pre>
+
+<p>N.B.: The <code>xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
+
+<h3 id="union">Union</h3>
+
+<p>Unions are similar to structs, except that they provide a means to transport exactly one field of a possible set of fields, just like union {} in C++. Consequently, union members are implicitly considered optional (see requiredness).</p>
+
+<pre><code>[13] Union          ::=  'union' Identifier 'xsd_all'? '{' Field* '}'
+</code></pre>
+
+<p>N.B.: The <code>xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
+
+<h3 id="exception">Exception</h3>
+
+<p>Exceptions are similar to structs except that they are intended to integrate with the native exception handling mechanisms in the target languages. The name of each field must be unique within the exception.</p>
+
+<pre><code>[14] Exception       ::=  'exception' Identifier '{' Field* '}'
+</code></pre>
+
+<h3 id="service">Service</h3>
+
+<p>A service provides the interface for a set of functionality provided by a Thrift server. The interface is simply a list of functions. A service can extend another service, which simply means that it provides the functions of the extended service in addition to its own.</p>
+
+<pre><code>[15] Service         ::=  'service' Identifier ( 'extends' Identifier )? '{' Function* '}'
+</code></pre>
+
+<h2 id="field">Field</h2>
+
+<pre><code>[16] Field           ::=  FieldID? FieldReq? FieldType Identifier ('=' ConstValue)? XsdFieldOptions ListSeparator?
+</code></pre>
+
+<h3 id="field-id">Field ID</h3>
+
+<pre><code>[17] FieldID         ::=  IntConstant ':'
+</code></pre>
+
+<h3 id="field-requiredness">Field Requiredness</h3>
+
+<p>There are two explicit requiredness values, and a third one that is applied implicity if neither  <em>required</em> nor <em>optional</em> are given: <em>default</em> requiredness.</p>
+
+<pre><code>[18] FieldReq        ::=  'required' | 'optional' 
+</code></pre>
+
+<p>The general rules for requiredness are as follows:</p>
+
+<h4 id="required">required</h4>
+
+<ul>
+  <li>Write: Required fields are always written and are expected to be set.</li>
+  <li>Read: Required fields are always read and are expected to be contained in the input stream.</li>
+  <li>Defaults values: are always written</li>
+</ul>
+
+<p>If a required field is missing during read, the expected behaviour is to indicate an unsuccessful read operation to the caller, e.g. by throwing an exception or returning an error.</p>
+
+<p>Because of this behaviour, required fields drastically limit the options with regard to soft versioning. Because they must be present on read, the fields cannot be deprecated. If a required field would be removed (or changed to optional), the data are no longer compatible between versions.</p>
+
+<h4 id="optional">optional</h4>
+
+<ul>
+  <li>Write: Optional fields are only written when they are set</li>
+  <li>Read: Optional fields may, or may not be part of the input stream.</li>
+  <li>Default values: are written when the isset flag is set</li>
+</ul>
+
+<p>Most language implementations use the recommended practice of so-called &#8220;isset&#8221; flags to indicate whether a particular optional field is set or not. Only fields with this flag set are written, and conversely the flag is only set when a field value has been read from the input stream.</p>
+
+<h4 id="default-requiredness-implicit">default requiredness (implicit)</h4>
+
+<ul>
+  <li>Write: In theory, the fields are always written. There are some exceptions to that rule, see below.</li>
+  <li>Read: Like optional, the field may, or may not be part of the input stream.</li>
+  <li>Default values: may not be written (see next section)</li>
+</ul>
+
+<p>Default requiredness is a good starting point. The desired behaviour is a mix of optional and required, hence the internal name &#8220;opt-in, req-out&#8221;. Although in theory these fields are supposed to be written (&#8220;req-out&#8221;), in reality unset fields are not always written. This is especially the case, when the field contains a <null> value, which by definition cannot be transported through thrift. The only way to achieve this is by not writing that field at all, and that's what most languages do.</null></p>
+
+<h4 id="semantics-of-default-values">Semantics of Default Values</h4>
+
+<p>There are ongoing discussions about that topic, see JIRA for details. Not all implementations treat default values in the very same way, but the current status quo is more or less that default fields are typically set at initialization time. Therefore, a value that equals the default may not be written, because the read end will set the value implicitly. On the other hand, an implementation is free to write the default value anyways, as there is no hard restriction that prevents this.</p>
+
+<p>The major point to keep in mind here is the fact, that any unwritten default value implicitly becomes part of the interface version. If that default is changed, the interface changes. If, in contrast, the default value is written into the output data, the default in the IDL can change at any time without affecting serialized data.</p>
+
+<h3 id="xsd-options">XSD Options</h3>
+
+<p>N.B.: These have  some internal purpose at Facebook but serve no current purpose in Thrift. Use of these options is strongly discouraged.</p>
+
+<pre><code>[19] XsdFieldOptions ::=  'xsd_optional'? 'xsd_nillable'? XsdAttrs?
+
+[20] XsdAttrs        ::=  'xsd_attrs' '{' Field* '}'
+</code></pre>
+
+<h2 id="functions">Functions</h2>
+
+<pre><code>[21] Function        ::=  'oneway'? FunctionType Identifier '(' Field* ')' Throws? ListSeparator?
+
+[22] FunctionType    ::=  FieldType | 'void'
+
+[23] Throws          ::=  'throws' '(' Field* ')'
+</code></pre>
+
+<h2 id="types">Types</h2>
+
+<pre><code>[24] FieldType       ::=  Identifier | BaseType | ContainerType
+
+[25] DefinitionType  ::=  BaseType | ContainerType
+
+[26] BaseType        ::=  'bool' | 'byte' | 'i8' | 'i16' | 'i32' | 'i64' | 'double' | 'string' | 'binary' | 'slist'
+
+[27] ContainerType   ::=  MapType | SetType | ListType
+
+[28] MapType         ::=  'map' CppType? '&lt;' FieldType ',' FieldType '&gt;'
+
+[29] SetType         ::=  'set' CppType? '&lt;' FieldType '&gt;'
+
+[30] ListType        ::=  'list' '&lt;' FieldType '&gt;' CppType?
+
+[31] CppType         ::=  'cpp_type' Literal
+</code></pre>
+
+<h2 id="constant-values">Constant Values</h2>
+
+<pre><code>[32] ConstValue      ::=  IntConstant | DoubleConstant | Literal | Identifier | ConstList | ConstMap
+
+[33] IntConstant     ::=  ('+' | '-')? Digit+
+
+[34] DoubleConstant  ::=  ('+' | '-')? Digit* ('.' Digit+)? ( ('E' | 'e') IntConstant )?
+
+[35] ConstList       ::=  '[' (ConstValue ListSeparator?)* ']'
+
+[36] ConstMap        ::=  '{' (ConstValue ':' ConstValue ListSeparator?)* '}'
+</code></pre>
+
+<h2 id="basic-definitions">Basic Definitions</h2>
+
+<h3 id="literal">Literal</h3>
+
+<pre><code>[37] Literal         ::=  ('"' [^"]* '"') | ("'" [^']* "'")
+</code></pre>
+
+<h3 id="identifier">Identifier</h3>
+
+<pre><code>[38] Identifier      ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' )*
+
+[39] STIdentifier    ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' | '-' )*
+</code></pre>
+
+<h3 id="list-separator">List Separator</h3>
+
+<pre><code>[40] ListSeparator   ::=  ',' | ';'
+</code></pre>
+
+<h3 id="letters-and-digits">Letters and Digits</h3>
+
+<pre><code>[41] Letter          ::=  ['A'-'Z'] | ['a'-'z']
+
+[42] Digit           ::=  ['0'-'9']
+</code></pre>
+
+<h2 id="examples">Examples</h2>
+
+<p>Here are some examples of Thrift definitions, using the Thrift IDL:</p>
+
+<ul>
+  <li><a href="https://raw.githubusercontent.com/apache/thrift/master/test/ThriftTest.thrift">ThriftTest.thrift</a> used by the Thrift TestFramework</li>
+  <li>Thrift <a href="/tutorial/">tutorial</a></li>
+  <li>Facebook&#8217;s <a href="https://raw.githubusercontent.com/apache/thrift/master/contrib/fb303/if/fb303.thrift">fb303.thrift</a></li>
+  <li><a href="http://cassandra.apache.org/">Apache Cassandra&#8217;s</a> Thrift IDL: <a href="https://gitbox.apache.org/repos/asf?p=cassandra.git;a=blob_plain;f=interface/cassandra.thrift;hb=refs/heads/cassandra-3.0">cassandra.thrift</a></li>
+  <li><a href="https://github.com/evernote/evernote-thrift">Evernote API</a></li>
+</ul>
+
+<h2 id="to-doquestions">To Do/Questions</h2>
+
+<p>Initialization of Base Types for all Languages?</p>
+
+<ul>
+  <li>Do all Languages initialize them to 0, bool=false and string=&#8221;&#8221;? or null, undefined?</li>
+</ul>
+
+<p>Why does position of <code>CppType</code> vary between <code>SetType</code> and <code>ListType</code>?</p>
+
+<ul>
+  <li>std::set does sort the elements automatically, that&#8217;s the design. see <a href="/docs/types">Thrift Types</a> or the <a href="http://www.cplusplus.com/reference/stl/set/">C++ std:set reference</a> for further details</li>
+  <li>The question is, how other languages are doing that? What about custom objects, do they have a Compare function the set the order correctly?</li>
+</ul>
+
+<p>Why can&#8217;t <code>DefinitionType</code> be the same as <code>FieldType</code> (i.e. include <code>Identifier</code>)?</p>
+
+<p>Examine the <code>smalltalk.prefix</code> and <code>smalltalk.category</code> status (esp <code>smalltalk.category</code>, which takes <code>STIdentifier</code> as its argument)&#8230;</p>
+
+<p>What to do about <code>ListSeparator</code>? Do we really want to be as lax as we currently are?</p>
+
+<p>Should <code>Field*</code> really be <code>Field+</code> in <code>Struct</code>, <code>Enum</code>, etc.?</p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/specs/idl.md">doc/specs/idl.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Debian/Ubuntu install</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h2 id="debianubuntu-install">Debian/Ubuntu install</h2>
+<p>The following command will install tools and libraries required to build and install the Apache Thrift compiler and C++ libraries on a Debian/Ubuntu Linux based system.</p>
+
+<pre><code>sudo apt-get install automake bison flex g++ git libboost-all-dev libevent-dev libssl-dev libtool make pkg-config
+</code></pre>
+
+<p>Debian 7/Ubuntu 12 users need to manually install a more recent version of automake and (for C++ library and test support) boost:</p>
+
+<pre><code>wget http://ftp.debian.org/debian/pool/main/a/automake-1.15/automake_1.15-3_all.deb
+sudo dpkg -i automake_1.15-3_all.deb
+
+wget http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz                                                                      tar xvf boost_1_60_0.tar.gz
+cd boost_1_60_0
+./bootstrap.sh
+sudo ./b2 install
+</code></pre>
+
+<h2 id="optional-packages">Optional packages</h2>
+
+<p>If you would like to build Apache Thrift libraries for other programming languages you may need to install additional packages. The following languages require the specified additional packages:</p>
+
+<ul>
+  <li>Java
+    <ul>
+      <li>packages: gradle</li>
+      <li>You will also need Java JDK v1.8 or higher. Type <strong>javac</strong> to see a list of available packages, pick the one you prefer and <strong>apt-get install</strong> it (e.g. default-jdk).</li>
+    </ul>
+  </li>
+  <li>Ruby
+    <ul>
+      <li>ruby-full ruby-dev ruby-rspec rake rubygems bundler</li>
+    </ul>
+  </li>
+  <li>Python
+    <ul>
+      <li>python-all python-all-dev python-all-dbg</li>
+    </ul>
+  </li>
+  <li>Perl
+    <ul>
+      <li>libbit-vector-perl libclass-accessor-class-perl</li>
+    </ul>
+  </li>
+  <li>Php, install
+    <ul>
+      <li>php5-dev php5-cli phpunit</li>
+    </ul>
+  </li>
+  <li>C_glib
+    <ul>
+      <li>libglib2.0-dev</li>
+    </ul>
+  </li>
+  <li>Erlang
+    <ul>
+      <li>erlang-base erlang-eunit erlang-dev rebar</li>
+    </ul>
+  </li>
+  <li>NetStd
+    <ul>
+      <li>apt-transport-https dotnet-sdk-3.1 aspnetcore-runtime-3.1</li>
+    </ul>
+  </li>
+  <li>Haskell
+    <ul>
+      <li>ghc cabal-install libghc-binary-dev libghc-network-dev libghc-http-dev</li>
+    </ul>
+  </li>
+  <li>Thrift Compiler for Windows
+    <ul>
+      <li>mingw-w64 mingw-w64-x86-64-dev nsis</li>
+    </ul>
+  </li>
+  <li>Rust
+    <ul>
+      <li>rustc cargo</li>
+    </ul>
+  </li>
+  <li>Haxe
+    <ul>
+      <li>haxe</li>
+    </ul>
+  </li>
+  <li>Lua
+    <ul>
+      <li>lua5.3 liblua5.3-dev</li>
+    </ul>
+  </li>
+  <li>NodeJs
+    <ul>
+      <li>nodejs npm</li>
+    </ul>
+  </li>
+  <li>dotnetcore
+    <ul>
+      <li>https://www.microsoft.com/net/learn/get-started/linuxubuntu</li>
+    </ul>
+  </li>
+  <li>d-lang
+    <ul>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>curl -fsS https://dlang.org/install.sh</td>
+              <td>bash -s dmd</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+  <li>dart &amp; pub
+    <ul>
+      <li>https://www.dartlang.org/install/linux</li>
+      <li>https://www.dartlang.org/tools/pub/installing</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="additional-reading">Additional reading</h2>
+
+<p>For more information on the requirements see: <a href="/docs/install">Apache Thrift Requirements</a></p>
+
+<p>For more information on building and installing Thrift see: <a href="/docs/BuildingFromSource">Building from source</a></p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/install/debian.md">doc/install/debian.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

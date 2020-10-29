@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Windows Install</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h2 id="windows-setup">Windows Setup</h2>
+
+<p>The Thrift environment consists of two main parts: The Thrift compiler EXE and the language-dependent libraries. Most of these libraries will require some kind of build and/or installation. But regarding the Thrift compiler utility there are a number of different alternatives.</p>
+
+<p>The first one of these alternatives is to download the <strong>pre-built Thrift Compiler EXE</strong> and only build the libraries needed from source, following one of the &#8220;Setup from source&#8221; methods outlined below.</p>
+
+<p>The other two options are to build the Thrift compiler from source. The most recommended way to achieve this is by means of the <strong>Visual Studio C++ build project</strong>. Alternatively, the Thrift compiler can also be built via <strong>Cygwin</strong> or <strong>MinGW</strong> build environments, however this method is not only less comfortable, but more time-consuming and requires much more manual effort.</p>
+
+<h2 id="prebuilt-thrift-compiler">Prebuilt Thrift compiler</h2>
+
+<p>The windows Thrift compiler is available as a prebuilt exe available <a href="/download">here</a>. Note that there is no installation tool, rather this EXE file <em>is</em> already the Thrift compiler utility. Download the file and put it into some suitable location of your choice.</p>
+
+<p>Now pick one of the &#8220;Build and install target libraries&#8221; below to continue.</p>
+
+<h2 id="setup-from-source-via-visual-studio-c-recommended">Setup from source via Visual Studio C++ (recommended)</h2>
+
+<h3 id="requirements">Requirements</h3>
+
+<p>Thrift&#8217;s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift&#8217;s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
+
+<ul>
+  <li>Visual Studio C++, any recent version should do</li>
+  <li>Flex and Bison, e.g. the WinFlexBison package</li>
+  <li><a href="/docs/install">Apache Thrift Requirements</a></li>
+</ul>
+
+<h3 id="build-and-install-the-compiler">Build and install the compiler</h3>
+
+<p>After all requirements are in place, use the <code>compiler/cpp/compiler.vcxproj</code> build project to build the Thrift compiler. Copy the resulting EXE file to a location of your choice.</p>
+
+<h3 id="build-and-install-target-libraries">Build and install target libraries</h3>
+
+<p>A few of the target language libraries also do provide Visual Studio project files, such as C++ and C#. These are located in the <code>lib/&lt;language&gt;/</code> folders.</p>
+
+<p>Most of the language packages must be built and installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, Delphi, or PHP. Look for the <code>README.md</code> file in the <code>lib/&lt;language&gt;/</code> folder for more details on how to build and install each language&#8217;s library package.</p>
+
+<h2 id="setup-from-source-via-cygwin">Setup from source via Cygwin</h2>
+
+<h3 id="requirements-1">Requirements</h3>
+
+<p>Thrift&#8217;s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift&#8217;s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
+
+<ul>
+  <li>Cygwin or MinGW</li>
+  <li><a href="/docs/install">Apache Thrift Requirements</a></li>
+</ul>
+
+<h3 id="installing-from-source">Installing from source</h3>
+
+<p>If you are building from the first time out of the source repository, you will need to generate the configure scripts.  (This is not necessary if you downloaded a tarball.)  From the top directory, do:</p>
+
+<pre><code>./bootstrap.sh
+</code></pre>
+
+<p>Once the configure scripts are generated, thrift can be configured. From the top directory, do:</p>
+
+<pre><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
+./configure
+</code></pre>
+
+<p>Setting the CXXFLAGS environmental variable works around compile errors with PTHREAD_MUTEX_RECURSIVE_NP being undeclared, by replacing it with the newer, portable PTHREAD_MUTEX_RECURSIVE. (Tested on cygwin 20100320, Thrift r760184, latest pthread.)</p>
+
+<p><strong>Optional:</strong> You <strong>may not</strong> be able to make from the root  Thrift directory due to errors (see below to resolve). To make the compiler only, change to the compiler directory before running make:</p>
+
+<pre><code>cd compiler/cpp
+</code></pre>
+
+<p>Now make the thrift compiler (&amp; runtime libraries if make is run from the thrift root directory):</p>
+
+<pre><code>make
+make install
+</code></pre>
+
+<h3 id="build-and-install-target-libraries-1">Build and install target libraries</h3>
+
+<p>Some language packages must be installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, or PHP. Look for the README file in the <code>lib/&lt;language&gt;/</code> folder for more details on the installation of each language library package.</p>
+
+<h3 id="possible-issues-with-cygwin-install">Possible issues with Cygwin install</h3>
+
+<p>See also Possible issues with MinGW install.</p>
+
+<h4 id="syntax-error-in-configure">Syntax error in ./configure</h4>
+
+<p>The following error occurs for some users when running ./configure:</p>
+
+<pre><code>./configure: line 21183: syntax error near unexpected token `MONO,'
+./configure: line 21183: `  PKG_CHECK_MODULES(MONO, mono &gt;= 1.2.6, have_mono=yes, have_mono=no)'
+</code></pre>
+
+<p>To resolve this, you&#8217;ll need to find your pkg.m4 (installed by the pkg-config package) file and copy it to the thrift/aclocal directory.  From the top-level thrift directory, you can copy the file by running</p>
+
+<pre><code>cp /usr/share/aclocal/pkg.m4 aclocal
+</code></pre>
+
+<p>Finally, re-run ./bootstrap.sh and ./configure.  (Note that pkg.m4 is created by the pkg-config tool.  If your /usr/share/aclocal directory doesn&#8217;t contain the pkg.m4 file, you may not have pkg-config installed.)</p>
+
+<h4 id="installing-perl-runtime-libraries">Installing perl runtime libraries</h4>
+
+<p>Sometimes, there will be an error during the install of the perl libraries with chmod.</p>
+
+<p>A workaround is to avoid installing the perl libraries if they are not needed.</p>
+
+<p>If you don&#8217;t need perl, run configure with &#8211;without-perl.</p>
+
+<p>If you need perl, and are happy to manually install it, replace the contents of thrift/lib/perl/Makefile with the following, after building thrift:</p>
+
+<pre><code>TODO
+</code></pre>
+
+<h4 id="linking-to-installed-c-runtime-libraries">Linking to installed C++ runtime libraries</h4>
+
+<p>Sometimes, the installed libthrift.a will not link using g++, with linker errors about missing vtables and exceptions for Thrift classes.</p>
+
+<p>A workaround is to link the compiled object files directly from your Thrift build, corresponding to the missing classes.</p>
+
+<p>This can be implemented in a Makefile using the following lines:</p>
+
+<pre><code>THRIFT_O=&lt;path to&gt;/thrift/lib/cpp
+LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o $(THRIFT_O)/TBufferTransports.o
+</code></pre>
+
+<p>Then linking using $(LTHRIFT) instead of -lthrift.</p>
+
+<pre><code>TODO - diagnose issue further
+</code></pre>
+
+<h4 id="c-runtime-segfault-with-cygwin-175-1-g-434-fork-and-throw">C++ runtime segfault with cygwin 1.7.5-1, g++-4.3.4, fork() and throw</h4>
+
+<p>If your thrift C++ programs segfault on throw after fork()ing, compile them with g++-3.</p>
+
+<p>The issue and patch are described on the Cygwin mailing list at http://cygwin.com/ml/cygwin/2010-05/msg00203.html</p>
+
+<p>This issue should be fixed in Cygwin versions after 1.7.5-1, or g++ 4.5.0.</p>
+
+<h2 id="setup-from-source-via-mingw">Setup from source via MinGW</h2>
+
+<h3 id="requirements-2">Requirements</h3>
+
+<p>To compile the Thrift generator &amp; runtime libraries (untested) without the cygwin.dll dependency you need to install MinGW (www.mingw.org).</p>
+
+<ul>
+  <li>MinGW</li>
+  <li><a href="/docs/install">Apache Thrift Requirements</a></li>
+</ul>
+
+<p>In addition you need to add the following entry to your windows PATH variable.</p>
+
+<pre><code>C:\MINGW\BIN
+</code></pre>
+
+<p>Next, open compiler/cpp/Makefile.am and add the following line to thrift_CXXFLAGS</p>
+
+<pre><code>-DMINGW -mno-cygwin -lfl
+</code></pre>
+
+<p>Run bootstrap.sh:</p>
+
+<pre><code>./bootstrap.sh
+</code></pre>
+
+<p>Make sure you have java in your $PATH variable, if not do(adjust path if necessary):</p>
+
+<pre><code>export PATH=$PATH:"/cygdrive/c/program files/java/jre1.8.0_191/bin"
+</code></pre>
+
+<p>Run configure - using CXXFLAGS to work around an issue with an old pthreads define (untested on MinGW - works on Cygwin):</p>
+
+<pre><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
+./configure
+</code></pre>
+
+<p>'&#8217;Optional:&#8217;&#8217; To make the compiler only, change to the compiler  directory before running make:</p>
+
+<pre><code>cd compiler/cpp
+</code></pre>
+
+<p>Run make:</p>
+
+<pre><code>mingw32-make.exe
+</code></pre>
+
+<h3 id="possible-issues-with-mingw-install">Possible issues with MinGW install</h3>
+
+<p>See also Possible issues with Cygwin install, including the discussion about PTHREAD_MUTEX_RECURSIVE_NP.</p>
+
+<h4 id="yywrap-is-not-found">yywrap is not found</h4>
+
+<p>Make sure you add -lfl in your cxxflags in Makefile, also try adding -Lc:/cygwin/libs</p>
+
+<h4 id="boost-is-not-found">boost is not found</h4>
+
+<p>Try and change the include dir to use the windows path from c like this: Edit compiler/cpp/Makefile, look for the declaration of BOOST_CPPFLAGS, change that line for</p>
+
+<pre><code>BOOST_CPPFLAGS = -Ic:/cygwin/usr/include/boost-1_53_0
+</code></pre>
+
+<h4 id="realpath-is-not-found">realpath is not found</h4>
+
+<p>add -DMINGW -mno-cygwin to the CXXDEFS variable in Makefile</p>
+
+<h2 id="additional-reading">Additional reading</h2>
+
+<p>For more information on the requirements see: <a href="/docs/install">Apache Thrift Requirements</a></p>
+
+<p>For more information on building and installing Thrift see: <a href="/docs/BuildingFromSource">Building from source</a></p>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/install/windows.md">doc/install/windows.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

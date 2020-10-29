@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Common Lisp Library README</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      
+<h1 id="using-thrift-with-common-lisp">Using Thrift with Common Lisp</h1>
+
+<p>Thrift is a protocol and library for language-independent communication between cooperating
+ processes. The communication takes the form of request and response messages, of which the forms
+ are specified in advance throufh a shared interface definition. A Thrift definition file is translated
+ into Lisp source files, which comprise several definitions:</p>
+
+<ul>
+  <li>Three packages, one for the namespace of the implementation operators, and one each for request and
+  response operators.</li>
+  <li>Various type definitions as implementations for Thrift typedef and enum definitions.</li>
+  <li>DEF-STRUCT and DEF-EXCEPTION forms for Thrift struct and exception definitions.</li>
+  <li>DEF-SERVICE forms for thrift service definitions.</li>
+</ul>
+
+<p>Each service definition expands in a collection of generic function definitions. For each <code>op</code>
+ in the service definition, two functions are defined</p>
+
+<ul>
+  <li><code>op</code>-request is defined for use by a client. It accepts an additional initial <code>protocol</code> argument,
+to act as the client proxy for the operation and mediate the interaction with a remote process
+through a Thrift-encoded transport stream.</li>
+  <li><code>op</code>-response is defined for use by a server. It accepts a single <code>protocol</code> argument. A server
+uses it to decode the request message, invoke the base <code>op</code> function with the message arguments,
+encode and send the the result as a response, and handles exceptions.</li>
+</ul>
+
+<p>The client interface is one operator</p>
+
+<ul>
+  <li><code>with-client (variable location) . body</code> : creates a connection in a dynamic context and closes it
+upon exit. The variable is bound to a client proxy stream/protocol instance, which wraps the
+base i/o stream - socket, file, etc, with an operators which implement the Thrift protocol
+and transport mechanisms.</li>
+</ul>
+
+<p>The server interface combines server and service objects</p>
+
+<ul>
+  <li><code>serve (location service)</code> : accepts connections on the designated port and responds to
+requests of the service&#8217;s operations.</li>
+</ul>
+
+<h2 id="building">Building</h2>
+
+<p>The Thrift Common Lisp library is packaged as the ASDF[<a href="www.common-lisp.net/asdf">1</a>] system <code>thrift</code>.
+It depends on the systems</p>
+
+<ul>
+  <li>puri[<a href="http://github.com/lisp/com.b9.puri.ppcre">2</a>] : for the thrift uri class</li>
+  <li>closer-mop[<a href="www.common-lisp.net/closer-mop">3</a>] : for class metadata</li>
+  <li>trivial-utf-8[<a href="trivial-utf-8">4</a>] : for string codecs</li>
+  <li>usocket[<a href="https://github.com/usocket/usocket">5</a>] : for the socket transport</li>
+  <li>ieee-floats[<a href="https://github.com/marijnh/ieee-floats">6</a>] : for conversion between ints and floats</li>
+  <li>trivial-gray-streams[<a href="https://github.com/trivial-gray-streams/trivial-gray-streams">7</a>] : an abstraction layer for gray streams</li>
+  <li>alexandria[<a href="https://gitlab.common-lisp.net/alexandria/alexandria">8</a>] : handy utilities</li>
+</ul>
+
+<p>The dependencies are bundled for local builds of tests and tutorial binaries - 
+it is possible to use those bundles to load the library, too.</p>
+
+<p>In order to build it, register those systems with ASDF and evaluate:</p>
+
+<pre><code>(asdf:load-system :thrift)
+</code></pre>
+
+<p>This will compile and load the Lisp compiler for Thrift definition files, the
+transport and protocol implementations, and the client and server interface
+functions. In order to use Thrift in an application, one must also author and/or
+load the interface definitions for the remote service.[<a href="http://wiki.apache.org/thrift/ThriftGeneration">9</a>] If one is implementing a service,
+one must also define the actual functions to which Thrift is to act as the proxy
+interface. The remainder of this document follows the Thrift tutorial to illustrate how
+to perform the steps</p>
+
+<ul>
+  <li>implement the service</li>
+  <li>translate the Thrift IDL</li>
+  <li>load the Lisp service interfaces</li>
+  <li>run a server for the service</li>
+  <li>use a client to access the service remotely</li>
+</ul>
+
+<p>Note that, if one is to implement a new service, one will also need to author the
+IDL files, as there is no facility to generate them from a service implementation.</p>
+
+<h2 id="implement-the-service">Implement the Service</h2>
+
+<p>The tutorial comprises serveral functions: <code>add</code>, <code>ping</code>, <code>zip</code>, and <code>calculate</code>.
+Each translated IDL file generates three packages for every service. In the case of
+the tutorial file, the relevant packages are:</p>
+
+<ul>
+  <li>tutorial.calculator</li>
+  <li>tutorial.calculator-implementation</li>
+  <li>tutorial.calculator-response</li>
+</ul>
+
+<p>This is to separate the request (generated), response (generated) and implementation
+(meant to be implemented by the programmer) functions for defined Thrift methods.</p>
+
+<p>It is suggested to work in the <code>tutorial-implementation</code> package while implementing
+the services - it imports the <code>common-lisp</code> package, while the service-specific ones
+don&#8217;t (to avoid conflicts between Thrift method names and function names in <code>common-lisp</code>).</p>
+
+<pre><code>;; define the base operations
+
+(in-package :tutorial-implementation)
+
+(defun tutorial.calculator-implementation:add (num1 num2)
+  (format t "~&amp;Asked to add ~A and ~A." num1 num2)
+  (+ num1 num2))
+
+(defun tutorial.calculator-implementation:ping ()
+  (print :ping))
+
+(defun tutorial.calculator-implementation:zip ()
+  (print :zip))
+
+(defun tutorial.calculator-implementation:calculate (logid task)
+  (calculate-op (work-op task) (work-num1 task) (work-num2 task)))
+
+(defgeneric calculate-op (op arg1 arg2)
+  (:method :around (op arg1 arg2)
+    (let ((result (call-next-method)))
+      (format t "~&amp;Asked to calculate: ~d on  ~A and ~A = ~d." op arg1 arg2 result)
+      result))
+
+  (:method ((op (eql operation.add)) arg1 arg2)
+    (+ arg1 arg2))
+  (:method ((op (eql operation.subtract)) arg1 arg2)
+    (- arg1 arg2))
+  (:method ((op (eql operation.multiply)) arg1 arg2)
+    (* arg1 arg2))
+  (:method ((op (eql operation.divide)) arg1 arg2)
+    (/ arg1 arg2)))
+
+(defun zip () (print 'zip))
+</code></pre>
+
+<h2 id="translate-the-thrift-idl">Translate the Thrift IDL</h2>
+
+<p>IDL files employ the file extension <code>thrift</code>. In this case, there are two files to translate
+  * <code>tutorial.thrift</code>
+  * <code>shared.thrift</code>
+As the former includes the latter, one uses it to generate the interfaces:</p>
+
+<pre><code>$THRIFT/bin/thrift -r --gen cl $THRIFT/tutorial/tutorial.thrift
+</code></pre>
+
+<p><code>-r</code> stands for recursion, while <code>--gen</code> lets one choose the language to translate to.</p>
+
+<h2 id="load-the-lisp-translated-service-interfaces">Load the Lisp translated service interfaces</h2>
+
+<p>The translator generates three files for each IDL file. For example <code>tutorial-types.lisp</code>,
+<code>tutorial-vars.lisp</code> and an <code>.asd</code> file that can be used to load them both and pull in
+other includes (like <code>shared</code> within the tutorial) as dependencies.</p>
+
+<h2 id="run-a-server-for-the-service">Run a Server for the Service</h2>
+
+<p>The actual service name, as specified in the <code>def-service</code> form in <code>tutorial.lisp</code>, is <code>calculator</code>. 
+Each service definition defines a global variable with the service name and binds it to a
+service instance whch describes the operations.</p>
+
+<p>In order to start a service, specify a location and the service instance.</p>
+
+<pre><code>(in-package :tutorial)
+(serve #u"thrift://127.0.0.1:9091" calculator)
+</code></pre>
+
+<h2 id="use-a-client-to-access-the-service-remotely">Use a Client to Access the Service Remotely</h2>
+
+<p>[in some other process] run the client</p>
+
+<pre><code>(in-package :cl-user)
+
+(macrolet ((show (form)
+             `(format *trace-output* "~%~s =&gt;~{ ~s~}"
+                      ',form
+                      (multiple-value-list (ignore-errors ,form)))))
+  (with-client (protocol #u"thrift://127.0.0.1:9091")
+    (show (tutorial.calculator:ping protocol))
+    (show (tutorial.calculator:add protocol 1 2))
+    (show (tutorial.calculator:add protocol 1 4))
+
+    (let ((task (make-instance 'tutorial:work
+                  :op operation.subtract :num1 15 :num2 10)))
+      (show (tutorial.calculator:calculate protocol 1 task))
+    
+      (setf (tutorial:work-op task) operation.divide
+            (tutorial:work-num1 task) 1
+            (tutorial:work-num2 task) 0)
+      (show (tutorial.calculator:calculate protocol 1 task)))
+    
+    (show (shared.shared-service:get-struct protocol 1))
+
+    (show (zip protocol))))
+</code></pre>
+
+<h2 id="issues">Issues</h2>
+
+<h3 id="optional-fields">optional fields</h3>
+<p>Where the IDL declares a field options, the def-struct form includes no
+ initform for the slot and the encoding operator skips an unbound slot. This leave some ambiguity
+ with bool fields.</p>
+
+<h3 id="instantiation-protocol-">instantiation protocol :</h3>
+<p>struct classes are standard classes and exception classes are
+ whatever the implementation prescribes. decoders apply make-struct to an initargs list.
+ particularly at the service end, there are advantages to resourcing structs and decoding
+ with direct side-effects on slot-values</p>
+
+<h3 id="maps">maps:</h3>
+<p>Maps are now represented as hash tables. As data through the call/reply interface is all statically
+ typed, it is not necessary for the objects to themselves indicate the coding form. Association lists
+ would be sufficient. As the key type is arbitrary, property lists offer no additional convenience:
+ as <code>getf</code> operates with <code>eq</code> a new access interface would be necessary and they would not be
+ available for function application.</p>
+
+<ul>
+  <li>usocket[<a href="https://github.com/usocket/usocket">5</a>] : for the socket transport</li>
+  <li>ieee-floats[<a href="https://github.com/marijnh/ieee-floats">6</a>] : for conversion between ints and floats</li>
+  <li>trivial-gray-streams[<a href="https://github.com/trivial-gray-streams/trivial-gray-streams">7</a>] : an abstraction layer for gray streams</li>
+  <li>alexandria[<a href="https://gitlab.common-lisp.net/alexandria/alexandria">8</a>] : handy utilities</li>
+</ul>
+
+<p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/cl/README.md">lib/cl/README.md</a>
+</p>
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

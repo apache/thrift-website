@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - How to update the website</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2 id="apache-thrift-website">Apache Thrift Website</h2>
+<p>The thrift website is made up of markdown files with YAML headers and templates,
+and uses the <a href="http://www.apache.org/dev/cms">Apache CMS</a>.</p>
+
+<h3 id="website-development">Website Development</h3>
+
+<p>Publishing the staging site is doable through the <a href="https://cms.apache.org/thrift/">CMS webgui</a>
+or via shell command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:::shell
+% ssh -t people.apache.org publish.pl thrift
+</code></pre></div></div>
+
+<p>Casual changes to the site are best handled through the <a href="https://cms.apache.org/thrift/#bookmark">javascript
+bookmarklet</a>.  The workflow is to browse the live site
+looking for pages in need of repair, then by clicking on the bookmarklet you will be redirected
+to an editor for the page in question that can ultimately commit your changes back to the site
+and walk you through the publication process through the webgui.</p>
+
+<p>More complex changes can be accomplished by checking out the <a href="https://svn.apache.org/repos/asf/thrift/cms-site">svn
+tree</a> directly.  Commits to that tree will
+trigger builds of the staging site just as if you had committed them by using the CMS webgui.
+If you are still pining for a nanoc-like feature to preview your changes before committing them
+by having a daemon ‘watch’ your filesystem for edits, you really need to wrap your brain around
+the CMS’s ** commit early and commit often ** mantra.  In fact source control systems are far
+more effective at communicating changesets than operating systems are (most of the time), and
+the CMS’s build system is changeset-aware based on the data it receives from svn.  So think of
+committing to the CMS’s svn tree for thrift as just a formal way of notifying the CMS of your
+changes so it can automatically (and efficiently) build them to the staging site, just as if
+you were working locally with a daemon that watches your filesystem for modifications and
+builds them.</p>
+
+<p>Remember most of all that markdown is aimed first at foremost at human readers, so try to
+ensure your source content is easily understood by</p>
+
+<ul>
+  <li>Keeping headings separated from other content with surrounding blank lines,</li>
+  <li>Avoiding long lines of text, wrapping at 80-100 characters on average,</li>
+  <li>Keeping embedded HTML (which includes code snippets) blocks separated from markdown content
+by blank lines,</li>
+  <li>Preferring four-space indents per level over tab characters.</li>
+</ul>
+
+<p>Not only will your readers prefer a clean style, it will result in fewer bugs and a more
+consistent experience with the various markdown parsers deployed by the CMS.</p>
+
+<h3 id="updating-release-versions">Updating Release Versions</h3>
+
+<p>The current release versioning is kept in the YAML <strong>DATA</strong> section of the global “configuration
+file” <a href="https://svn.apache.org/repos/asf/thrift/cms-site/trunk/lib/path.pm">lib/path.pm</a>. Update
+the following values and then following <b>Updating the Website</b> section below</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>current_release: "0.13.0"
+current_release_date: "2019-OCT-16"
+</code></pre></div></div>
+
+<h3 id="updating-the-website">Updating the website</h3>
+
+<p>After you have updated any content or added new markdown files you will need to commit them to
+svn to trigger a <a href="http://ci.apache.org/builders/thrift-site-staging">CMS build</a> of your changes.
+After a few seconds have passed your build will be ready for viewing on the <a href="http://thrift.staging.apache.org/">staging
+site</a>.  See the previous discussion for the various
+approaches to publishing your changes to the live site after you have verified they are
+rendering correctly on the staging site.</p>
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

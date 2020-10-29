@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - .NET Standard</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2>.NET Standard Tutorial</h2>
+
+<h3>Introduction</h3>
+
+<p>
+All Apache Thrift tutorials require that you have:
+
+<ol>
+  <li>The Apache Thrift Compiler and Libraries, see <a href="/download">Download</a> and <a href="/docs/BuildingFromSource">Building from Source</a> for more details.</li>
+  <li>Generated the <a href="https://github.com/apache/thrift/blob/master/tutorial/tutorial.thrift">tutorial.thrift</a> and <a href="https://github.com/apache/thrift/blob/master/tutorial/shared.thrift">shared.thrift</a> files:<br>
+    <pre><code>thrift -r --gen netstd tutorial.thrift</code></pre>
+  </li>
+  <li>Followed all prerequisites listed below.</li>
+</ol>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<h3 id="client">Client</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">Security</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Cryptography</span><span class="p">.</span><span class="n">X509Certificates</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Client</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">tutorial</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">shared</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">DependencyInjection</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="n">Client</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">ServiceCollection</span> <span class="n">ServiceCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceCollection</span><span class="p">();</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">ILogger</span> <span class="n">Logger</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">DisplayHelp</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">@</span><span class="s">"</span><span class="err">
+</span><span class="s">Usage: </span><span class="err">
+</span><span class="s">    Client -help</span><span class="err">
+</span><span class="s">        will diplay help information </span><span class="err">
+
+</span><span class="s">    Client -tr:&lt;transport&gt; -bf:&lt;buffering&gt; -pr:&lt;protocol&gt; -mc:&lt;numClients&gt;</span><span class="err">
+</span><span class="s">        will run client with specified arguments (tcp transport and binary protocol by default) and with 1 client</span><span class="err">
+
+</span><span class="s">Options:</span><span class="err">
+</span><span class="s">    -tr (transport): </span><span class="err">
+</span><span class="s">        tcp - (default) tcp transport will be used (host - ""localhost"", port - 9090)</span><span class="err">
+</span><span class="s">        namedpipe - namedpipe transport will be used (pipe address - "".test"")</span><span class="err">
+</span><span class="s">        http - http transport will be used (address - ""http://localhost:9090"")        </span><span class="err">
+</span><span class="s">        tcptls - tcp tls transport will be used (host - ""localhost"", port - 9090)</span><span class="err">
+
+</span><span class="s">    -bf (buffering): </span><span class="err">
+</span><span class="s">        none - (default) no buffering will be used</span><span class="err">
+</span><span class="s">        buffered - buffered transport will be used</span><span class="err">
+</span><span class="s">        framed - framed transport will be used</span><span class="err">
+
+</span><span class="s">    -pr (protocol): </span><span class="err">
+</span><span class="s">        binary - (default) binary protocol will be used</span><span class="err">
+</span><span class="s">        compact - compact protocol will be used</span><span class="err">
+</span><span class="s">        json - json protocol will be used</span><span class="err">
+</span><span class="s">        multiplexed - multiplexed protocol will be used</span><span class="err">
+
+</span><span class="s">    -mc (multiple clients):</span><span class="err">
+</span><span class="s">        &lt;numClients&gt; - number of multiple clients to connect to server (max 100, default 1)</span><span class="err">
+
+</span><span class="s">Sample:</span><span class="err">
+</span><span class="s">    Client -tr:tcp -pr:binary</span><span class="err">
+</span><span class="s">"</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="o">??</span> <span class="k">new</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+
+            <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">AddLogging</span><span class="p">(</span><span class="n">logging</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">));</span>
+            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">serviceProvider</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">())</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span> <span class="o">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">().</span><span class="n">CreateLogger</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">Client</span><span class="p">));</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
+                <span class="p">{</span>
+                    <span class="n">DisplayHelp</span><span class="p">();</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting client..."</span><span class="p">);</span>
+
+                <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
+                <span class="p">{</span>
+                    <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">RunAsync</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">GetNumberOfClients</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">);</span>
+
+            <span class="n">var</span> <span class="n">transports</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TTransport</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClients</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">t</span> <span class="o">=</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+                <span class="n">transports</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+            <span class="p">}</span>
+            
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected client transport: {transports[0]}"</span><span class="p">);</span>
+
+            <span class="n">var</span> <span class="n">protocols</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClients</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">p</span> <span class="o">=</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">transports</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+                <span class="n">protocols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected client protocol: {protocols[0].Item1}"</span><span class="p">);</span>
+
+            <span class="n">var</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Task</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClients</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">task</span> <span class="o">=</span> <span class="n">RunClientAsync</span><span class="p">(</span><span class="n">protocols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cancellationToken</span><span class="p">);</span>
+                <span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">Task</span><span class="p">.</span><span class="n">WaitAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>
+
+            <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">TTransport</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">TTransport</span> <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSocketTransport</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">.</span><span class="n">Loopback</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">);</span>
+
+            <span class="c1">// construct endpoint transport</span>
+            <span class="n">var</span> <span class="n">transportArg</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">transportArg</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">out</span> <span class="n">Transport</span> <span class="n">selectedTransport</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="k">switch</span> <span class="p">(</span><span class="n">selectedTransport</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Tcp</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSocketTransport</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">.</span><span class="n">Loopback</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">NamedPipe</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TNamedPipeTransport</span><span class="p">(</span><span class="s">".test"</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Http</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">THttpTransport</span><span class="p">(</span><span class="k">new</span> <span class="n">Uri</span><span class="p">(</span><span class="s">"http://localhost:9090"</span><span class="p">),</span> <span class="n">Configuration</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">TcpTls</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TTlsSocketTransport</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">.</span><span class="n">Loopback</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">,</span>
+                            <span class="n">GetCertificate</span><span class="p">(),</span> <span class="n">CertValidator</span><span class="p">,</span> <span class="n">LocalCertificateSelectionCallback</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="nl">default:</span>
+                        <span class="n">Debug</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="s">"unhandled case"</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="c1">// optionally add layered transport(s)</span>
+            <span class="n">var</span> <span class="n">bufferingArg</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="o">&lt;</span><span class="n">Buffering</span><span class="o">&gt;</span><span class="p">(</span><span class="n">bufferingArg</span><span class="p">,</span> <span class="n">out</span> <span class="n">var</span> <span class="n">selectedBuffering</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="k">switch</span> <span class="p">(</span><span class="n">selectedBuffering</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">case</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">Buffered</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBufferedTransport</span><span class="p">(</span><span class="n">transport</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">Framed</span><span class="p">:</span>
+                        <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TFramedTransport</span><span class="p">(</span><span class="n">transport</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="nl">default:</span> <span class="c1">// layered transport(s) are optional</span>
+                        <span class="n">Debug</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">selectedBuffering</span> <span class="o">==</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">None</span><span class="p">,</span> <span class="s">"unhandled case"</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">transport</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">GetNumberOfClients</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-mc"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">);</span>
+
+            <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span> <span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">numClients</span><span class="p">,</span> <span class="n">out</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">))</span>
+				<span class="k">return</span> <span class="n">c</span><span class="p">;</span>
+			<span class="k">else</span>
+				<span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate2</span> <span class="n">GetCertificate</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="c1">// due to files location in net core better to take certs from top folder</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetParent</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">()));</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">X509Certificate2</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">topDir</span> <span class="o">=</span> <span class="n">di</span><span class="p">;</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span>
+                <span class="n">topDir</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">certFile</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">maxCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">FileNotFoundException</span><span class="p">(</span><span class="s">"Cannot find file in directories"</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">maxCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">certFile</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate</span> <span class="n">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
+            <span class="n">string</span> <span class="n">targetHost</span><span class="p">,</span> <span class="n">X509CertificateCollection</span> <span class="n">localCertificates</span><span class="p">,</span>
+            <span class="n">X509Certificate</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">GetCertificate</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">CertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span> <span class="n">certificate</span><span class="p">,</span>
+            <span class="n">X509Chain</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">TTransport</span> <span class="n">transport</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+            <span class="n">Protocol</span> <span class="n">selectedProtocol</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">out</span> <span class="n">selectedProtocol</span><span class="p">))</span>
+            <span class="p">{</span>
+                <span class="k">switch</span> <span class="p">(</span><span class="n">selectedProtocol</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">(</span><span class="n">selectedProtocol</span><span class="p">,</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">));</span>
+                    <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Compact</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">(</span><span class="n">selectedProtocol</span><span class="p">,</span> <span class="k">new</span> <span class="n">TCompactProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">));</span>
+                    <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Json</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">(</span><span class="n">selectedProtocol</span><span class="p">,</span> <span class="k">new</span> <span class="n">TJsonProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">));</span>
+                    <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Multiplexed</span><span class="p">:</span>
+                        <span class="c1">// it returns BinaryProtocol to avoid making wrapped protocol as public in TProtocolDecorator (in RunClientAsync it will be wrapped into Multiplexed protocol)</span>
+                        <span class="k">return</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">(</span><span class="n">selectedProtocol</span><span class="p">,</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">));</span>
+                    <span class="nl">default:</span>
+                        <span class="n">Debug</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="s">"unhandled case"</span><span class="p">);</span>
+                        <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="k">new</span> <span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span><span class="p">(</span><span class="n">selectedProtocol</span><span class="p">,</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">RunClientAsync</span><span class="p">(</span><span class="n">Tuple</span><span class="o">&lt;</span><span class="n">Protocol</span><span class="p">,</span> <span class="n">TProtocol</span><span class="o">&gt;</span> <span class="n">protocolTuple</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">protocolTuple</span><span class="p">.</span><span class="n">Item2</span><span class="p">;</span>
+                <span class="n">var</span> <span class="n">protocolType</span> <span class="o">=</span> <span class="n">protocolTuple</span><span class="p">.</span><span class="n">Item1</span><span class="p">;</span>
+
+                <span class="n">TBaseClient</span> <span class="n">client</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+
+                <span class="k">try</span>
+                <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">protocolType</span> <span class="o">!=</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Multiplexed</span><span class="p">)</span>
+                    <span class="p">{</span>
+
+                        <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="p">);</span>
+                        <span class="n">await</span> <span class="n">ExecuteCalculatorClientOperations</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">,</span> <span class="p">(</span><span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">)</span><span class="n">client</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span>
+                    <span class="p">{</span>
+                        <span class="c1">// it uses binary protocol there  to create Multiplexed protocols</span>
+                        <span class="n">var</span> <span class="n">multiplex</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TMultiplexedProtocol</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">nameof</span><span class="p">(</span><span class="n">Calculator</span><span class="p">));</span>
+                        <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">(</span><span class="n">multiplex</span><span class="p">);</span>
+                        <span class="n">await</span> <span class="n">ExecuteCalculatorClientOperations</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">,</span> <span class="p">(</span><span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">)</span><span class="n">client</span><span class="p">);</span>
+
+                        <span class="n">multiplex</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TMultiplexedProtocol</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">nameof</span><span class="p">(</span><span class="n">SharedService</span><span class="p">));</span>
+                        <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SharedService</span><span class="p">.</span><span class="n">Client</span><span class="p">(</span><span class="n">multiplex</span><span class="p">);</span>
+                        <span class="n">await</span> <span class="n">ExecuteSharedServiceClientOperations</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">,</span> <span class="p">(</span><span class="n">SharedService</span><span class="p">.</span><span class="n">Client</span><span class="p">)</span><span class="n">client</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="err">$</span><span class="s">"{client?.ClientId} "</span> <span class="o">+</span> <span class="n">ex</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="n">finally</span>
+                <span class="p">{</span>
+                    <span class="n">protocol</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">TApplicationException</span> <span class="n">x</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">ExecuteCalculatorClientOperations</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span> <span class="n">client</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">OpenTransportAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+
+            <span class="c1">// Async version</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} PingAsync()"</span><span class="p">);</span>
+            <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">pingAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} AddAsync(1,1)"</span><span class="p">);</span>
+            <span class="n">var</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">addAsync</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} AddAsync(1,1)={sum}"</span><span class="p">);</span>
+
+            <span class="n">var</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Work</span>
+            <span class="p">{</span>
+                <span class="n">Op</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span><span class="p">,</span>
+                <span class="n">Num1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">Num2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="p">};</span>
+
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} CalculateAsync(1)"</span><span class="p">);</span>
+                <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">calculateAsync</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Whoa we can divide by 0"</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">InvalidOperation</span> <span class="n">io</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Invalid operation: "</span> <span class="o">+</span> <span class="n">io</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="n">work</span><span class="p">.</span><span class="n">Op</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span><span class="p">;</span>
+            <span class="n">work</span><span class="p">.</span><span class="n">Num1</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Client/Program.cs">tutorial/netstd/Client/Program.cs</a>
+</p>
+
+<h3 id="server">Server</h3>
+
+<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">Security</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Cryptography</span><span class="p">.</span><span class="n">X509Certificates</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Builder</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Hosting</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Configuration</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">DependencyInjection</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Server</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Server</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">tutorial</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">shared</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Processor</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="n">Server</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
+    <span class="p">{</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">ServiceCollection</span> <span class="n">ServiceCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceCollection</span><span class="p">();</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">ILogger</span> <span class="n">Logger</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="o">??</span> <span class="k">new</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+
+            <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">AddLogging</span><span class="p">(</span><span class="n">logging</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">));</span>
+            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">serviceProvider</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">())</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span> <span class="o">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">().</span><span class="n">CreateLogger</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">Server</span><span class="p">));</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
+                <span class="p">{</span>
+                    <span class="n">DisplayHelp</span><span class="p">();</span>
+                    <span class="k">return</span><span class="p">;</span>
+                <span class="p">}</span>
+
+                <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
+                <span class="p">{</span>
+                    <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
+
+                    <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Press any key to stop..."</span><span class="p">);</span>
+
+                    <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+                    <span class="n">source</span><span class="p">.</span><span class="n">Cancel</span><span class="p">();</span>
+                <span class="p">}</span>
+
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Server stopped"</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">DisplayHelp</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">@</span><span class="s">"</span><span class="err">
+</span><span class="s">Usage: </span><span class="err">
+</span><span class="s">    Server -help</span><span class="err">
+</span><span class="s">        will diplay help information </span><span class="err">
+
+</span><span class="s">    Server -tr:&lt;transport&gt; -bf:&lt;buffering&gt; -pr:&lt;protocol&gt;</span><span class="err">
+</span><span class="s">        will run server with specified arguments (tcp transport, no buffering, and binary protocol by default)</span><span class="err">
+
+</span><span class="s">Options:</span><span class="err">
+</span><span class="s">    -tr (transport): </span><span class="err">
+</span><span class="s">        tcp - (default) tcp transport will be used (host - ""localhost"", port - 9090)</span><span class="err">
+</span><span class="s">        namedpipe - namedpipe transport will be used (pipe address - "".test"")</span><span class="err">
+</span><span class="s">        http - http transport will be used (http address - ""localhost:9090"")</span><span class="err">
+</span><span class="s">        tcptls - tcp transport with tls will be used (host - ""localhost"", port - 9090)</span><span class="err">
+
+</span><span class="s">    -bf (buffering): </span><span class="err">
+</span><span class="s">        none - (default) no buffering will be used</span><span class="err">
+</span><span class="s">        buffered - buffered transport will be used</span><span class="err">
+</span><span class="s">        framed - framed transport will be used</span><span class="err">
+
+</span><span class="s">    -pr (protocol): </span><span class="err">
+</span><span class="s">        binary - (default) binary protocol will be used</span><span class="err">
+</span><span class="s">        compact - compact protocol will be used</span><span class="err">
+</span><span class="s">        json - json protocol will be used</span><span class="err">
+</span><span class="s">        multiplexed - multiplexed protocol will be used</span><span class="err">
+
+</span><span class="s">Sample:</span><span class="err">
+</span><span class="s">    Server -tr:tcp</span><span class="err">
+</span><span class="s">"</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">RunAsync</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">selectedTransport</span> <span class="o">=</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+            <span class="n">var</span> <span class="n">selectedBuffering</span> <span class="o">=</span> <span class="n">GetBuffering</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+            <span class="n">var</span> <span class="n">selectedProtocol</span> <span class="o">=</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">selectedTransport</span> <span class="o">==</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Http</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">new</span> <span class="n">HttpServerSample</span><span class="p">().</span><span class="n">Run</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">await</span> <span class="n">RunSelectedConfigurationAsync</span><span class="p">(</span><span class="n">selectedTransport</span><span class="p">,</span> <span class="n">selectedBuffering</span><span class="p">,</span> <span class="n">selectedProtocol</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">Protocol</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+            <span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">out</span> <span class="n">Protocol</span> <span class="n">selectedProtocol</span><span class="p">);</span>
+
+            <span class="k">return</span> <span class="n">selectedProtocol</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">Buffering</span> <span class="n">GetBuffering</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">buffering</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="s">":"</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+            <span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="o">&lt;</span><span class="n">Buffering</span><span class="o">&gt;</span><span class="p">(</span><span class="n">buffering</span><span class="p">,</span> <span class="n">out</span> <span class="n">var</span> <span class="n">selectedBuffering</span><span class="p">);</span>
+
+            <span class="k">return</span> <span class="n">selectedBuffering</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">Transport</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+            <span class="n">Enum</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">transport</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="n">out</span> <span class="n">Transport</span> <span class="n">selectedTransport</span><span class="p">);</span>
+
+            <span class="k">return</span> <span class="n">selectedTransport</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">RunSelectedConfigurationAsync</span><span class="p">(</span><span class="n">Transport</span> <span class="n">transport</span><span class="p">,</span> <span class="n">Buffering</span> <span class="n">buffering</span><span class="p">,</span> <span class="n">Protocol</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">handler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CalculatorAsyncHandler</span><span class="p">();</span>
+
+            <span class="n">TServerTransport</span> <span class="n">serverTransport</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="n">transport</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Tcp</span><span class="p">:</span>
+                    <span class="n">serverTransport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TServerSocketTransport</span><span class="p">(</span><span class="mi">9090</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">NamedPipe</span><span class="p">:</span>
+                    <span class="n">serverTransport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TNamedPipeServerTransport</span><span class="p">(</span><span class="s">".test"</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="k">case</span> <span class="n">Transport</span><span class="p">.</span><span class="n">TcpTls</span><span class="p">:</span>
+                    <span class="n">serverTransport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TTlsServerSocketTransport</span><span class="p">(</span><span class="mi">9090</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">,</span>
+                        <span class="n">GetCertificate</span><span class="p">(),</span> <span class="n">ClientCertValidator</span><span class="p">,</span> <span class="n">LocalCertificateSelectionCallback</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">TTransportFactory</span> <span class="n">inputTransportFactory</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="n">TTransportFactory</span> <span class="n">outputTransportFactory</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="n">buffering</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">case</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">Buffered</span><span class="p">:</span>
+                    <span class="n">inputTransportFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBufferedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputTransportFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBufferedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="k">case</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">Framed</span><span class="p">:</span>
+                    <span class="n">inputTransportFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TFramedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputTransportFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TFramedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="nl">default:</span> <span class="c1">// layered transport(s) are optional</span>
+                    <span class="n">Debug</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">buffering</span> <span class="o">==</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">None</span><span class="p">,</span> <span class="s">"unhandled case"</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">TProtocolFactory</span> <span class="n">inputProtocolFactory</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="n">TProtocolFactory</span> <span class="n">outputProtocolFactory</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="n">ITAsyncProcessor</span> <span class="n">processor</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="k">switch</span> <span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span><span class="p">:</span>
+                    <span class="n">inputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">processor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="p">(</span><span class="n">handler</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Compact</span><span class="p">:</span>
+                    <span class="n">inputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TCompactProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TCompactProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">processor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="p">(</span><span class="n">handler</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Json</span><span class="p">:</span>
+                    <span class="n">inputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TJsonProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TJsonProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">processor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="p">(</span><span class="n">handler</span><span class="p">);</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="k">case</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Multiplexed</span><span class="p">:</span>
+                    <span class="n">inputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+                    <span class="n">outputProtocolFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">Factory</span><span class="p">();</span>
+
+                    <span class="n">var</span> <span class="n">calcHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CalculatorAsyncHandler</span><span class="p">();</span>
+                    <span class="n">var</span> <span class="n">calcProcessor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="p">(</span><span class="n">calcHandler</span><span class="p">);</span>
+
+                    <span class="n">var</span> <span class="n">sharedServiceHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SharedServiceAsyncHandler</span><span class="p">();</span>
+                    <span class="n">var</span> <span class="n">sharedServiceProcessor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SharedService</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="p">(</span><span class="n">sharedServiceHandler</span><span class="p">);</span>
+
+                    <span class="n">var</span> <span class="n">multiplexedProcessor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TMultiplexedProcessor</span><span class="p">();</span>
+                    <span class="n">multiplexedProcessor</span><span class="p">.</span><span class="n">RegisterProcessor</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">Calculator</span><span class="p">),</span> <span class="n">calcProcessor</span><span class="p">);</span>
+                    <span class="n">multiplexedProcessor</span><span class="p">.</span><span class="n">RegisterProcessor</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">SharedService</span><span class="p">),</span> <span class="n">sharedServiceProcessor</span><span class="p">);</span>
+
+                    <span class="n">processor</span> <span class="o">=</span> <span class="n">multiplexedProcessor</span><span class="p">;</span>
+                    <span class="k">break</span><span class="p">;</span>
+
+                <span class="nl">default:</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">ArgumentOutOfRangeException</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+            <span class="p">}</span>
+
+
+            <span class="k">try</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span>
+                    <span class="err">$</span><span class="s">"Selected TAsyncServer with {serverTransport} transport, {processor} processor and {inputProtocolFactory} protocol factories"</span><span class="p">);</span>
+
+                <span class="n">var</span> <span class="n">loggerFactory</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">().</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">();</span>
+
+                <span class="n">var</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSimpleAsyncServer</span><span class="p">(</span>
+                    <span class="nl">itProcessorFactory:</span> <span class="k">new</span> <span class="n">TSingletonProcessorFactory</span><span class="p">(</span><span class="n">processor</span><span class="p">),</span>
+                    <span class="nl">serverTransport:</span> <span class="n">serverTransport</span><span class="p">,</span>
+                    <span class="nl">inputTransportFactory:</span> <span class="n">inputTransportFactory</span><span class="p">,</span>
+                    <span class="nl">outputTransportFactory:</span> <span class="n">outputTransportFactory</span><span class="p">,</span>
+                    <span class="nl">inputProtocolFactory:</span> <span class="n">inputProtocolFactory</span><span class="p">,</span>
+                    <span class="nl">outputProtocolFactory:</span> <span class="n">outputProtocolFactory</span><span class="p">,</span>
+                    <span class="nl">logger:</span> <span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">TSimpleAsyncServer</span><span class="o">&gt;</span><span class="p">());</span>
+
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting the server..."</span><span class="p">);</span>
+
+                <span class="n">await</span> <span class="n">server</span><span class="p">.</span><span class="n">ServeAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">x</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate2</span> <span class="n">GetCertificate</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="c1">// due to files location in net core better to take certs from top folder</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetParent</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">()));</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">X509Certificate2</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">topDir</span> <span class="o">=</span> <span class="n">di</span><span class="p">;</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span>
+                <span class="n">topDir</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">certFile</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">maxCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">FileNotFoundException</span><span class="p">(</span><span class="s">"Cannot find file in directories"</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">maxCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">certFile</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate</span> <span class="n">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
+            <span class="n">string</span> <span class="n">targetHost</span><span class="p">,</span> <span class="n">X509CertificateCollection</span> <span class="n">localCertificates</span><span class="p">,</span>
+            <span class="n">X509Certificate</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">GetCertificate</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">ClientCertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span> <span class="n">certificate</span><span class="p">,</span>
+            <span class="n">X509Chain</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">enum</span> <span class="n">Transport</span>
+        <span class="p">{</span>
+            <span class="n">Tcp</span><span class="p">,</span>
+            <span class="n">NamedPipe</span><span class="p">,</span>
+            <span class="n">Http</span><span class="p">,</span>
+            <span class="n">TcpTls</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">enum</span> <span class="n">Buffering</span>
+        <span class="p">{</span>
+            <span class="n">None</span><span class="p">,</span>
+            <span class="n">Buffered</span><span class="p">,</span>
+            <span class="n">Framed</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">private</span> <span class="k">enum</span> <span class="n">Protocol</span>
+        <span class="p">{</span>
+            <span class="n">Binary</span><span class="p">,</span>
+            <span class="n">Compact</span><span class="p">,</span>
+            <span class="n">Json</span><span class="p">,</span>
+            <span class="n">Multiplexed</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">class</span> <span class="nc">HttpServerSample</span>
+        <span class="p">{</span>
+            <span class="k">public</span> <span class="kt">void</span> <span class="n">Run</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConfigurationBuilder</span><span class="p">()</span>
+                    <span class="p">.</span><span class="n">AddEnvironmentVariables</span><span class="p">(</span><span class="n">prefix</span><span class="o">:</span> <span class="s">"ASPNETCORE_"</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+                <span class="n">var</span> <span class="n">host</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WebHostBuilder</span><span class="p">()</span>
+                    <span class="p">.</span><span class="n">UseConfiguration</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">UseKestrel</span><span class="p">()</span>
+                    <span class="p">.</span><span class="n">UseUrls</span><span class="p">(</span><span class="s">"http://localhost:9090"</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">UseContentRoot</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">())</span>
+                    <span class="p">.</span><span class="n">UseStartup</span><span class="o">&lt;</span><span class="n">Startup</span><span class="o">&gt;</span><span class="p">()</span>
+                    <span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">((</span><span class="n">ctx</span><span class="p">,</span><span class="n">logging</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">))</span>
+                    <span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogTrace</span><span class="p">(</span><span class="s">"test"</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogCritical</span><span class="p">(</span><span class="s">"test"</span><span class="p">);</span>
+                <span class="n">host</span><span class="p">.</span><span class="n">RunAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
+            <span class="p">}</span>
+
+            <span class="k">public</span> <span class="k">class</span> <span class="nc">Startup</span>
+            <span class="p">{</span>
+                <span class="k">public</span> <span class="n">Startup</span><span class="p">(</span><span class="n">IWebHostEnvironment</span> <span class="n">env</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">var</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConfigurationBuilder</span><span class="p">()</span>
+                        <span class="p">.</span><span class="n">SetBasePath</span><span class="p">(</span><span class="n">env</span><span class="p">.</span><span class="n">ContentRootPath</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">AddEnvironmentVariables</span><span class="p">();</span>
+
+                    <span class="n">Configuration</span> <span class="o">=</span> <span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+                <span class="p">}</span>
+
+                <span class="k">public</span> <span class="n">IConfigurationRoot</span> <span class="n">Configuration</span> <span class="p">{</span> <span class="n">get</span><span class="p">;</span> <span class="p">}</span>
+
+                <span class="c1">// This method gets called by the runtime. Use this method to add services to the container.</span>
+                <span class="k">public</span> <span class="kt">void</span> <span class="n">ConfigureServices</span><span class="p">(</span><span class="n">IServiceCollection</span> <span class="n">services</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">services</span><span class="p">.</span><span class="n">AddTransient</span><span class="o">&lt;</span><span class="n">Calculator</span><span class="p">.</span><span class="n">IAsync</span><span class="p">,</span> <span class="n">CalculatorAsyncHandler</span><span class="o">&gt;</span><span class="p">();</span>
+                    <span class="n">services</span><span class="p">.</span><span class="n">AddTransient</span><span class="o">&lt;</span><span class="n">ITAsyncProcessor</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">AsyncProcessor</span><span class="o">&gt;</span><span class="p">();</span>
+                    <span class="n">services</span><span class="p">.</span><span class="n">AddTransient</span><span class="o">&lt;</span><span class="n">THttpServerTransport</span><span class="p">,</span> <span class="n">THttpServerTransport</span><span class="o">&gt;</span><span class="p">();</span>
+                <span class="p">}</span>
+
+                <span class="c1">// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</span>
+                <span class="k">public</span> <span class="kt">void</span> <span class="n">Configure</span><span class="p">(</span><span class="n">IApplicationBuilder</span> <span class="n">app</span><span class="p">,</span> <span class="n">IWebHostEnvironment</span> <span class="n">env</span><span class="p">,</span> <span class="n">ILoggerFactory</span> <span class="n">loggerFactory</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="n">app</span><span class="p">.</span><span class="n">UseMiddleware</span><span class="o">&lt;</span><span class="n">THttpServerTransport</span><span class="o">&gt;</span><span class="p">();</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">class</span> <span class="nc">CalculatorAsyncHandler</span> <span class="o">:</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">IAsync</span>
+        <span class="p">{</span>
+            <span class="k">private</span> <span class="n">readonly</span> <span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">_log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span><span class="p">();</span>
+
+            <span class="k">public</span> <span class="n">CalculatorAsyncHandler</span><span class="p">()</span>
+            <span class="p">{</span>
+            <span class="p">}</span>
+
+            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">getStructAsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">key</span><span class="p">,</span>
+                <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"GetStructAsync({0})"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">_log</span><span class="p">[</span><span class="n">key</span><span class="p">]);</span>
+            <span class="p">}</span>
+
+            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">pingAsync</span><span class="p">(</span><span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"PingAsync()"</span><span class="p">);</span>
+                <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">addAsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">num1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"AddAsync({num1},{num2})"</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculateAsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span> <span class="n">w</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"CalculateAsync({logid}, [{w.Op},{w.Num1},{w.Num2}])"</span><span class="p">);</span>
+
+                <span class="n">var</span> <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="k">switch</span> <span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">+</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">;</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">-</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">;</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">MULTIPLY</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">*</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">;</span>
+                        <span class="k">break</span><span class="p">;</span>
+
+                    <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Num2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="p">{</span>
+                            <span class="n">var</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InvalidOperation</span>
+                            <span class="p">{</span>
+</code></pre></div>
+<p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
+<a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Server/Program.cs">tutorial/netstd/Server/Program.cs</a>
+</p>
+
+<h2 id="additional-information">Additional Information</h2>
+
+
+
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

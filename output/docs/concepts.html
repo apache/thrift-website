@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - Concepts</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2 id="thrift-network-stack">Thrift network stack</h2>
+<p>Simple representation of the Apache Thrift networking stack</p>
+<pre><code>
+  +-------------------------------------------+
+  | Server                                    |
+  | (single-threaded, event-driven etc)       |
+  +-------------------------------------------+
+  | Processor                                 |
+  | (compiler generated)                      |
+  +-------------------------------------------+
+  | Protocol                                  |
+  | (JSON, compact etc)                       |
+  +-------------------------------------------+
+  | Transport                                 |
+  | (raw TCP, HTTP etc)                       |
+  +-------------------------------------------+
+</code></pre>
+
+<h2 id="transport">Transport</h2>
+<p>The Transport layer provides a simple abstraction for reading/writing from/to the network. This enables Thrift to decouple the underlying transport from the rest of the system (serialization/deserialization, for instance).</p>
+
+<p>Here are some of the methods exposed by the <strong>Transport</strong> interface:</p>
+
+<ul>
+  <li>open</li>
+  <li>close</li>
+  <li>read</li>
+  <li>write</li>
+  <li>flush</li>
+</ul>
+
+<p>In addition to the <strong>Transport</strong> interface above, Thrift also uses a <strong>ServerTransport</strong> interface used to accept or create primitive transport objects. As the name suggest, <strong>ServerTransport</strong> is used mainly on the server side to create new  Transport objects for incoming connections.</p>
+
+<ul>
+  <li>open</li>
+  <li>listen</li>
+  <li>accept</li>
+  <li>close</li>
+</ul>
+
+<p>Here are some of the transports available for majority of the Thrift-supported languages:</p>
+
+<ul>
+  <li>file: read/write to/from a file on disk</li>
+  <li>http: as the name suggests</li>
+</ul>
+
+<h2 id="protocol">Protocol</h2>
+
+<p>The Protocol abstraction defines a mechanism to map in-memory data structures to a wire-format. In other words, a protocol specifies how datatypes use the
+underlying Transport to encode/decode themselves.  Thus the protocol implementation governs the encoding scheme and is responsible for (de)serialization. Some examples of protocols in this sense include JSON, XML, plain text, compact binary etc.</p>
+
+<p>Here is the <strong>Protocol</strong> interface:</p>
+
+<pre><code class="language-cpp">
+writeMessageBegin(name, type, seq)
+writeMessageEnd()
+writeStructBegin(name)
+writeStructEnd()
+writeFieldBegin(name, type, id)
+writeFieldEnd()
+writeFieldStop()
+writeMapBegin(ktype, vtype, size)
+writeMapEnd()
+writeListBegin(etype, size)
+writeListEnd()
+writeSetBegin(etype, size)
+writeSetEnd()
+writeBool(bool)
+writeByte(byte)
+writeI16(i16)
+writeI32(i32)
+writeI64(i64)
+writeDouble(double)
+writeString(string)
+
+name, type, seq = readMessageBegin()
+                  readMessageEnd()
+name = readStructBegin()
+       readStructEnd()
+name, type, id = readFieldBegin()
+                 readFieldEnd()
+k, v, size = readMapBegin()
+             readMapEnd()
+etype, size = readListBegin()
+              readListEnd()
+etype, size = readSetBegin()
+              readSetEnd()
+bool = readBool()
+byte = readByte()
+i16 = readI16()
+i32 = readI32()
+i64 = readI64()
+double = readDouble()
+string = readString()
+</code></pre>
+
+<p>Thrift Protocols are stream oriented by design. There is no need for any explicit framing. For instance, it is not necessary to know the length of a
+string or the number of items in a list before we start serializing them. Some of the protocols available for majority of the Thrift-supported
+languages are:</p>
+
+<ul>
+  <li>binary: Fairly simple binary encoding – the length and type of a field are encoded as bytes followed by the actual value of the field.</li>
+  <li>compact: Described in <a href="https://issues.apache.org/jira/browse/THRIFT-110">THRIFT-110</a></li>
+  <li>json</li>
+</ul>
+
+<h2 id="processor">Processor</h2>
+<p>A Processor encapsulates the ability to read data from input streams and write to output streams. The input and output streams are represented by Protocol
+objects. The Processor interface is extremely simple</p>
+
+<pre><code class="language-java">
+interface TProcessor {
+    bool process(TProtocol in, TProtocol out) throws TException
+}
+</code></pre>
+
+<p>Service-specific processor implementations are generated by the compiler. The Processor essentially reads data from the wire (using the input protocol),
+delegates processing to the handler (implemented by the user) and writes the response over the wire (using the output protocol).</p>
+
+<h2 id="server">Server</h2>
+<p>A Server pulls together all of the various features described above:</p>
+
+<ul>
+  <li>Create a transport</li>
+  <li>Create input/output protocols for the transport</li>
+  <li>Create a processor based on the input/output protocols</li>
+  <li>Wait for incoming connections and hand them off to the processor</li>
+</ul>
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap-dropdown.js"></script>
+    <script src="/static/js/bootstrap-tab.js"></script>
+    <script src="/static/js/thrift.js"></script>
+
+    <title>Apache Thrift - How to add new language bindings</title>
+  </head>
+  <body>
+    <div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Apache Thrift &trade;</a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/lib">Libraries</a></li>
+          <li><a href="/tutorial">Tutorial</a></li>
+          <li><a href="/test">Test Suite</a></li>
+          <li><a href="/about">About</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
+              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="container">
+      <h2 id="roadmap-for-adding-new-language-bindings">Roadmap for adding new language bindings</h2>
+
+<p>When considering new language bindings, there are certain points to think about. First, you should find out, if you are about to implement completely new language bindings that are not yet supported with Thrift, or if you just want to add support for a specific “flavour” of an already implemented language.</p>
+
+<h3 id="q-the-language-exists-but-it-lacks-support-for-feature-or-version-what-should-i-do">Q: The language exists, but it lacks support for $feature or $version! What should I do?</h3>
+
+<p>In that case, it is recommended to add the new feature as an option to the existing language. For a good model on how to do this take look at the js/nodejs implementations, or the various options that already exist for Python. <code class="language-plaintext highlighter-rouge">thrift --help</code> gives a great start. Depending on the amount of changes necessary, you will still find the rest of the document useful.</p>
+
+<h2 id="general-workflow">General workflow</h2>
+
+<h3 id="preparation">Preparation</h3>
+
+<p>The good news is, although there is some work required, the process is not as hard as it looks. First, make sure you have a fully functional build environment and are able to <a href="/docs/BuildingFromSource">build the compiler from source</a>. Read the <a href="/docs/HowToContribute">How to Contribute</a> section to understand, how the general contribution process works.</p>
+
+<p>Next, search <a href="http://issues.apache.org/jira/browse/THRIFT">Jira</a> and maybe the mailing list archives. If you do not find anything similar, create a new ticket, shortly describing what you are planning. If you are not quite sure, ask on the <a href="/mailing">developer’s mailing list</a>.</p>
+
+<p>Now fork the <a href="https://thrift.apache.org/developers">Apache Thrift code base</a> on GitHub. Although we accept patch files, especially for comparingly long-living feature branches (such as adding a new language) a GitHub branch is much easier to handle.</p>
+
+<h3 id="implement-a-minimal-feature-set">Implement a minimal feature set</h3>
+
+<ul>
+  <li>
+    <p>Implement the <a href="https://github.com/apache/thrift/tree/master/compiler/cpp/src/generate">code generator</a>, typically by picking one from the existing pool that is close to what you need. There are already plenty of languages supported, and you’ll find oop, procedural and functional styles. If in doubt, which one to choose of the two or three candidates you found, head to the next point</p>
+  </li>
+  <li>
+    <p>Implement the Thrift library for that particular language, again by picking one of the <a href="https://github.com/apache/thrift/tree/master/lib">existing libraries</a> as a starting point. Because the libraries differ largely with regard to the “depth” of their implementations it is recommended to have a closer look on what is implemented, and what is not.</p>
+  </li>
+  <li>
+    <p>Implement the standardized <a href="https://github.com/apache/thrift/tree/master/test">Thrift cross platform test</a> and make sure all tests succeed when run against at least one other language. This ensures interoperability and makes sure that the code does not only work when talking with yourself (= same language). You may also add other tests, but these should be put into <code class="language-plaintext highlighter-rouge">lib/yourlang/test</code> rather than <code class="language-plaintext highlighter-rouge">test/yourlang</code> - the latter is intended to host solely the standardized cross platform test.</p>
+  </li>
+  <li>
+    <p>Implement the <a href="https://github.com/apache/thrift/tree/master/tutorial">Tutorial code</a> and test it against some other language. If you did everything well, this last step is comparingly easy.</p>
+  </li>
+</ul>
+
+<h3 id="the-minimal-feature-set">The minimal feature set</h3>
+
+<p>The minimum required feature set should cover at least:</p>
+
+<ul>
+  <li>Transports: Sockets, Buffered, Framed required, HTTP client recommended</li>
+  <li>Protocols: Binary and Multiplex required, JSON recommended</li>
+  <li>Server types: SimpleServer required</li>
+</ul>
+
+<h3 id="other-recommended-features">Other recommended features</h3>
+
+<p>These are not strictly required in the first run, but are commonly used. Depending on the language, some things may be easier to implement than others. Alternatively, consider adding the features listed below later as additional contributions instead of trying to press them into the initial contribution. <strong>If in doubt, focus on quality rather than quantity</strong>.</p>
+
+<ul>
+  <li>Transports: HTTP server, Pipes, NamedPipes (where it makes sense)</li>
+  <li>Protocols: Compact</li>
+  <li>Server types: Nonblocking, Threaded and/or Threadpool server implementation</li>
+</ul>
+
+<h3 id="final-things">Final things</h3>
+
+<ul>
+  <li>
+    <p>Add a <code class="language-plaintext highlighter-rouge">Readme.md</code> file to your library’s folder, describing requirements, dependencies and what else might be important. Look at the existing Readme files if you are unsure about what to put into that file.</p>
+  </li>
+  <li>
+    <p>Make sure the generator, library, tests and tutorial have proper <code class="language-plaintext highlighter-rouge">makefile.am</code> files. Include everything into the build/test scripts. If you need help with these steps, don’t hesitate to ask on the mailing lists.</p>
+  </li>
+  <li>
+    <p>You’re done, now open a pull request!</p>
+  </li>
+</ul>
+
+<h2 id="remarks">Remarks</h2>
+
+<p>Note that the 4 implementation steps are not really a linear process, it is more kind of an iteration. Even if the code that comes out of the generator finally is compileable and does not spit out any warnings and seems to run fine, you still will run into problems as you move on with implementing library and tests. This is fully normal and expected.</p>
+
+<p>It is a good idea to post your work early on the mailing lists, and to create the JIRA ticket early - that’s why this particular point is on top of the list. This serves not only the purpose of announcing the work you are about to do, it is also a good starting point for other people who might be just looking for exactly that stuff. You will be able not only to get valuable early feedback, but probably also be able to raise some support with implementation and/or testing. Having someone else looking over your code (or reviewing each other) is generally a good thing, especially with regard to the overall quality of the contribution you are about to do.</p>
+
+<p>Happy coding!</p>
+
+    </div>
+    <div class="container">
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="http://issues.apache.org/jira/browse/THRIFT">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
+</div>
+
+  </body>
+</html>
