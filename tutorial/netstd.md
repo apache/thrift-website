@@ -1,8 +1,9 @@
 ---
 title: ".NET Standard"
-library_lang: "netstd"
+librarylang: "netstd"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

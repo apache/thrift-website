@@ -1,8 +1,9 @@
 ---
 title: "OCaml"
-library_lang: "ocaml"
+librarylang: "ocaml"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

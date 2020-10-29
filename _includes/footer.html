@@ -1,33 +1,32 @@
 <div class="container">
-	<hr>
-	<footer class="footer">
-		<div class="row">
-			<div class="span3">
-				<h3>Links</h3>
-				<ul class="unstyled">
-					<li><a href="/download">Download</a></li>
-					<li><a href="/developers">Developers</a></li>
-					<li><a href="/tutorial">Tutorials</a></li>
-			    </ul>
-				<ul class="unstyled">
-					<li><a href="/sitemap">Sitemap</a></li>
-				</ul>
-			</div>
-			<div class="span3">
-				<h3>Get Involved</h3>
-				<ul class="unstyled">
-					<li><a href="/mailing">Mailing Lists</a></li>
-					<li><a href="{{ conf.jira_url }}">Issue Tracking</a></li>
-					<li><a href="/docs/HowToContribute">How To Contribute</a></li>
-				</ul>	
-			</div>
-			<div class="span6">
-				<a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a> 
-				Copyright &copy;2017 <a href="http://www.apache.org/">Apache Software Foundation</a>. 
-				Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>. 
-				Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
-			</div>
-		</div>
-		
-	</footer>
+  <hr>
+  <footer class="footer">
+    <div class="row">
+      <div class="span3">
+        <h3>Links</h3>
+        <ul class="unstyled">
+          <li><a href="/download">Download</a></li>
+          <li><a href="/developers">Developers</a></li>
+          <li><a href="/tutorial">Tutorials</a></li>
+        </ul>
+        <ul class="unstyled">
+          <li><a href="/sitemap">Sitemap</a></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h3>Get Involved</h3>
+        <ul class="unstyled">
+          <li><a href="/mailing">Mailing Lists</a></li>
+          <li><a href="{{ site.jira_url }}">Issue Tracking</a></li>
+          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
+        </ul>
+      </div>
+      <div class="span6">
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        Copyright &copy; {{ 'now' | date: "%Y" }} <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
+        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      </div>
+    </div>
+  </footer>
 </div>

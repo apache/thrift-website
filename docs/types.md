@@ -1,7 +1,8 @@
 ---
 title: "Thrift Type system"
-kind: doc
+isdoc: true
 ---
+
 ## Thrift Types
 The Thrift type system is intended to allow programmers to use native types as much as possible, no matter what programming language they are working in. This information is based on, and supersedes, the information in the [Thrift Whitepaper](/static/files/thrift-20070401.pdf). The [Thrift IDL](/docs/idl) provides descriptions of the types which are used to generate code for each target language.
 

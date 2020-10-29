@@ -1,24 +1,25 @@
 ---
 title: "Download"
 ---
-## Release
-The latest stable release of Thrift is {{ conf.current_release }} (released on {{ conf.current_release_date }}).
 
-* [thrift-{{ conf.current_release }}.tar.gz]({{ conf.mirror_url }}/thrift/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz) \[[PGP]({{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz.asc)\]
-\[[MD5]({{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz.md5)\]
-* [Thrift compiler for Windows (thrift-{{ conf.current_release }}.exe)]({{ conf.mirror_url }}/thrift/{{ conf.current_release }}/thrift-{{ conf.current_release }}.exe) \[[PGP]({{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.exe.asc)\] \[[MD5]({{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.exe.md5)\]
+## Release
+The latest stable release of Thrift is {{ site.current_release }} (released on {{ site.current_release_date }}).
+
+* [thrift-{{ site.current_release }}.tar.gz]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc)\]
+\[[MD5]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5)\]
+* [Thrift compiler for Windows (thrift-{{ site.current_release }}.exe)]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.exe) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.asc)\] \[[MD5]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.md5)\]
 
 ## Maven artifact
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;org.apache.thrift&lt;/groupId&gt;
   &lt;artifactId&gt;libthrift&lt;/artifactId&gt;
-  &lt;version&gt;{{ conf.current_release }}&lt;/version&gt;
+  &lt;version&gt;{{ site.current_release }}&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 
-When downloading from a mirror, please be sure to [verify](http://www.apache.org/info/verification.html) the checksums and signature (see the MD5 and PGP links above). The [KEYS]({{ conf.release_url }}/KEYS) file contains the public key(s) used for signing releases.
+When downloading from a mirror, please be sure to [verify](http://www.apache.org/info/verification.html) the checksums and signature (see the MD5 and PGP links above). The [KEYS]({{ site.release_url }}/KEYS) file contains the public key(s) used for signing releases.
 
---- 
+---
 
 ## Incubator Releases
 Releases from the incubator ( less than 0.6.0 ) are available at the [Thrift Incubator Archive](http://archive.apache.org/dist/incubator/thrift)

@@ -1,7 +1,7 @@
 ---
 title: "How to update the website"
-kind: doc
 ---
+
 ## Apache Thrift Website
 The thrift website is made up of markdown files with YAML headers and templates,
 and uses the [Apache CMS](http://www.apache.org/dev/cms).
@@ -42,17 +42,17 @@ ensure your source content is easily understood by
   by blank lines,
 - Preferring four-space indents per level over tab characters.
 
-Not only will your readers prefer a clean style, it will result in fewer bugs and a more 
+Not only will your readers prefer a clean style, it will result in fewer bugs and a more
 consistent experience with the various markdown parsers deployed by the CMS.
 
 ### Updating Release Versions
 
 The current release versioning is kept in the YAML __DATA__ section of the global "configuration
 file" [lib/path.pm](https://svn.apache.org/repos/asf/thrift/cms-site/trunk/lib/path.pm). Update
-the following values and then following <b>Updating the Website</b> section below 
+the following values and then following <b>Updating the Website</b> section below
 
-	current_release: "{{ conf.current_release }}"
-	current_release_date: "{{ conf.current_release_date }}"
+    current_release: "{{ site.current_release }}"
+    current_release_date: "{{ site.current_release_date }}"
 
 ### Updating the website
 

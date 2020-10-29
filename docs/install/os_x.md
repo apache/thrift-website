@@ -1,5 +1,6 @@
 ---
 title: "OS X Install"
-kind: doc
+isinstall: true
 ---
+
 [snippet:path=doc/install/os_x.md]

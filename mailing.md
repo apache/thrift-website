@@ -1,6 +1,7 @@
 ---
 title: "Mailing Lists"
 ---
+
 In accordance with the principles of the Apache Software Foundation, Thrift encourages a collaborative and community-based development environment.
 
 All project discussion is carried out publicly, on the following archived lists.

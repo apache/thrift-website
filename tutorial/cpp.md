@@ -1,8 +1,9 @@
 ---
 title: "C++"
-library_lang: "cpp"
+librarylang: "cpp"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

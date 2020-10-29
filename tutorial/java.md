@@ -1,8 +1,9 @@
 ---
 title: "Java"
-library_lang: "java"
+librarylang: "java"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

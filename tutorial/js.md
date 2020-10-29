@@ -1,10 +1,11 @@
 ---
 title: "Javascript"
-library_lang: "js"
+librarylang: "js"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
-### Prerequisites 
+### Prerequisites
 
 * This tutorial depends on an existing Thrift server. See either the [Java tutorial](/tutorial/java) or [node.js tutorial](/tutorial/nodejs) for how to build and setup one of these servers. Out of the box, a Thrift HTTP server using the JSON protocol is expected. To learn more about how to use other transports and/or protocols refer to the "Additional Information" section below.
 
@@ -34,7 +35,7 @@ function calc() {
 
 ### Server
 
-Use either the [Java tutorial](/tutorial/java) or [C++ tutorial](/tutorial/cpp) server 
+Use either the [Java tutorial](/tutorial/java) or [C++ tutorial](/tutorial/cpp) server
 
 
 ## Additional Information
@@ -62,7 +63,7 @@ Now that we have a functional Service Interface object created, we can can setup
     work.num2 = $("#num2").val();
     work.op = $("#op").val();
 
-Once the object is created, we can now pass 
+Once the object is created, we can now pass
 
     try {
         result = client.calculate(1, work);
@@ -99,12 +100,12 @@ and
 
     CalculatorClient.prototype.calculate = function(logid, w) {}
 
-Unfortunately, the Javascript object isn't just called Calculator and there are a lot of other functions defined as well, but how those are used are out of the scope of this tutorial.  
+Unfortunately, the Javascript object isn't just called Calculator and there are a lot of other functions defined as well, but how those are used are out of the scope of this tutorial.
 
 ### Inspecting the Thrift.js file
 
 * The main goal of the library is to define the Transport and Protocol layers.
-* The Transport layer can use AJAX or WebSockets.  
+* The Transport layer can use AJAX or WebSockets.
 * The Protocol layer handles the encoding/decoding to JSON or Binary format.
 * There are also the Thrift object types and call functions defined here as well.
 * The Thrift.js library can use jQuery.js if provided.

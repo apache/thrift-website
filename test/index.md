@@ -1,5 +1,5 @@
-Title: Test Suite
+---
+title: Test Suite
+---
 
 [snippet:path=test/README.md]
-
-

@@ -1,7 +1,7 @@
-{% extends 'default.html' %}
-{% block title %}Library{% endblock %}
-{% block content %}
-{% filter markdown %}
+---
+title: Library
+---
+
 # Apache Thrift Libraries
 
 ## Source Tree
@@ -10,10 +10,15 @@ Each supported language needs the Apache Thrift Libraries and the generated code
 
 Some language specific documentation is for the Apache Thrift Libraries are generated from lib/${language}/README.md files:
 
-{{ content|safe }}
+<ul>
+{% for item in site.pages %}
+{% if item.islib %}
+  <li><a href="{{item.url}}">{{item.title}}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
 
 ## Package manager information and references
-{% endfilter %}
 
 <!-- place table outside filter/endfilter -->
 <div class="packages">
@@ -27,18 +32,17 @@ Some language specific documentation is for the Apache Thrift Libraries are gene
             <td><b>Maintainer</b></td>
             <td><b>Remarks</b></td>
         </tr>
-        {% for item in conf.external_packages %}
+        {% for item in site.external_packages %}
         <tr class="">
-            <td class="language">{{ item.0 }}</td>
-            <td class="packman">{{ item.1 }}</td>
-            <td class="packurl"><a href="{{ item.2 }}">{{ item.2 }}</a></td>
-            <td class="ctrlfile">{{ item.3 }}</td>
-            <td class="maintainer">{{ item.4 }}</td>
-            <td class="remarks">{{ item.5 }}</td>
+            <td class="language">{{ item[0] }}</td>
+            <td class="packman">{{ item[1] }}</td>
+            <td class="packurl"><a href="{{ item[2] }}">{{ item[2] }}</a></td>
+            <td class="ctrlfile">{{ item[3] }}</td>
+            <td class="maintainer">{{ item[4] }}</td>
+            <td class="remarks">{{ item[5] }}</td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
 
-{% endblock %}

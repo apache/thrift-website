@@ -1,7 +1,8 @@
 ---
 title: "Concepts"
-kind: doc
+isdoc: true
 ---
+
 ## Thrift network stack
 Simple representation of the Apache Thrift networking stack
 <pre><code>

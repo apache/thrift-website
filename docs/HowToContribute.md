@@ -1,5 +1,6 @@
 ---
 title: "How To Contribute"
-kind: doc
+isdoc: true
 ---
+
 [snippet:path=CONTRIBUTING.md]

@@ -1,8 +1,9 @@
 ---
 title: "D"
-library_lang: "d"
+librarylang: "d"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

@@ -1,5 +1,6 @@
 ---
-title: "Windows Install" 
-kind: doc
+title: "Windows Install"
+isinstall: true
 ---
+
 [snippet:path=doc/install/windows.md]

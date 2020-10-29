@@ -1,5 +1,6 @@
 ---
 title: "Centos 6.5 Install"
-kind: doc
+isinstall: true
 ---
+
 [snippet:path=doc/install/centos.md]

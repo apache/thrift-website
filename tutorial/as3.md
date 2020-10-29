@@ -1,8 +1,9 @@
 ---
 title: "Actionscript 3.0"
-library_lang: "as3"
+librarylang: "as3"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

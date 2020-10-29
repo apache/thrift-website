@@ -1,8 +1,9 @@
 ---
 title: "Haskell"
-library_lang: "hs"
+librarylang: "hs"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

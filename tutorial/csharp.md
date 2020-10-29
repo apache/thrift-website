@@ -1,8 +1,9 @@
 ---
 title: "CSharp"
-library_lang: "csharp"
+librarylang: "csharp"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

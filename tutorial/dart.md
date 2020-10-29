@@ -1,8 +1,9 @@
 ---
 title: "Dart"
-library_lang: "dart"
+librarylang: "dart"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

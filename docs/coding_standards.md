@@ -1,5 +1,6 @@
 ---
 title: "Coding standards"
-kind: doc
+isdoc: true
 ---
+
 [snippet:path=doc/coding_standards.md]

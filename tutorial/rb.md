@@ -1,8 +1,9 @@
 ---
 title: "Ruby"
-library_lang: "rb"
+librarylang: "rb"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

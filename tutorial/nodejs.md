@@ -1,8 +1,9 @@
 ---
 title: "Node.js"
-library_lang: "js:node"
+librarylang: "js:node"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

@@ -1,8 +1,9 @@
 ---
 title: "Python"
-library_lang: "py"
+librarylang: "py"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

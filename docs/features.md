@@ -1,8 +1,9 @@
 ---
 title: "Features"
-kind: doc
+isdoc: true
 ---
-## Apache Thrift Features 
+
+## Apache Thrift Features
 
  * interface description language - Everything is specified in an IDL file from which bindings for many languages can be generated. See [Thrift IDL](/docs/idl)
  * language bindings - Thrift is supported in many languages and environments
@@ -33,13 +34,13 @@ kind: doc
  * service inheritance - Subservices implement all functions of their base services and can have additional functions
  * asynchronous invocations - Functions that do not return a result can be invoked asynchronously so the client is not blocked until the server has finished processing the request. The server may execute asynchronous invocations of the same client in parallel/out of order
  * exceptions - If an error occurs a function can throw a standard or user-defined exception. See [Thrift Types](/docs/types)
- * cyclic structs - Starting with version 0.9.2, Thrift supports structs that contain themselves, or other structs to be declared later. 
- 
+ * cyclic structs - Starting with version 0.9.2, Thrift supports structs that contain themselves, or other structs to be declared later.
+
 ## Non-features
 The following are not supported by Apache Thrift:
 
  * struct inheritance - Use struct composition instead
  * polymorphism - As there is no inheritance, polymorphism is also not supported
  * overloading - All methods within a service must be uniquely named
- * heterogeneous containers - All items in a container must be of the same type 
+ * heterogeneous containers - All items in a container must be of the same type
  * Null return - null cannot be returned directly from a function. Use a wrapper struct or a marker value instead

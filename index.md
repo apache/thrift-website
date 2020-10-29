@@ -1,9 +1,10 @@
-{% extends 'default.html' %}
-{% block title %}Home{% endblock %}
-{% block content %}
+---
+title: Home
+---
+
 <div class="row">
   <div class="span8">
-    <p> 
+    <p>
       The Apache Thrift software framework, for scalable cross-language services development, combines a software stack with a code generation engine to build services that work efficiently and seamlessly between C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, OCaml and Delphi and other languages.
     </p>
     <h3>Getting Started</h3>
@@ -32,19 +33,19 @@
   </div>
   <div class="span3 well center pull-right">
     <h2>Download</h2>
-    <p>Apache Thrift v{{ conf.current_release }}</p>
+    <p>Apache Thrift v{{ site.current_release }}</p>
     <p>
-      <a class="btn btn-large" href="{{ conf.mirror_url }}/thrift/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz">
-          Download <small>v{{ conf.current_release }}</small>
+      <a class="btn btn-large" href="{{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz">
+          Download <small>v{{ site.current_release }}</small>
       </a>
     </p>
     <p>
       <small>
-       <a href="{{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz.md5">MD5</a>
+       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5">MD5</a>
       </small>
       |
       <small>
-       <a href="{{ conf.release_url }}/{{ conf.current_release }}/thrift-{{ conf.current_release }}.tar.gz.asc">PGP</a>
+       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc">PGP</a>
       </small>
     </p>
     <p>
@@ -74,12 +75,12 @@
       [snippet:path=tutorial/py/PythonClient.py:lang=python:lines=36,55]
     </div>
     <div class="tab-pane" id="3">
-		Initialize the Server:
+    Initialize the Server:
       [snippet:path=tutorial/java/src/JavaServer.java:lang=java:lines:65,76]
 
-		The CalculatorHandler: 
-	  [snippet:path=tutorial/java/src/CalculatorHandler.java:lang=java:lines:28,91]
+    The CalculatorHandler:
+      [snippet:path=tutorial/java/src/CalculatorHandler.java:lang=java:lines:28,91]
     </div>
   </div>
 </div>
-{% endblock %}
+

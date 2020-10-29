@@ -1,8 +1,9 @@
 ---
 title: "Delphi"
-library_lang: "delphi"
+librarylang: "delphi"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 * Thrift requires at least Delphi 2010. Earlier versions and FPC will not work due to the lack of Generics.

@@ -1,8 +1,9 @@
 ---
 title: "PHP"
-library_lang: "php"
+librarylang: "php"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

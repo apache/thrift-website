@@ -154,7 +154,7 @@
   // Setup the mixins to be used
   .columns(@gridGutterWidth, @gridColumnWidth, @gridRowWidth, @columns) {
     width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
-  } 
+  }
   .offset(@gridColumnWidth, @gridGutterWidth, @columns) {
     margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
   }

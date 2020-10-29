@@ -1,8 +1,9 @@
 ---
 title: "Perl"
-library_lang: "perl"
+librarylang: "perl"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Prerequisites
 

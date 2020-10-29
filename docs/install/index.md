@@ -1,10 +1,16 @@
-{% extends 'default' %}
-{% block title %}Index of install/{% endblock %}
-{% block content %}{% filter markdown %}
 ---
+title: "Index of install/"
+---
+
 Apache Thrift's compiler is written in C++ and designed to be portable, but there are some system requirements which must be installed prior to use. Select your os below for a guide on setting up your system to get started
 
-{{ content|markdown }}
+<ul>
+{% for item in site.pages %}
+{% if item.isinstall %}
+  <li><a href="{{item.url}}">{{item.title}}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
 
 ---
 
@@ -16,7 +22,7 @@ Apache Thrift's compiler is written in C++ and designed to be portable, but ther
 * Runtime libraries for lex and yacc might be needed for the compiler.
 
 ## Requirements for building from source
-* GNU build tools: 
+* GNU build tools:
     * autoconf 2.65
     * automake 1.13
     * libtool 1.5.24
@@ -25,7 +31,7 @@ Apache Thrift's compiler is written in C++ and designed to be portable, but ther
 * libssl-dev
 
 ## Requirements for building the compiler from source on Windows
-* Visual Studio C++ 
+* Visual Studio C++
 * Flex and Bison (e.g. the WinFlexBison package)
 
 ## Language requirements
@@ -50,8 +56,4 @@ These are only required if you choose to build the libraries for the given langu
 * Haxe 3.1.3
 * Go 1.4
 * Delphi 2010
-
-
-{% endfilter %}{% endblock %}
-
 

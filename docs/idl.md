@@ -1,5 +1,6 @@
 ---
 title: "Interface Description Language (IDL)"
-kind: doc
+isdoc: true
 ---
+
 [snippet:path=doc/specs/idl.md]

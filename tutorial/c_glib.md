@@ -1,8 +1,9 @@
 ---
 title: "c_glib"
-library_lang: "c_glib"
+librarylang: "c_glib"
+layout: tutorial
+tutorial: true
 ---
-{% include 'tutorial_intro.md' %}
 
 ### Client
 

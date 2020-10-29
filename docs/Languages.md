@@ -1,11 +1,9 @@
 ---
 title: "Language and Feature Matrix"
-kind: doc
+isdoc: true
 ---
+
 [This page on GitHub](https://github.com/apache/thrift/blob/master/LANGUAGES.md)
- 
+
 [snippet:path=LANGUAGES.md]
-
-
-
 
