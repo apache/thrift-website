@@ -19,15 +19,6 @@ class RemoteSnippet < Liquid::Tag
     end
   end
 
-  def openLink(url)
-    begin
-      URI.open(url)
-    rescue OpenURI::HTTPError
-      $stderr.print "Failed to download #{url}"
-      raise
-    end
-  end
-
   def render(context)
     title = context.registers[:site].config['title']
     prefix = context.registers[:site].config['gitbox_url']
@@ -35,7 +26,7 @@ class RemoteSnippet < Liquid::Tag
     pretty_url = "#{prefix};a=blob;hb=HEAD;f=#{@path}"
     content = ""
     if @range == "all"
-      openLink(url) {|f| content = f.read }
+      URI.open(url) {|f| content = f.read }
     else
       rangenums = @range.split(",", 2)
       first = 0
@@ -43,14 +34,13 @@ class RemoteSnippet < Liquid::Tag
       if rangenums.length() == 2
         first = Integer(rangenums[0])
         second = Integer(rangenums[1]) - first
-        openLink(url) {|f| content = f.each_line.drop(first).take(second).join() }
+        URI.open(url) {|f| content = f.each_line.drop(first).take(second).join() }
       else
         first = Integer(rangenums[0])
-        openLink(url) {|f| content = f.each_line.drop(first).join() }
+        URI.open(url) {|f| content = f.each_line.drop(first).join() }
       end
     end
     snippet_type = "snippet"
-    content = ""
     if @type == "direct"
       content = Kramdown::Document.new(content).to_html
       snippet_type = "page"
