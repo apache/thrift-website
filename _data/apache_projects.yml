@@ -1,0 +1,8 @@
+# Apache Projects using Thrift: Project name, website
+  - [ "Accumulo", "https://accumulo.apache.org" ]
+  - [ "Aurora", "http://aurora.apache.org" ]
+  - [ "Camel", "http://camel.apache.org/" ]
+  - [ "Hadoop", "http://wiki.apache.org/hadoop/HDFS-APIs" ]
+  - [ "HBase", "http://wiki.apache.org/hadoop/Hbase/ThriftApi" ]
+  - [ "Parquet", "https://parquet.apache.org" ]
+  - [ "Storm", "http://storm.apache.org/" ]

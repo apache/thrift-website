@@ -32,7 +32,7 @@ Some language specific documentation is for the Apache Thrift Libraries are gene
             <td><b>Maintainer</b></td>
             <td><b>Remarks</b></td>
         </tr>
-        {% for item in site.external_packages %}
+        {% for item in site.data.external_packages %}
         <tr class="">
             <td class="language">{{ item[0] }}</td>
             <td class="packman">{{ item[1] }}</td>

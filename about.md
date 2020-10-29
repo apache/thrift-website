@@ -34,7 +34,7 @@ Project Team
       <td><b>Specialities</b></td>
       <td><b>Timezone</b></td>
     </tr>
-    {% for item in site.committers %}
+    {% for item in site.data.committers %}
     <tr class="">
       <td class="username">{{ item[0] }}</td>
       <td class="fullname">{{ item[1] }}</td>
@@ -67,7 +67,7 @@ The following companies are known to employ Apache Thrift in their production se
             <td><b>Company</b></td>
             <td><b>Website</b></td>
         </tr>
-        {% for item in site.powered_by %}
+        {% for item in site.data.powered_by %}
         <tr class="">
             <td class="company">{{ item[0] }}</td>
             <td class="website"><a href="{{ item[1] }}">{{ item[1] }}</a></td>
@@ -88,7 +88,7 @@ Apache Thrift is widely used in lots of other Open Source projects. These are so
             <td><b>Project</b></td>
             <td><b>Website</b></td>
         </tr>
-        {% for item in site.oss_projects %}
+        {% for item in site.data.oss_projects %}
         <tr class="">
             <td class="company">{{ item[0] }}</td>
             <td class="website"><a href="{{ item[1] }}">{{ item[1] }}</a></td>
@@ -109,7 +109,7 @@ There's also plenty of other Apache projects who are using and/or supporting Thr
             <td><b>Project</b></td>
             <td><b>Website</b></td>
         </tr>
-        {% for item in site.apache_projects %}
+        {% for item in site.data.apache_projects %}
         <tr class="">
             <td class="company">{{ item[0] }}</td>
             <td class="website"><a href="{{ item[1] }}">{{ item[1] }}</a></td>

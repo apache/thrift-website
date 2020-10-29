@@ -1,0 +1,4 @@
+# OSS Projects using Thrift: Project name, website
+  - [ "Microsoft Robust Distributed System Nucleus (rDSN)", "https://github.com/Microsoft/rDSN" ]
+  - [ "Twitter Finagle", "http://twitter.github.io/finagle/guide/Protocols.html" ]
+  - [ "Twitter Scrooge", "http://twitter.github.io/scrooge" ]
