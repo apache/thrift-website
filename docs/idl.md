@@ -3,4 +3,4 @@ title: "Interface Description Language (IDL)"
 isdoc: true
 ---
 
-[snippet:path=doc/specs/idl.md]
+{% remote_snippet doc/specs/idl.md direct %}

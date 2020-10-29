@@ -11,7 +11,7 @@ tutorial: true
 ### Client
 To initialize client you can use code similar to:
 
-  [snippet:path=tutorial/as3/src/CalculatorUI.as:lang=java:lines=42,48]
+{% remote_snippet tutorial/as3/src/CalculatorUI.as java 41,49 %}
 
 ### Server
 The example client above can be tested against a java tutorial server.
@@ -34,7 +34,7 @@ Also, you can find a simple python/perl server script to serve this file there. 
 crossdomain.xml from any port. So, you can start your RPC servers on ports 9090 and 9091, and serve polisy file from
 port 9092. To tell flash about this, you can use code from tutorial file:
 
-  [snippet:path=tutorial/as3/src/CalculatorUI.as:lang=java:lines=35,37]
+{% remote_snippet tutorial/as3/src/CalculatorUI.as java 34,37 %}
 
 Example of crossdomain file, to allow connect to ports 9090 and 9091 from any server:
 

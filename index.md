@@ -69,17 +69,17 @@ title: Home
   </ul>
   <div class="tab-content">
     <div class="tab-pane active" id="1">
-      [snippet:path=tutorial/tutorial.thrift:lang=text:lines=125,147]
+      {% remote_snippet tutorial/tutorial.thrift text 123,150 %}
     </div>
     <div class="tab-pane" id="2">
-      [snippet:path=tutorial/py/PythonClient.py:lang=python:lines=36,55]
+      {% remote_snippet tutorial/py/PythonClient.py py 35,55 %}
     </div>
     <div class="tab-pane" id="3">
     Initialize the Server:
-      [snippet:path=tutorial/java/src/JavaServer.java:lang=java:lines:65,76]
+      {% remote_snippet tutorial/java/src/JavaServer.java java 64,76 %}
 
     The CalculatorHandler:
-      [snippet:path=tutorial/java/src/CalculatorHandler.java:lang=java:lines:28,91]
+      {% remote_snippet tutorial/java/src/CalculatorHandler.java java 27,91 %}
     </div>
   </div>
 </div>

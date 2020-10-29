@@ -3,4 +3,4 @@ title: Java library
 islib: true
 ---
 
-[snippet:path=lib/java/README.md:lines=22]
+{% remote_snippet lib/java/README.md direct 21 %}

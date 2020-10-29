@@ -2,4 +2,4 @@
 title: Test Suite
 ---
 
-[snippet:path=test/README.md]
+{% remote_snippet test/README.md direct %}

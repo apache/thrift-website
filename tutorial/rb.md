@@ -9,10 +9,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/rb/RubyClient.rb:lang=ruby:lines=22,75]
+{% remote_snippet tutorial/rb/RubyClient.rb ruby 21,75 %}
 
 ### Server
 
-[snippet:path=tutorial/rb/RubyServer.rb:lang=ruby:lines=22,95]
+{% remote_snippet tutorial/rb/RubyServer.rb ruby 21,95 %}
 
 ## Additional Information

@@ -3,4 +3,4 @@ title: "Windows Install"
 isinstall: true
 ---
 
-[snippet:path=doc/install/windows.md]
+{% remote_snippet doc/install/windows.md direct %}

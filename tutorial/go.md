@@ -15,17 +15,17 @@ To use a specific version of the library, either clone the repository for that v
 
 ### Client
 
-[snippet:path=tutorial/go/src/client.go:lang=cpp:lines=22,99]
+{% remote_snippet tutorial/go/src/client.go cpp 21,99 %}
 
 
 ### Server
 
-[snippet:path=tutorial/go/src/server.go:lang=cpp:lines=22,54]
+{% remote_snippet tutorial/go/src/server.go cpp 21,54 %}
 
 
 ### Server Handler
 
-[snippet:path=tutorial/go/src/handler.go:lang=cpp:lines=22,200]
+{% remote_snippet tutorial/go/src/handler.go cpp 21,200 %}
 
 
 ## Additional Information

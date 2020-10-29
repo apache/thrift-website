@@ -3,4 +3,4 @@ title: Haskell library
 islib: true
 ---
 
-[snippet:path=lib/hs/README.md:lines=22]
+{% remote_snippet lib/hs/README.md direct 21 %}

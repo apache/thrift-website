@@ -10,11 +10,11 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/netstd/Client/Program.cs:lang=cpp:lines=18,356]
+{% remote_snippet tutorial/netstd/Client/Program.cs cpp 17,356 %}
 
 ### Server
 
-[snippet:path=tutorial/netstd/Server/Program.cs:lang=cpp:lines=18,430]
+{% remote_snippet tutorial/netstd/Server/Program.cs cpp 17,430 %}
 
 ## Additional Information
 

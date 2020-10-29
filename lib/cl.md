@@ -3,4 +3,4 @@ title: Common Lisp Library README
 islib: true
 ---
 
-[snippet:path=lib/cl/README.md:lines=22]
+{% remote_snippet lib/cl/README.md direct 21 %}

@@ -3,4 +3,4 @@ title: D library
 islib: true
 ---
 
-[snippet:path=lib/d/README.md:lines=23]
+{% remote_snippet lib/d/README.md direct 22 %}

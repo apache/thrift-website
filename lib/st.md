@@ -3,4 +3,4 @@ title: SmallTalk library
 islib: true
 ---
 
-[snippet:path=lib/st/README.md:lines=28]
+{% remote_snippet lib/st/README.md direct 27 %}

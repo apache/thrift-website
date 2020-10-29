@@ -7,8 +7,8 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/c_glib/c_glib_client.c:lang=c:lines=20,190]
+{% remote_snippet tutorial/c_glib/c_glib_client.c c 19,190 %}
 
 ### Server
 
-[snippet:path=tutorial/c_glib/c_glib_server.c:lang=c:lines=20,527]
+{% remote_snippet tutorial/c_glib/c_glib_server.c c 19,527 %}

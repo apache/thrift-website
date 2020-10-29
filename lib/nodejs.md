@@ -3,4 +3,4 @@ title: node.js library
 islib: true
 ---
 
-[snippet:path=lib/nodejs/README.md:lines=23]
+{% remote_snippet lib/nodejs/README.md direct 22 %}

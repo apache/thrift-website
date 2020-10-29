@@ -3,4 +3,4 @@ title: .NET Standard library
 islib: true
 ---
 
-[snippet:path=lib/netstd/README.md]
+{% remote_snippet lib/netstd/README.md direct 0 %}

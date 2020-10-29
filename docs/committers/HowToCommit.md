@@ -2,4 +2,4 @@
 title: "How To Commit"
 ---
 
-[snippet:path=doc/committers.md]
+{% remote_snippet doc/committers.md direct %}

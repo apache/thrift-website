@@ -3,4 +3,4 @@ title: Haxe library
 islib: true
 ---
 
-[snippet:path=lib/haxe/README.md:lines=22]
+{% remote_snippet lib/haxe/README.md direct 21 %}

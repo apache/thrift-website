@@ -12,7 +12,7 @@ tutorial: true
 For this tutorial, we put both the server and the client main code into one single program.
 Depending on the arguments passed, it runs as a server or as a client program.
 
-[snippet:path=tutorial/haxe/src/Main.hx:lines=20,332]
+{% remote_snippet tutorial/haxe/src/Main.hx text 19,332 %}
 
 Were done with the client, but need some more for the server: A service handler implementaion.
 
@@ -20,7 +20,7 @@ Were done with the client, but need some more for the server: A service handler 
 As the name suggests, the service handler implements the Thrift service on the server side.
 The code to achieve this is as follows:
 
-[snippet:path=tutorial/haxe/src/CalculatorHandler.hx:lines=20,102]
+{% remote_snippet tutorial/haxe/src/CalculatorHandler.hx text 19,102 %}
 
 ### Additional Information
 

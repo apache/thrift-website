@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/py/PythonClient.py:lang=python:lines=22,83]
+{% remote_snippet tutorial/py/PythonClient.py py 21,83 %}
 
 ### Server
 
-[snippet:path=tutorial/py/PythonServer.py:lang=python:lines=22,97]
+{% remote_snippet tutorial/py/PythonServer.py py 21,97 %}
 
 ## Additional Information

@@ -10,11 +10,11 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/delphi/DelphiClient/DelphiClient.dpr:lang=pascal:lines=19,114]
+{% remote_snippet tutorial/delphi/DelphiClient/DelphiClient.dpr pascal 18,114 %}
 
 ### Server
 
-[snippet:path=tutorial/delphi/DelphiServer/DelphiServer.dpr:lang=pascal:lines=19,173]
+{% remote_snippet tutorial/delphi/DelphiServer/DelphiServer.dpr pascal 18,173 %}
 
 ## Additional Information
 

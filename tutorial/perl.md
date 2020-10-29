@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/perl/PerlClient.pl:lang=ruby:lines=20,79]
+{% remote_snippet tutorial/perl/PerlClient.pl perl 19,79 %}
 
 ### Server
 
-[snippet:path=tutorial/perl/PerlServer.pl:lang=ruby:lines=20,85]
+{% remote_snippet tutorial/perl/PerlServer.pl perl 19,85 %}
 
 ## Additional Information

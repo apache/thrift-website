@@ -11,15 +11,15 @@ TBD
 
 ### Client
 
-[snippet:path=tutorial/dart/client/web/client.dart:lang=cpp:lines=18,279]
+{% remote_snippet tutorial/dart/client/web/client.dart cpp 17,279 %}
 
 ### Client web page
 
-[snippet:path=tutorial/dart/client/web/index.html:lang=html:lines=19,37]
+{% remote_snippet tutorial/dart/client/web/index.html html 18,37 %}
 
 ### Server
 
-[snippet:path=tutorial/dart/server/bin/main.dart:lang=cpp:lines=18,164]
+{% remote_snippet tutorial/dart/server/bin/main.dart cpp 17,164 %}
 
 ## Additional Information
 

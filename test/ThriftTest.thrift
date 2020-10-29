@@ -2,4 +2,4 @@
 title: ThriftTest
 ---
 
-[snippet:path=test/ThriftTest.thrift:lang=text:numbers=1]
+{% remote_snippet test/ThriftTest.thrift text %}

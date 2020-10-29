@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/php/PhpClient.php:lang=php:lines=2,91]
+{% remote_snippet tutorial/php/PhpClient.php php 1,91 %}
 
 ### Server
 
-[snippet:path=tutorial/php/PhpServer.php:lang=php:lines=2,130]
+{% remote_snippet tutorial/php/PhpServer.php php 1,130 %}
 
 ## Additional Information

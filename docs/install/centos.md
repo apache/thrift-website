@@ -3,4 +3,4 @@ title: "Centos 6.5 Install"
 isinstall: true
 ---
 
-[snippet:path=doc/install/centos.md]
+{% remote_snippet doc/install/centos.md direct %}

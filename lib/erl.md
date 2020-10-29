@@ -3,4 +3,4 @@ title: Erlang library
 islib: true
 ---
 
-[snippet:path=lib/erl/README.md:lines=22]
+{% remote_snippet lib/erl/README.md direct 21 %}

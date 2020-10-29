@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/hs/HaskellClient.hs:lang=cpp:lines=20,73]
+{% remote_snippet tutorial/hs/HaskellClient.hs cpp 19,73 %}
 
 ### Server
 
-[snippet:path=tutorial/hs/HaskellServer.hs:lang=cpp:lines=20,102]
+{% remote_snippet tutorial/hs/HaskellServer.hs cpp 19,102 %}
 
 ## Additional Information

@@ -3,4 +3,4 @@ title: "Coding standards"
 isdoc: true
 ---
 
-[snippet:path=doc/coding_standards.md]
+{% remote_snippet doc/coding_standards.md direct %}

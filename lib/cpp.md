@@ -3,4 +3,4 @@ title: C++ library
 islib: true
 ---
 
-[snippet:path=lib/cpp/README.md:lines=22]
+{% remote_snippet lib/cpp/README.md direct 21 %}

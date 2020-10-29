@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/nodejs/NodeClient.js:lang=javascript:lines=20]
+{% remote_snippet tutorial/nodejs/NodeClient.js js 20 %}
 
 ### Server
 
-[snippet:path=tutorial/nodejs/NodeServer.js:lang=javascript:lines=20]
+{% remote_snippet tutorial/nodejs/NodeServer.js js 20 %}
 
 ## Additional Information

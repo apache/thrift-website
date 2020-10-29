@@ -3,4 +3,4 @@ title: "How To Contribute"
 isdoc: true
 ---
 
-[snippet:path=CONTRIBUTING.md]
+{% remote_snippet CONTRIBUTING.md direct %}

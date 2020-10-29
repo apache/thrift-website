@@ -10,14 +10,14 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/java/src/JavaClient.java:lang=java]
+{% remote_snippet tutorial/java/src/JavaClient.java java %}
 
 ### CalculatorHandler
 
-[snippet:path=tutorial/java/src/CalculatorHandler.java:lang=java]
+{% remote_snippet tutorial/java/src/CalculatorHandler.java java %}
 
 ### Server
 
-[snippet:path=tutorial/java/src/JavaServer.java:lang=java]
+{% remote_snippet tutorial/java/src/JavaServer.java java %}
 
 ## Additional Information

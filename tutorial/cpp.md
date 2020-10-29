@@ -9,14 +9,14 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/cpp/CppClient.cpp:lang=cpp:lines=20,82]
+{% remote_snippet tutorial/cpp/CppClient.cpp cpp 19,82 %}
 
 ### Server
 
-[snippet:path=tutorial/cpp/CppServer.cpp:lang=cpp:lines=20,152]
+{% remote_snippet tutorial/cpp/CppServer.cpp cpp 19,152 %}
 
 ## Additional Information
 
 ### Example ThreadPool Server
 
-[snippet:path=tutorial/cpp/CppServer.cpp:lang=cpp:lines=119,131]
+{% remote_snippet tutorial/cpp/CppServer.cpp cpp 118,131 %}

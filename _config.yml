@@ -19,7 +19,7 @@
 
 # Basic site settings
 safe: false
-title: Apache Thrift™
+title: Apache Thrift
 email: dev@thrift.apache.org
 description: >-
   The Apache Thrift software framework, for scalable cross-language services
@@ -38,6 +38,7 @@ defaults:
 
 # Additional variables to power specific pages
 git_repo: "https://github.com/apache/thrift"
+gitbox_url: "https://gitbox.apache.org/repos/asf?p=thrift.git"
 release_url: "https://www.apache.org/dist/thrift"
 mirror_url: "http://www.apache.org/dyn/closer.cgi?path="
 jira_url: "http://issues.apache.org/jira/browse/THRIFT"

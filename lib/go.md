@@ -3,4 +3,4 @@ title: Go library
 islib: true
 ---
 
-[snippet:path=lib/go/README.md:lines=23]
+{% remote_snippet lib/go/README.md direct 22 %}

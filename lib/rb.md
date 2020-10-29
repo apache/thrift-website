@@ -3,4 +3,4 @@ title: Ruby library
 islib: true
 ---
 
-[snippet:path=lib/rb/README.md:lines=22]
+{% remote_snippet lib/rb/README.md direct 21 %}

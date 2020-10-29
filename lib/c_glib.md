@@ -3,4 +3,4 @@ title: C GLib
 islib: true
 ---
 
-[snippet:path=lib/c_glib/README.md:lines=22]
+{% remote_snippet lib/c_glib/README.md direct 21 %}

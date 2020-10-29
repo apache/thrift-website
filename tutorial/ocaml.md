@@ -10,10 +10,10 @@ tutorial: true
 
 ### Client
 
-[snippet:path=tutorial/ocaml/CalcClient.ml:lang=cpp:lines=20,74]
+{% remote_snippet tutorial/ocaml/CalcClient.ml cpp 19,74 %}
 
 ### Server
 
-[snippet:path=tutorial/ocaml/CalcServer.ml:lang=cpp:lines=20,89]
+{% remote_snippet tutorial/ocaml/CalcServer.ml cpp 19,89 %}
 
 ## Additional Information

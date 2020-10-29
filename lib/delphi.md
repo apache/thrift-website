@@ -3,4 +3,4 @@ title: Delphi library
 islib: true
 ---
 
-[snippet:path=lib/delphi/README.md:lines=22]
+{% remote_snippet lib/delphi/README.md direct 21 %}

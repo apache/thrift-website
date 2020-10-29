@@ -3,4 +3,4 @@ title: JavaScript library
 islib: true
 ---
 
-[snippet:path=lib/js/README.md:lines=25]
+{% remote_snippet lib/js/README.md direct 24 %}

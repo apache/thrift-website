@@ -2,4 +2,4 @@
 title: Keys
 ---
 
-[snippet:path=test/keys/README.md]
+{% remote_snippet test/keys/README.md direct %}
