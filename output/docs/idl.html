@@ -52,7 +52,7 @@
       
 <h2 id="thrift-interface-description-language">Thrift interface description language</h2>
 
-<p>For Thrift version 0.14.0.</p>
+<p>For Thrift version 0.15.0.</p>
 
 <p>The Thrift interface definition language (IDL) allows for the definition of <a href="/docs/types">Thrift Types</a>. A Thrift IDL file is processed by the Thrift code generator to produce code for the various target languages to support the defined structs and services in the IDL file.</p>
 
@@ -172,7 +172,7 @@
 
 <h3 id="field-requiredness">Field Requiredness</h3>
 
-<p>There are two explicit requiredness values, and a third one that is applied implicity if neither  <em>required</em> nor <em>optional</em> are given: <em>default</em> requiredness.</p>
+<p>There are two explicit requiredness values, and a third one that is applied implicitly if neither  <em>required</em> nor <em>optional</em> are given: <em>default</em> requiredness.</p>
 
 <pre><code>[18] FieldReq        ::=  'required' | 'optional' 
 </code></pre>
@@ -219,7 +219,7 @@
 
 <h3 id="xsd-options">XSD Options</h3>
 
-<p>N.B.: These have  some internal purpose at Facebook but serve no current purpose in Thrift. Use of these options is strongly discouraged.</p>
+<p>N.B.: These have some internal purpose at Facebook but serve no current purpose in Thrift. The use of these options is strongly discouraged.</p>
 
 <pre><code>[19] XsdFieldOptions ::=  'xsd_optional'? 'xsd_nillable'? XsdAttrs?
 
@@ -317,7 +317,7 @@
 
 <ul>
   <li>std::set does sort the elements automatically, that&#8217;s the design. see <a href="/docs/types">Thrift Types</a> or the <a href="http://www.cplusplus.com/reference/stl/set/">C++ std:set reference</a> for further details</li>
-  <li>The question is, how other languages are doing that? What about custom objects, do they have a Compare function the set the order correctly?</li>
+  <li>The question is, how other languages are doing that? What about custom objects, do they have a Compare function to set the order correctly?</li>
 </ul>
 
 <p>Why can&#8217;t <code>DefinitionType</code> be the same as <code>FieldType</code> (i.e. include <code>Identifier</code>)?</p>
@@ -359,7 +359,7 @@
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2020 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2021 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>
