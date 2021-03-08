@@ -6,7 +6,6 @@
 # - package maintainer name
 # - remarks
   - [ "(all)",       "Docker",        "https://hub.docker.com/_/thrift/",                                    "Dockerfile",                 "",                          "thrift compiler in /usr/local/bin/thrift" ]
-  - [ "ActionScript","Maven",         "https://repository.apache.org/#nexus-search;quick~libthrift-as3",     "lib/as3/build.xml",          "jking",                     "" ]
   - [ "C (glib)",    "",              "",                                                                    "",                           "",                          "language has no package manager" ]
   - [ "C++",         "",              "",                                                                    "",                           "",                          "see THRIFT-4800" ]
   - [ "C#",          "NuGet",         "https://www.nuget.org/packages/ApacheThrift",                         "ApacheThrift.nuspec",        "jfarrell, codesf, jking",   "multi-framework nupkg for csharp and netcore" ]
@@ -16,8 +15,7 @@
   - [ "Dart",        "Pub",           "https://pub.dartlang.org/packages/thrift",                            "lib/dart/pubspec.yaml",      "jking",                     "" ]
   - [ ".NET Standard", "NuGet",       "https://www.nuget.org/packages/ApacheThrift",                         "ApacheThrift.nuspec",        "jfarrell, codesf, jking",   "multi-framework nupkg for csharp and netcore" ]
   - [ "Erlang",      "Hex PM",        "https://hex.pm/packages?search=thrift&sort=downloads",                "",                           "",                          "no official ASF package available" ]
-  - [ "Haskell",     "Hackage",       "https://hackage.haskell.org/package/thrift",                          "lib/hs/thrift.cabal",        "jfarrell, clavoie, jking",  "" ]
-  - [ "Haxe",        "Haxelib",       "",                                                                    "lib/haxe/haxelib.json",      "jensg",                          "no package uploaded - see THRIFT-3036" ]
+  - [ "Haxe",        "Haxelib",       "",                                                                    "lib/haxe/haxelib.json",      "jensg",                     "" ]
   - [ "Go",          "",              "",                                                                    "",                           "",                          "no official ASF package available" ]
   - [ "Java",        "Maven",         "https://repository.apache.org/#nexus-search;quick~org.apache.thrift", "lib/java/gradle.properties", "jking",                     "" ]
   - [ "JavaScript",  "Bower",         "https://libraries.io/bower/thrift",                                   "bower.json",                 "",                          "" ]
