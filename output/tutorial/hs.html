@@ -68,151 +68,74 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="n">qualified</span> <span class="n">Calculator</span>
-<span class="n">import</span> <span class="n">qualified</span> <span class="n">Calculator_Client</span> <span class="n">as</span> <span class="n">Client</span>
-<span class="n">import</span> <span class="n">qualified</span> <span class="n">SharedService_Client</span> <span class="n">as</span> <span class="n">SClient</span>
-<span class="n">import</span> <span class="n">Tutorial_Types</span>
-<span class="n">import</span> <span class="n">SharedService_Iface</span>
-<span class="n">import</span> <span class="n">Shared_Types</span>
-
-<span class="n">import</span> <span class="n">Thrift</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Handle</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Server</span>
-
-<span class="n">import</span> <span class="n">Control</span><span class="p">.</span><span class="n">Exception</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Maybe</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">Lazy</span>
-<span class="n">import</span> <span class="n">Text</span><span class="p">.</span><span class="n">Printf</span>
-<span class="n">import</span> <span class="n">Network</span>
-
-<span class="n">main</span> <span class="o">=</span> <span class="k">do</span>
-  <span class="n">transport</span>  <span class="o">&lt;-</span> <span class="n">hOpen</span> <span class="p">(</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">PortNumber</span> <span class="mi">9090</span><span class="p">)</span>
-  <span class="n">let</span> <span class="n">binProto</span> <span class="o">=</span> <span class="n">BinaryProtocol</span> <span class="n">transport</span>
-  <span class="n">let</span> <span class="n">client</span> <span class="o">=</span> <span class="p">(</span><span class="n">binProto</span><span class="p">,</span> <span class="n">binProto</span><span class="p">)</span>
-
-  <span class="n">Client</span><span class="p">.</span><span class="n">ping</span> <span class="n">client</span>
-  <span class="n">print</span> <span class="s">"ping()"</span>
-
-  <span class="n">sum</span> <span class="o">&lt;-</span> <span class="n">Client</span><span class="p">.</span><span class="n">add</span> <span class="n">client</span> <span class="mi">1</span> <span class="mi">1</span>
-  <span class="n">printf</span> <span class="s">"1+1=%d</span><span class="se">\n</span><span class="s">"</span> <span class="n">sum</span>
-
-
-  <span class="n">let</span> <span class="n">work</span> <span class="o">=</span> <span class="n">Work</span> <span class="p">{</span> <span class="n">work_op</span> <span class="o">=</span> <span class="n">Operation_DIVIDE</span><span class="p">,</span>
-                    <span class="n">work_num1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="n">work_num2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">work_comment</span> <span class="o">=</span> <span class="n">Nothing</span>
-                  <span class="p">}</span>
-
-  <span class="n">Control</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="k">catch</span> <span class="p">(</span><span class="n">printf</span> <span class="s">"1/0=%d</span><span class="se">\n</span><span class="s">"</span> <span class="o">=&lt;&lt;</span> <span class="n">Client</span><span class="p">.</span><span class="n">calculate</span> <span class="n">client</span> <span class="mi">1</span> <span class="n">work</span><span class="p">)</span>
-        <span class="p">(</span><span class="err">\</span><span class="n">e</span> <span class="o">-&gt;</span> <span class="n">printf</span> <span class="s">"InvalidOperation %s</span><span class="se">\n</span><span class="s">"</span> <span class="p">(</span><span class="n">show</span> <span class="p">(</span><span class="n">e</span> <span class="o">::</span> <span class="n">InvalidOperation</span><span class="p">)))</span>
-
-
-  <span class="n">let</span> <span class="n">work</span> <span class="o">=</span> <span class="n">Work</span> <span class="p">{</span> <span class="n">work_op</span> <span class="o">=</span> <span class="n">Operation_SUBTRACT</span><span class="p">,</span>
-                    <span class="n">work_num1</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
-                    <span class="n">work_num2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="n">work_comment</span> <span class="o">=</span> <span class="n">Nothing</span>
-                  <span class="p">}</span>
-
-  <span class="n">diff</span> <span class="o">&lt;-</span> <span class="n">Client</span><span class="p">.</span><span class="n">calculate</span> <span class="n">client</span> <span class="mi">1</span> <span class="n">work</span>
-  <span class="n">printf</span> <span class="s">"15-10=%d</span><span class="se">\n</span><span class="s">"</span> <span class="n">diff</span>
-
-  <span class="n">log</span> <span class="o">&lt;-</span> <span class="n">SClient</span><span class="p">.</span><span class="n">getStruct</span> <span class="n">client</span> <span class="mi">1</span>
-  <span class="n">printf</span> <span class="s">"Check log: %s</span><span class="se">\n</span><span class="s">"</span> <span class="err">$</span> <span class="n">unpack</span> <span class="err">$</span> <span class="n">sharedStruct_value</span> <span class="n">log</span>
-
-  <span class="o">--</span> <span class="n">Close</span><span class="o">!</span>
-</code></pre></div>
+<div class="highlight"><pre class="codehilite"><code><span class="o">&lt;</span><span class="n">input</span> <span class="n">name</span><span class="o">=</span><span class="s">"a"</span> <span class="n">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="n">value</span><span class="o">=</span><span class="s">"search"</span> <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">input</span> <span class="n">name</span><span class="o">=</span><span class="s">"h"</span> <span class="n">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="n">value</span><span class="o">=</span><span class="s">"HEAD"</span> <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">select</span> <span class="n">name</span><span class="o">=</span><span class="s">"st"</span> <span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">selected</span><span class="o">=</span><span class="s">"selected"</span> <span class="n">value</span><span class="o">=</span><span class="s">"commit"</span><span class="o">&gt;</span><span class="n">commit</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"grep"</span><span class="o">&gt;</span><span class="n">grep</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"author"</span><span class="o">&gt;</span><span class="n">author</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"committer"</span><span class="o">&gt;</span><span class="n">committer</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"pickaxe"</span><span class="o">&gt;</span><span class="n">pickaxe</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">select</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=search_help"</span> <span class="n">title</span><span class="o">=</span><span class="s">"search help"</span><span class="o">&gt;?&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="n">search</span><span class="o">:</span>
+<span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"s"</span>  <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">span</span> <span class="n">title</span><span class="o">=</span><span class="s">"Extended regular expression"</span><span class="o">&gt;&lt;</span><span class="n">label</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="n">name</span><span class="o">=</span><span class="s">"sr"</span> <span class="n">value</span><span class="o">=</span><span class="s">"1"</span> <span class="o">/&gt;</span><span class="n">re</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_body"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+<span class="mi">404</span> <span class="o">-</span> <span class="n">Cannot</span> <span class="n">find</span> <span class="n">file</span>
+<span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_footer"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_footer_text"</span><span class="o">&gt;</span><span class="n">Apache</span> <span class="n">Thrift</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="k">class</span><span class="o">=</span><span class="s">"rss_logo"</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=rss;f=tutorial/hs/HaskellClient.hs"</span> <span class="n">title</span><span class="o">=</span><span class="s">"history of tutorial/hs/HaskellClient.hs RSS feed"</span><span class="o">&gt;</span><span class="n">RSS</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="k">class</span><span class="o">=</span><span class="s">"rss_logo"</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=atom;f=tutorial/hs/HaskellClient.hs"</span> <span class="n">title</span><span class="o">=</span><span class="s">"history of tutorial/hs/HaskellClient.hs Atom feed"</span><span class="o">&gt;</span><span class="n">Atom</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/javascript"</span> <span class="n">src</span><span class="o">=</span><span class="s">"/static/gitweb.js"</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/javascript"</span><span class="o">&gt;</span>
+<span class="n">window</span><span class="p">.</span><span class="n">onload</span> <span class="o">=</span> <span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="n">var</span> <span class="n">tz_cookie</span> <span class="o">=</span> <span class="p">{</span> <span class="n">name</span><span class="o">:</span> <span class="err">'</span><span class="n">gitweb_tz</span><span class="err">'</span><span class="p">,</span> <span class="n">expires</span><span class="o">:</span> <span class="mi">14</span><span class="p">,</span> <span class="n">path</span><span class="o">:</span> <span class="sc">'/'</span> <span class="p">};</span>
+	<span class="n">onloadTZSetup</span><span class="p">(</span><span class="err">'</span><span class="n">local</span><span class="err">'</span><span class="p">,</span> <span class="n">tz_cookie</span><span class="p">,</span> <span class="err">'</span><span class="n">datetime</span><span class="err">'</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span></code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/hs/HaskellClient.hs">tutorial/hs/HaskellClient.hs</a>
 </p>
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="p">{</span><span class="o">-</span><span class="err">#</span> <span class="n">LANGUAGE</span> <span class="n">OverloadedStrings</span> <span class="err">#</span><span class="o">-</span><span class="p">}</span>
-
-<span class="n">import</span> <span class="n">qualified</span> <span class="n">Calculator</span>
-<span class="n">import</span> <span class="n">Calculator_Iface</span>
-<span class="n">import</span> <span class="n">Tutorial_Types</span>
-<span class="n">import</span> <span class="n">SharedService_Iface</span>
-<span class="n">import</span> <span class="n">Shared_Types</span>
-
-<span class="n">import</span> <span class="n">Thrift</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span>
-<span class="n">import</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Server</span>
-
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Int</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">String</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Maybe</span>
-<span class="n">import</span> <span class="n">Text</span><span class="p">.</span><span class="n">Printf</span>
-<span class="n">import</span> <span class="n">Control</span><span class="p">.</span><span class="n">Exception</span> <span class="p">(</span><span class="k">throw</span><span class="p">)</span>
-<span class="n">import</span> <span class="n">Control</span><span class="p">.</span><span class="n">Concurrent</span><span class="p">.</span><span class="n">MVar</span>
-<span class="n">import</span> <span class="n">qualified</span> <span class="n">Data</span><span class="p">.</span><span class="n">Map</span> <span class="n">as</span> <span class="n">M</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Map</span> <span class="p">((</span><span class="o">!</span><span class="p">))</span>
-<span class="n">import</span> <span class="n">Data</span><span class="p">.</span><span class="n">Monoid</span>
-
-<span class="n">data</span> <span class="n">CalculatorHandler</span> <span class="o">=</span> <span class="n">CalculatorHandler</span> <span class="p">{</span><span class="n">mathLog</span> <span class="o">::</span> <span class="n">MVar</span> <span class="p">(</span><span class="n">M</span><span class="p">.</span><span class="n">Map</span> <span class="n">Int32</span> <span class="n">SharedStruct</span><span class="p">)}</span>
-
-<span class="n">newCalculatorHandler</span> <span class="o">=</span> <span class="k">do</span>
-  <span class="n">log</span> <span class="o">&lt;-</span> <span class="n">newMVar</span> <span class="n">mempty</span>
-  <span class="k">return</span> <span class="err">$</span> <span class="n">CalculatorHandler</span> <span class="n">log</span>
-
-<span class="n">instance</span> <span class="n">SharedService_Iface</span> <span class="n">CalculatorHandler</span> <span class="n">where</span>
-  <span class="n">getStruct</span> <span class="n">self</span> <span class="n">k</span> <span class="o">=</span> <span class="k">do</span>
-    <span class="n">myLog</span> <span class="o">&lt;-</span> <span class="n">readMVar</span> <span class="p">(</span><span class="n">mathLog</span> <span class="n">self</span><span class="p">)</span>
-    <span class="k">return</span> <span class="err">$</span> <span class="p">(</span><span class="n">myLog</span> <span class="o">!</span> <span class="n">k</span><span class="p">)</span>
-
-
-<span class="n">instance</span> <span class="n">Calculator_Iface</span> <span class="n">CalculatorHandler</span> <span class="n">where</span>
-  <span class="n">ping</span> <span class="n">_</span> <span class="o">=</span>
-    <span class="n">print</span> <span class="s">"ping()"</span>
-
-  <span class="n">add</span> <span class="n">_</span> <span class="n">n1</span> <span class="n">n2</span> <span class="o">=</span> <span class="k">do</span>
-    <span class="n">printf</span> <span class="s">"add(%d,%d)</span><span class="se">\n</span><span class="s">"</span> <span class="n">n1</span> <span class="n">n2</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span><span class="p">)</span>
-
-  <span class="n">calculate</span> <span class="n">self</span> <span class="n">mlogid</span> <span class="n">mwork</span> <span class="o">=</span> <span class="k">do</span>
-    <span class="n">printf</span> <span class="s">"calculate(%d, %s)</span><span class="se">\n</span><span class="s">"</span> <span class="n">logid</span> <span class="p">(</span><span class="n">show</span> <span class="n">work</span><span class="p">)</span>
-
-    <span class="n">let</span> <span class="n">val</span> <span class="o">=</span> <span class="k">case</span> <span class="n">op</span> <span class="n">work</span> <span class="n">of</span>
-                <span class="n">Operation_ADD</span> <span class="o">-&gt;</span>
-                    <span class="n">num1</span> <span class="n">work</span> <span class="o">+</span> <span class="n">num2</span> <span class="n">work</span>
-                <span class="n">Operation_SUBTRACT</span> <span class="o">-&gt;</span>
-                    <span class="n">num1</span> <span class="n">work</span> <span class="o">-</span> <span class="n">num2</span> <span class="n">work</span>
-                <span class="n">Operation_MULTIPLY</span> <span class="o">-&gt;</span>
-                    <span class="n">num1</span> <span class="n">work</span> <span class="o">*</span> <span class="n">num2</span> <span class="n">work</span>
-                <span class="n">Operation_DIVIDE</span> <span class="o">-&gt;</span>
-                    <span class="k">if</span> <span class="n">num2</span> <span class="n">work</span> <span class="o">==</span> <span class="mi">0</span> <span class="n">then</span>
-                        <span class="k">throw</span> <span class="err">$</span>
-                              <span class="n">InvalidOperation</span> <span class="err">{</span>
-                                 <span class="n">invalidOperation_whatOp</span> <span class="o">=</span> <span class="n">fromIntegral</span> <span class="err">$</span> <span class="n">fromEnum</span> <span class="err">$</span> <span class="n">op</span> <span class="n">work</span><span class="p">,</span>
-                                 <span class="n">invalidOperation_why</span> <span class="o">=</span> <span class="s">"Cannot divide by 0"</span>
-                                            <span class="err">}</span>
-                    <span class="k">else</span>
-                        <span class="n">num1</span> <span class="n">work</span> <span class="err">`</span><span class="n">div</span><span class="err">`</span> <span class="n">num2</span> <span class="n">work</span>
-
-    <span class="n">let</span> <span class="n">logEntry</span> <span class="o">=</span> <span class="n">SharedStruct</span> <span class="n">logid</span> <span class="p">(</span><span class="n">fromString</span> <span class="err">$</span> <span class="n">show</span> <span class="err">$</span> <span class="n">val</span><span class="p">)</span>
-    <span class="n">modifyMVar_</span> <span class="p">(</span><span class="n">mathLog</span> <span class="n">self</span><span class="p">)</span> <span class="err">$</span> <span class="k">return</span> <span class="p">.(</span><span class="n">M</span><span class="p">.</span><span class="n">insert</span> <span class="n">logid</span> <span class="n">logEntry</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="err">$</span><span class="o">!</span> <span class="n">val</span>
-
-   <span class="n">where</span>
-     <span class="o">--</span> <span class="n">stupid</span> <span class="n">dynamic</span> <span class="n">languages</span> <span class="n">f</span><span class="err">'</span><span class="n">ing</span> <span class="n">it</span> <span class="n">up</span>
-     <span class="n">num1</span> <span class="o">=</span> <span class="n">work_num1</span>
-     <span class="n">num2</span> <span class="o">=</span> <span class="n">work_num2</span>
-     <span class="n">op</span> <span class="o">=</span> <span class="n">work_op</span>
-     <span class="n">logid</span> <span class="o">=</span> <span class="n">mlogid</span>
-     <span class="n">work</span> <span class="o">=</span> <span class="n">mwork</span>
-
-  <span class="n">zip</span> <span class="n">_</span> <span class="o">=</span>
-    <span class="n">print</span> <span class="s">"zip()"</span>
-
-<span class="n">main</span> <span class="o">=</span>  <span class="k">do</span>
-  <span class="n">handler</span> <span class="o">&lt;-</span> <span class="n">newCalculatorHandler</span>
-  <span class="n">print</span> <span class="s">"Starting the server..."</span>
-  <span class="n">runBasicServer</span> <span class="n">handler</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">process</span> <span class="mi">9090</span>
-</code></pre></div>
+<div class="highlight"><pre class="codehilite"><code><span class="o">&lt;</span><span class="n">input</span> <span class="n">name</span><span class="o">=</span><span class="s">"a"</span> <span class="n">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="n">value</span><span class="o">=</span><span class="s">"search"</span> <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">input</span> <span class="n">name</span><span class="o">=</span><span class="s">"h"</span> <span class="n">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="n">value</span><span class="o">=</span><span class="s">"HEAD"</span> <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">select</span> <span class="n">name</span><span class="o">=</span><span class="s">"st"</span> <span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">selected</span><span class="o">=</span><span class="s">"selected"</span> <span class="n">value</span><span class="o">=</span><span class="s">"commit"</span><span class="o">&gt;</span><span class="n">commit</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"grep"</span><span class="o">&gt;</span><span class="n">grep</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"author"</span><span class="o">&gt;</span><span class="n">author</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"committer"</span><span class="o">&gt;</span><span class="n">committer</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s">"pickaxe"</span><span class="o">&gt;</span><span class="n">pickaxe</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">select</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=search_help"</span> <span class="n">title</span><span class="o">=</span><span class="s">"search help"</span><span class="o">&gt;?&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="n">search</span><span class="o">:</span>
+<span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">name</span><span class="o">=</span><span class="s">"s"</span>  <span class="o">/&gt;</span>
+<span class="o">&lt;</span><span class="n">span</span> <span class="n">title</span><span class="o">=</span><span class="s">"Extended regular expression"</span><span class="o">&gt;&lt;</span><span class="n">label</span><span class="o">&gt;&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="n">name</span><span class="o">=</span><span class="s">"sr"</span> <span class="n">value</span><span class="o">=</span><span class="s">"1"</span> <span class="o">/&gt;</span><span class="n">re</span><span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;&lt;/</span><span class="n">span</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_body"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+<span class="mi">404</span> <span class="o">-</span> <span class="n">Cannot</span> <span class="n">find</span> <span class="n">file</span>
+<span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_footer"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="k">class</span><span class="o">=</span><span class="s">"page_footer_text"</span><span class="o">&gt;</span><span class="n">Apache</span> <span class="n">Thrift</span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="k">class</span><span class="o">=</span><span class="s">"rss_logo"</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=rss;f=tutorial/hs/HaskellServer.hs"</span> <span class="n">title</span><span class="o">=</span><span class="s">"history of tutorial/hs/HaskellServer.hs RSS feed"</span><span class="o">&gt;</span><span class="n">RSS</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="k">class</span><span class="o">=</span><span class="s">"rss_logo"</span> <span class="n">href</span><span class="o">=</span><span class="s">"/repos/asf?p=thrift.git;a=atom;f=tutorial/hs/HaskellServer.hs"</span> <span class="n">title</span><span class="o">=</span><span class="s">"history of tutorial/hs/HaskellServer.hs Atom feed"</span><span class="o">&gt;</span><span class="n">Atom</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/javascript"</span> <span class="n">src</span><span class="o">=</span><span class="s">"/static/gitweb.js"</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">"text/javascript"</span><span class="o">&gt;</span>
+<span class="n">window</span><span class="p">.</span><span class="n">onload</span> <span class="o">=</span> <span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="n">var</span> <span class="n">tz_cookie</span> <span class="o">=</span> <span class="p">{</span> <span class="n">name</span><span class="o">:</span> <span class="err">'</span><span class="n">gitweb_tz</span><span class="err">'</span><span class="p">,</span> <span class="n">expires</span><span class="o">:</span> <span class="mi">14</span><span class="p">,</span> <span class="n">path</span><span class="o">:</span> <span class="sc">'/'</span> <span class="p">};</span>
+	<span class="n">onloadTZSetup</span><span class="p">(</span><span class="err">'</span><span class="n">local</span><span class="err">'</span><span class="p">,</span> <span class="n">tz_cookie</span><span class="p">,</span> <span class="err">'</span><span class="n">datetime</span><span class="err">'</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span></code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/hs/HaskellServer.hs">tutorial/hs/HaskellServer.hs</a>
 </p>
