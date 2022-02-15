@@ -92,10 +92,25 @@ All Apache Thrift tutorials require that you have:
 </span>
 <span class="k">namespace</span> <span class="n">Client</span>
 <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">LoggingHelper</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">ILoggerFactory</span> <span class="n">LogFactory</span> <span class="p">{</span> <span class="n">get</span><span class="p">;</span> <span class="p">}</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">builder</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">builder</span><span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="n">ILogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">LogFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="p">}</span>
+
     <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
     <span class="p">{</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ServiceCollection</span> <span class="n">ServiceCollection</span> <span class="o">=</span> <span class="k">new</span><span class="p">();</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">ILogger</span> <span class="n">Logger</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ILogger</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
         <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
 
         <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">DisplayHelp</span><span class="p">()</span>
@@ -139,47 +154,35 @@ All Apache Thrift tutorials require that you have:
         <span class="p">{</span>
             <span class="n">args</span> <span class="o">??=</span> <span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
-            <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">AddLogging</span><span class="p">(</span><span class="n">logging</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">));</span>
-            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">serviceProvider</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">())</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
             <span class="p">{</span>
-                <span class="n">Logger</span> <span class="o">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">().</span><span class="n">CreateLogger</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">Client</span><span class="p">));</span>
+                <span class="n">DisplayHelp</span><span class="p">();</span>
+                <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
 
-                <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
-                <span class="p">{</span>
-                    <span class="n">DisplayHelp</span><span class="p">();</span>
-                    <span class="k">return</span><span class="p">;</span>
-                <span class="p">}</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting client..."</span><span class="p">);</span>
 
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting client..."</span><span class="p">);</span>
-
-                <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
-                <span class="p">{</span>
-                    <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
-                <span class="p">}</span>
+            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
+            <span class="p">{</span>
+                <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
             <span class="p">}</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
-        <span class="p">}</span>
-
+        
         <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">RunAsync</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">GetNumberOfClients</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">,</span> <span class="n">numClients</span><span class="p">);</span>
 
             <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected client transport: {transport}"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected client transport: {transport}"</span><span class="p">,</span> <span class="n">transport</span><span class="p">);</span>
 
             <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">MakeProtocol</span><span class="p">(</span> <span class="n">args</span><span class="p">,</span> <span class="n">MakeTransport</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected client protocol: {GetProtocol(args)}"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected client protocol: {GetProtocol(args)}"</span><span class="p">,</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
 
             <span class="n">var</span> <span class="n">mplex</span> <span class="o">=</span> <span class="n">GetMultiplex</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Multiplex "</span> <span class="o">+</span> <span class="p">(</span><span class="n">mplex</span> <span class="o">?</span> <span class="s">"yes"</span> <span class="o">:</span> <span class="s">"no"</span><span class="p">));</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Multiplex {mplex}"</span><span class="p">,</span> <span class="n">mplex</span><span class="p">);</span>
 
             <span class="n">var</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Task</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
             <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClients</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
@@ -293,7 +296,7 @@ All Apache Thrift tutorials require that you have:
         <span class="p">{</span>
             <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-mc"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
 
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">,</span> <span class="n">numClients</span><span class="p">);</span>
 
             <span class="k">if</span> <span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">numClients</span><span class="p">,</span> <span class="n">out</span> <span class="kt">int</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
@@ -363,7 +366,7 @@ All Apache Thrift tutorials require that you have:
                 <span class="p">}</span>
                 <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
                 <span class="p">{</span>
-                    <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+                    <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="s">"{ex}"</span><span class="p">,</span><span class="n">ex</span><span class="p">);</span>
                 <span class="p">}</span>
                 <span class="n">finally</span>
                 <span class="p">{</span>
@@ -372,7 +375,7 @@ All Apache Thrift tutorials require that you have:
             <span class="p">}</span>
             <span class="k">catch</span> <span class="p">(</span><span class="n">TApplicationException</span> <span class="n">x</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="s">"{x}"</span><span class="p">,</span><span class="n">x</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
 
@@ -382,12 +385,12 @@ All Apache Thrift tutorials require that you have:
 
             <span class="c1">// Async version</span>
 
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Ping()"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Ping()"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">);</span>
             <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">ping</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
 
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Add(1,1)"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Add(1,1)"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">);</span>
             <span class="n">var</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
-            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Add(1,1)={sum}"</span><span class="p">);</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Add(1,1)={sum}"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
 
             <span class="n">var</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Work</span>
             <span class="p">{</span>
@@ -398,15 +401,12 @@ All Apache Thrift tutorials require that you have:
 
             <span class="k">try</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Calculate(1)"</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Calculate(1)"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">);</span>
                 <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Whoa we can divide by 0"</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Whoa we can divide by 0"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">);</span>
             <span class="p">}</span>
             <span class="k">catch</span> <span class="p">(</span><span class="n">InvalidOperation</span> <span class="n">io</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"{client.ClientId} Invalid operation: "</span> <span class="o">+</span> <span class="n">io</span><span class="p">);</span>
-            <span class="p">}</span>
-
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Client/Program.cs">tutorial/netstd/Client/Program.cs</a>
@@ -437,52 +437,54 @@ All Apache Thrift tutorials require that you have:
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Processor</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
 
-<span class="cp">#pragma warning disable IDE0063  // using
-#pragma warning disable IDE0057  // substr
+<span class="cp">#pragma warning disable IDE0057  // substr
 </span>
 <span class="k">namespace</span> <span class="n">Server</span>
 <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">LoggingHelper</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">ILoggerFactory</span> <span class="n">LogFactory</span> <span class="p">{</span> <span class="n">get</span><span class="p">;</span> <span class="p">}</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">builder</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">builder</span><span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
+            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="k">public</span> <span class="k">static</span> <span class="n">ILogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">LogFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="p">}</span>
+
     <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
     <span class="p">{</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ServiceCollection</span> <span class="n">ServiceCollection</span> <span class="o">=</span> <span class="k">new</span><span class="p">();</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">ILogger</span> <span class="n">Logger</span><span class="p">;</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ILogger</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
         <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
 
         <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">args</span> <span class="o">??=</span> <span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
-            <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">AddLogging</span><span class="p">(</span><span class="n">logging</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">));</span>
-            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">serviceProvider</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">())</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
             <span class="p">{</span>
-                <span class="n">Logger</span> <span class="o">=</span> <span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">().</span><span class="n">CreateLogger</span><span class="p">(</span><span class="n">nameof</span><span class="p">(</span><span class="n">Server</span><span class="p">));</span>
-
-                <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
-                <span class="p">{</span>
-                    <span class="n">DisplayHelp</span><span class="p">();</span>
-                    <span class="k">return</span><span class="p">;</span>
-                <span class="p">}</span>
-
-                <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
-                <span class="p">{</span>
-                    <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
-
-                    <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Press any key to stop..."</span><span class="p">);</span>
-
-                    <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
-                    <span class="n">source</span><span class="p">.</span><span class="n">Cancel</span><span class="p">();</span>
-                <span class="p">}</span>
-
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Server stopped"</span><span class="p">);</span>
+                <span class="n">DisplayHelp</span><span class="p">();</span>
+                <span class="k">return</span><span class="p">;</span>
             <span class="p">}</span>
+
+            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CancellationTokenSource</span><span class="p">())</span>
+            <span class="p">{</span>
+                <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
+
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Press any key to stop..."</span><span class="p">);</span>
+
+                <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+                <span class="n">source</span><span class="p">.</span><span class="n">Cancel</span><span class="p">();</span>
+            <span class="p">}</span>
+
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Server stopped"</span><span class="p">);</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">ILoggingBuilder</span> <span class="n">logging</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">SetMinimumLevel</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Trace</span><span class="p">);</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">AddConsole</span><span class="p">();</span>
-            <span class="n">logging</span><span class="p">.</span><span class="n">AddDebug</span><span class="p">();</span>
-        <span class="p">}</span>
 
         <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">DisplayHelp</span><span class="p">()</span>
         <span class="p">{</span>
@@ -528,7 +530,7 @@ All Apache Thrift tutorials require that you have:
             <span class="k">if</span> <span class="p">(</span><span class="n">selectedTransport</span> <span class="o">==</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Http</span><span class="p">)</span>
             <span class="p">{</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">multiplex</span><span class="p">)</span>
-                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s">"This tutorial semple code does not yet allow multiplex over http (although Thrift itself of course does)"</span><span class="p">);</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="p">(</span><span class="s">"This tutorial sample code does not yet allow multiplex over http (although Thrift itself of course does)"</span><span class="p">);</span>
                 <span class="k">new</span> <span class="n">HttpServerSample</span><span class="p">().</span><span class="n">Run</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
             <span class="p">}</span>
             <span class="k">else</span>
@@ -625,15 +627,12 @@ All Apache Thrift tutorials require that you have:
             <span class="k">try</span>
             <span class="p">{</span>
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span>
-                    <span class="n">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span>
-                        <span class="s">"TSimpleAsyncServer with </span><span class="se">\n</span><span class="s">{0} transport</span><span class="se">\n</span><span class="s">{1} buffering</span><span class="se">\n</span><span class="s">multiplex = {2}</span><span class="se">\n</span><span class="s">{3} protocol"</span><span class="p">,</span>
-                        <span class="n">transport</span><span class="p">,</span>
-                        <span class="n">buffering</span><span class="p">,</span>
-                        <span class="n">multiplex</span> <span class="o">?</span> <span class="s">"yes"</span> <span class="o">:</span> <span class="s">"no"</span><span class="p">,</span>
-                        <span class="n">protocol</span>
-                        <span class="p">));</span>
-
-                <span class="n">var</span> <span class="n">loggerFactory</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">.</span><span class="n">BuildServiceProvider</span><span class="p">().</span><span class="n">GetService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">();</span>
+                    <span class="s">"TSimpleAsyncServer with </span><span class="se">\n</span><span class="s">{transport} transport</span><span class="se">\n</span><span class="s">{buffering} buffering</span><span class="se">\n</span><span class="s">multiplex = {multiplex}</span><span class="se">\n</span><span class="s">{protocol} protocol"</span><span class="p">,</span>
+                    <span class="n">transport</span><span class="p">,</span>
+                    <span class="n">buffering</span><span class="p">,</span>
+                    <span class="n">multiplex</span> <span class="o">?</span> <span class="s">"yes"</span> <span class="o">:</span> <span class="s">"no"</span><span class="p">,</span>
+                    <span class="n">protocol</span>
+                    <span class="p">);</span>
 
                 <span class="n">var</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSimpleAsyncServer</span><span class="p">(</span>
                     <span class="nl">itProcessorFactory:</span> <span class="k">new</span> <span class="n">TSingletonProcessorFactory</span><span class="p">(</span><span class="n">processor</span><span class="p">),</span>
@@ -642,7 +641,7 @@ All Apache Thrift tutorials require that you have:
                     <span class="nl">outputTransportFactory:</span> <span class="n">transportFactory</span><span class="p">,</span>
                     <span class="nl">inputProtocolFactory:</span> <span class="n">protocolFactory</span><span class="p">,</span>
                     <span class="nl">outputProtocolFactory:</span> <span class="n">protocolFactory</span><span class="p">,</span>
-                    <span class="nl">logger:</span> <span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">TSimpleAsyncServer</span><span class="o">&gt;</span><span class="p">());</span>
+                    <span class="nl">logger:</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">TSimpleAsyncServer</span> <span class="o">&gt;</span><span class="p">());</span>
 
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting the server..."</span><span class="p">);</span>
 
@@ -650,7 +649,7 @@ All Apache Thrift tutorials require that you have:
             <span class="p">}</span>
             <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">x</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{x}"</span><span class="p">,</span><span class="n">x</span><span class="p">);</span>
             <span class="p">}</span>
         <span class="p">}</span>
 
@@ -726,7 +725,7 @@ All Apache Thrift tutorials require that you have:
                     <span class="p">.</span><span class="n">UseUrls</span><span class="p">(</span><span class="s">"http://localhost:9090"</span><span class="p">)</span>
                     <span class="p">.</span><span class="n">UseContentRoot</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">())</span>
                     <span class="p">.</span><span class="n">UseStartup</span><span class="o">&lt;</span><span class="n">Startup</span><span class="o">&gt;</span><span class="p">()</span>
-                    <span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">((</span><span class="n">ctx</span><span class="p">,</span><span class="n">logging</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">))</span>
+                    <span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">((</span><span class="n">ctx</span><span class="p">,</span><span class="n">logging</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">(</span><span class="n">logging</span><span class="p">))</span>
                     <span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogTrace</span><span class="p">(</span><span class="s">"test"</span><span class="p">);</span>
@@ -778,7 +777,7 @@ All Apache Thrift tutorials require that you have:
             <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">key</span><span class="p">,</span>
                 <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"GetStruct({0})"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"GetStruct({key})"</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
                 <span class="k">return</span> <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">_log</span><span class="p">[</span><span class="n">key</span><span class="p">]);</span>
             <span class="p">}</span>
 
@@ -790,13 +789,13 @@ All Apache Thrift tutorials require that you have:
 
             <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">num1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Add({num1},{num2})"</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Add({num1},{num2})"</span><span class="p">,</span> <span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">);</span>
                 <span class="k">return</span> <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">);</span>
             <span class="p">}</span>
 
             <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span> <span class="n">w</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="err">$</span><span class="s">"Calculate({logid}, [{w.Op},{w.Num1},{w.Num2}])"</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Calculate({logid}, [{w.Op},{w.Num1},{w.Num2}])"</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">);</span>
 
                 <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
                 <span class="k">switch</span> <span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
@@ -827,6 +826,7 @@ All Apache Thrift tutorials require that you have:
                         <span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">/</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">;</span>
                         <span class="k">break</span><span class="p">;</span>
 
+                    <span class="nl">default:</span>
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Server/Program.cs">tutorial/netstd/Server/Program.cs</a>
@@ -863,7 +863,7 @@ All Apache Thrift tutorials require that you have:
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2021 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2022 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>
