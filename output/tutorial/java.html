@@ -117,11 +117,11 @@ All Apache Thrift tutorials require that you have:
         <span class="cm">/*
          * Similar to the server, you can use the parameters to setup client parameters or
          * use the default settings. On the client side, you will need a TrustStore which
-         * contains the trusted certificate along with the public key. 
-         * For this example it's a self-signed cert. 
+         * contains the trusted certificate along with the public key.
+         * For this example it's a self-signed cert.
          */</span>
         <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
-        <span class="n">params</span><span class="o">.</span><span class="na">setTrustStore</span><span class="o">(</span><span class="s">"../../lib/java/test/.truststore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="s">"SunX509"</span><span class="o">,</span> <span class="s">"JKS"</span><span class="o">);</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">setTrustStore</span><span class="o">(</span><span class="s">"../../lib/java/test/resources/.truststore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="s">"SunX509"</span><span class="o">,</span> <span class="s">"JKS"</span><span class="o">);</span>
         <span class="cm">/*
          * Get a client transport instead of a server transport. The connection is opened on
          * invocation of the factory method, no need to specifically call open()
@@ -137,7 +137,7 @@ All Apache Thrift tutorials require that you have:
       <span class="n">transport</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">TException</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
       <span class="n">x</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-    <span class="o">}</span> 
+    <span class="o">}</span>
   <span class="o">}</span>
 
   <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">perform</span><span class="o">(</span><span class="nc">Calculator</span><span class="o">.</span><span class="na">Client</span> <span class="n">client</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">TException</span>
@@ -329,7 +329,7 @@ All Apache Thrift tutorials require that you have:
         <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
           <span class="n">simple</span><span class="o">(</span><span class="n">processor</span><span class="o">);</span>
         <span class="o">}</span>
-      <span class="o">};</span>      
+      <span class="o">};</span>
       <span class="nc">Runnable</span> <span class="n">secure</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Runnable</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
           <span class="n">secure</span><span class="o">(</span><span class="n">processor</span><span class="o">);</span>
@@ -363,19 +363,19 @@ All Apache Thrift tutorials require that you have:
       <span class="cm">/*
        * Use TSSLTransportParameters to setup the required SSL parameters. In this example
        * we are setting the keystore and the keystore password. Other things like algorithms,
-       * cipher suites, client auth etc can be set. 
+       * cipher suites, client auth etc can be set.
        */</span>
       <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
       <span class="c1">// The Keystore contains the private key</span>
-      <span class="n">params</span><span class="o">.</span><span class="na">setKeyStore</span><span class="o">(</span><span class="s">"../../lib/java/test/.keystore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+      <span class="n">params</span><span class="o">.</span><span class="na">setKeyStore</span><span class="o">(</span><span class="s">"../../lib/java/test/resources/.keystore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
 
       <span class="cm">/*
        * Use any of the TSSLTransportFactory to get a server transport with the appropriate
        * SSL configuration. You can use the default settings if properties are set in the command line.
        * Ex: -Djavax.net.ssl.keyStore=.keystore and -Djavax.net.ssl.keyStorePassword=thrift
-       * 
+       *
        * Note: You need not explicitly call open(). The underlying server socket is bound on return
-       * from the factory class. 
+       * from the factory class.
        */</span>
       <span class="nc">TServerTransport</span> <span class="n">serverTransport</span> <span class="o">=</span> <span class="nc">TSSLTransportFactory</span><span class="o">.</span><span class="na">getServerSocket</span><span class="o">(</span><span class="mi">9091</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">params</span><span class="o">);</span>
       <span class="nc">TServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSimpleServer</span><span class="o">(</span><span class="k">new</span> <span class="nc">Args</span><span class="o">(</span><span class="n">serverTransport</span><span class="o">).</span><span class="na">processor</span><span class="o">(</span><span class="n">processor</span><span class="o">));</span>

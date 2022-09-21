@@ -164,6 +164,7 @@ struct CrazyNesting {
   // Do not insert line break as test/go/Makefile.am is removing this line with pattern match
   3: required list&lt;map&lt;set&lt;i32&gt; (python.immutable = ""), map&lt;i32,set&lt;list&lt;map&lt;Insanity,string&gt;(python.immutable = "")&gt; (python.immutable = "")&gt;&gt;&gt;&gt; list_field,
   4: binary binary_field
+  5: uuid uuid_field
 }
 
 union SomeUnion {
@@ -246,6 +247,13 @@ service ThriftTest
    * @return binary  - returns the binary 'thing'
    */
   binary       testBinary(1: binary thing),
+
+  /**
+   * Prints 'testUuid("%s")' where '%s' is the uuid given. Note that the uuid byte order should be correct.
+   * @param uuid  thing - the uuid to print
+   * @return uuid  - returns the uuid 'thing'
+   */
+  uuid       testUuid(1: uuid thing),
 
   /**
    * Prints 'testStruct("{%s}")' where thing has been formatted into a string of comma separated values
