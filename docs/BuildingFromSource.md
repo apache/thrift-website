@@ -47,7 +47,7 @@ and run the test suite:
 
 and the cross language test suite:
 
-    python test/test.py
+    python3 test/test.py
 
 ### Issues while compiling
 
