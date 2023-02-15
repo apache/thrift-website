@@ -47,7 +47,7 @@ and run the test suite:
 
 and the cross language test suite:
 
-    sh test/test.sh
+    python test/test.py
 
 ### Issues while compiling
 
