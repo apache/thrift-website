@@ -124,7 +124,7 @@ dependencies; in the case of libthrift, openssl, pthreads, and librt and for
 libthriftnb, libevent.</p>
 
 <p>In the project properties you must also set HAVE_CONFIG_H as force include
-the config header: &#8220;windows/config.h&#8221;</p>
+the config header: “windows/config.h”</p>
 
 <h2 id="dependencies-1">Dependencies</h2>
 
@@ -158,7 +158,7 @@ on the vcpkg repository.</p>
 <p>Named Pipe transport has been added in the TPipe and TPipeServer classes. This
 is currently Windows-only. Named pipe transport for *NIX has not been
 implemented. Domain sockets are a better choice for local IPC under non-Windows
-OS&#8217;s. *NIX named pipes only support 1:1 client-server connection.</p>
+OS’s. *NIX named pipes only support 1:1 client-server connection.</p>
 
 <h1 id="thriftssl">Thrift/SSL</h1>
 
@@ -190,44 +190,44 @@ TSSLSocket are always created from TSSLSocketFactory.</p>
 
 <p>After SSL handshake completes, additional checks are conducted. Application
 is given the chance to decide whether or not to continue the conversation
-with the remote. Application is queried through the above three &#8220;verify&#8221;
+with the remote. Application is queried through the above three “verify”
 method. They are called at different points of the verification process.</p>
 
 <p>Decisions can be one of ALLOW, DENY, and SKIP. ALLOW and DENY means the
 conversation should be continued or disconnected, respectively. ALLOW and
-DENY decision stops the verification process. SKIP means there&#8217;s no decision
+DENY decision stops the verification process. SKIP means there’s no decision
 based on the given input, continue the verification process.</p>
 
 <p>First, (a) is called with the remote IP. It is called once at the beginning.
-&#8220;sa&#8221; is the IP address of the remote peer.</p>
+“sa” is the IP address of the remote peer.</p>
 
 <p>Then, the certificate of remote peer is loaded. SubjectAltName extensions
 are extracted and sent to application for verification. When a DNS
 subjectAltName field is extracted, (b) is called. When an IP subjectAltName
 field is extracted, (c) is called.</p>
 
-<p>The &#8220;host&#8221; in (b) is the value from TSocket::getHost() if this is a client
+<p>The “host” in (b) is the value from TSocket::getHost() if this is a client
 side socket, or TSocket::getPeerHost() if this is a server side socket. The
 reason is client side socket initiates the connection. TSocket::getHost()
 is the remote host name. On server side, the remote host name is unknown
-unless it&#8217;s retrieved through TSocket::getPeerHost(). Either way, &#8220;host&#8221;
+unless it’s retrieved through TSocket::getPeerHost(). Either way, “host”
 should be the remote host name. Keep in mind, if TSocket::getPeerHost()
 failed, it would return the remote host name in numeric format.</p>
 
-<p>If all subjectAltName extensions were &#8220;skipped&#8221;, the common name field would
-be checked. It is sent to application through (c), where &#8220;sa&#8221; is the remote
-IP address. &#8220;data&#8221; is the IP address extracted from subjectAltName IP
-extension, and &#8220;size&#8221; is the length of the extension data.</p>
+<p>If all subjectAltName extensions were “skipped”, the common name field would
+be checked. It is sent to application through (c), where “sa” is the remote
+IP address. “data” is the IP address extracted from subjectAltName IP
+extension, and “size” is the length of the extension data.</p>
 
-<p>If any of the above &#8220;verify&#8221; methods returned a decision ALLOW or DENY, the
+<p>If any of the above “verify” methods returned a decision ALLOW or DENY, the
 verification process would be stopped.</p>
 
-<p>If any of the above &#8220;verify&#8221; methods returned SKIP, that decision would be
+<p>If any of the above “verify” methods returned SKIP, that decision would be
 ignored and the verification process would move on till the last item is
-examined. At that point, if there&#8217;s still no decision, the connection is
+examined. At that point, if there’s still no decision, the connection is
 terminated.</p>
 
-<p>Thread safety, an access manager should not store state information if it&#8217;s
+<p>Thread safety, an access manager should not store state information if it’s
 to be used by many SSL sockets.</p>
 
 <h2 id="sigpipe-signal">SIGPIPE signal</h2>
@@ -249,7 +249,7 @@ this signal would kill the application.</p>
 
 <p>The file names are hard coded in the source code. You need to create these
 certificates before you can run the test code in SSL mode. Make sure at least
-one of the followings is included in &#8220;keys/server.crt&#8221;,</p>
+one of the followings is included in “keys/server.crt”,</p>
 
 <ul>
   <li>subjectAltName, DNS localhost</li>
@@ -263,16 +263,16 @@ one of the followings is included in &#8220;keys/server.crt&#8221;,</p>
      ./cpp/TestClient --ssl
 </code></pre>
 
-<p>If &#8220;-h <host>" is used to run client, the above "localhost" in the above
+<p>If “-h <host>" is used to run client, the above "localhost" in the above
 keys/server.crt has to be replaced with that host name.</host></p>
 
 <h2 id="tsslsocketfactoryrandomize">TSSLSocketFactory::randomize()</h2>
 
 <p>The default implementation of OpenSSLSocketFactory::randomize() simply calls
-OpenSSL&#8217;s RAND_poll() when OpenSSL library is first initialized.</p>
+OpenSSL’s RAND_poll() when OpenSSL library is first initialized.</p>
 
 <p>The PRNG seed is key to the application security. This method should be
-overridden if it&#8217;s not strong enough for you.</p>
+overridden if it’s not strong enough for you.</p>
 
 <h1 id="deprecations">Deprecations</h1>
 
@@ -314,7 +314,7 @@ Qt4 support was removed.</p>
 
 <p>THRIFT-4762:
 Added <code>const</code> specifier to <code>TTransport::getOrigin()</code>. This changes its function signature.
-It&#8217;s recommended to add the <code>override</code> specifier in implementations derived from <code>TTransport</code>.</p>
+It’s recommended to add the <code>override</code> specifier in implementations derived from <code>TTransport</code>.</p>
 
 <h2 id="section-2">0.11.0</h2>
 
@@ -327,7 +327,7 @@ preprocessor macro `FORCE_BOOST_SMART_PTR`.  (THRIFT-2221)</memory></p>
 <p>In the pthread mutex implementation, the contention profiling code was enabled
 by default in all builds.  This changed to be disabled by default.  (THRIFT-4151)</p>
 
-<p>In older releases, if a TSSLSocketFactory&#8217;s lifetime was not at least as long
+<p>In older releases, if a TSSLSocketFactory’s lifetime was not at least as long
 as the TSSLSockets it created, we silently reverted openssl to unsafe multithread behavior
 and so the results were undefined.  Changes were made in 0.11.0 that cause either an
 assertion or a core instead of undefined behavior.  The lifetime of a TSSLSocketFactory

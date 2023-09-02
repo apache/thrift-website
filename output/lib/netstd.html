@@ -77,7 +77,7 @@ or</li>
 
 <h1 id="migration-to-netstd">Migration to netstd</h1>
 
-<h2 id="from-netcore">&#8230; from netcore</h2>
+<h2 id="from-netcore">… from netcore</h2>
 
 <p>If you are migrating your code from netcore library, you will have to:</p>
 
@@ -94,14 +94,14 @@ or</li>
 
 <p>You may wonder why we changed so many names. The naming scheme has been revised for two reasons: First, we want to get back the established, well-known naming consistency across the Thrift libraries which the netcore library did not fully respect. Second, by achieving that first objective, we get the additional benefit of making migration at least a bit easier for C# projects.</p>
 
-<h2 id="from-csharp">&#8230; from csharp</h2>
+<h2 id="from-csharp">… from csharp</h2>
 
 <p>Because of the different environment requirements, migration from C# takes slightly more efforts. While the code changes related to Thrift itself are moderate, you may need to upgrade certain dependencies, components or even modules to more recent versions.</p>
 
 <ol>
   <li>Client and server applications must use at least framework 4.6.1, any version below will not work.</li>
   <li>Switch to <code>thrift -gen netstd</code>. The following compiler flags are no longer needed or supported: <code>hashcode</code> and <code>async</code> are now standard, while <code>nullable</code> is no longer supported.</li>
-  <li><a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Familiarize yourself with the <code>async/await</code> model</a>, if you have not already done so. As netstd does not support <code>ISync</code> anymore, async is mandatory. The synchronous model is simply no longer available (that&#8217;s also the reason why we don&#8217;t need the <code>async</code> flag anymore).</li>
+  <li><a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Familiarize yourself with the <code>async/await</code> model</a>, if you have not already done so. As netstd does not support <code>ISync</code> anymore, async is mandatory. The synchronous model is simply no longer available (that’s also the reason why we don’t need the <code>async</code> flag anymore).</li>
   <li>Consider proper use of <code>cancellationToken</code> parameters. They are optional but may be quite helpful.</li>
   <li>As you probably already guessed, there are a few names that have been changed:
 - add <code>using Thrift.Processor;</code> in the server code where appropriate
@@ -109,7 +109,7 @@ or</li>
 - change <code>IProtocolFactory</code> into <code>ITProtocolFactory</code>
 - if you are looking for <code>TSimpleServer</code>, try <code>TSimpleAsyncServer</code> instead
 - similarly, the <code>TThreadPoolServer</code> is now a <code>TThreadPoolAsyncServer</code> 
-- the server&#8217;s <code>Serve()</code> method does now <code>ServeAsync()</code>
+- the server’s <code>Serve()</code> method does now <code>ServeAsync()</code>
 - In case you are using Thrift server event handlers: the <code>SetEventHandler</code> method now starts with an uppercase letter
 - and you will also have to revise the method names of all <code>TServerEventHandler</code> descendants you have in your code</li>
 </ol>

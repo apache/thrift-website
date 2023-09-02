@@ -52,7 +52,7 @@
       
 <h2 id="thrift-interface-description-language">Thrift interface description language</h2>
 
-<p>For Thrift version 0.19.0.</p>
+<p>For Thrift version 0.20.0.</p>
 
 <p>The Thrift interface definition language (IDL) allows for the definition of <a href="/docs/types">Thrift Types</a>. A Thrift IDL file is processed by the Thrift code generator to produce code for the various target languages to support the defined structs and services in the IDL file.</p>
 
@@ -90,7 +90,7 @@
 
 <h3 id="namespace">Namespace</h3>
 
-<p>A namespace declares which namespaces/package/module/etc. the type definitions in this file will be declared in for the target languages. The namespace scope indicates which language the namespace applies to; a scope of &#8216;*&#8217; indicates that the namespace applies to all target languages.</p>
+<p>A namespace declares which namespaces/package/module/etc. the type definitions in this file will be declared in for the target languages. The namespace scope indicates which language the namespace applies to; a scope of ‘*’ indicates that the namespace applies to all target languages.</p>
 
 <pre><code>[5]  Namespace       ::=  ( 'namespace' ( NamespaceScope Identifier ) )
 
@@ -192,7 +192,7 @@
   <li>Default values: are written when the isset flag is set</li>
 </ul>
 
-<p>Most language implementations use the recommended practice of so-called &#8220;isset&#8221; flags to indicate whether a particular optional field is set or not. Only fields with this flag set are written, and conversely the flag is only set when a field value has been read from the input stream.</p>
+<p>Most language implementations use the recommended practice of so-called “isset” flags to indicate whether a particular optional field is set or not. Only fields with this flag set are written, and conversely the flag is only set when a field value has been read from the input stream.</p>
 
 <h4 id="default-requiredness-implicit">default requiredness (implicit)</h4>
 
@@ -202,7 +202,7 @@
   <li>Default values: may not be written (see next section)</li>
 </ul>
 
-<p>Default requiredness is a good starting point. The desired behaviour is a mix of optional and required, hence the internal name &#8220;opt-in, req-out&#8221;. Although in theory these fields are supposed to be written (&#8220;req-out&#8221;), in reality unset fields are not always written. This is especially the case, when the field contains a <null> value, which by definition cannot be transported through thrift. The only way to achieve this is by not writing that field at all, and that's what most languages do.</null></p>
+<p>Default requiredness is a good starting point. The desired behaviour is a mix of optional and required, hence the internal name “opt-in, req-out”. Although in theory these fields are supposed to be written (“req-out”), in reality unset fields are not always written. This is especially the case, when the field contains a <null> value, which by definition cannot be transported through thrift. The only way to achieve this is by not writing that field at all, and that's what most languages do.</null></p>
 
 <h4 id="semantics-of-default-values">Semantics of Default Values</h4>
 
@@ -309,8 +309,8 @@
 <ul>
   <li><a href="https://raw.githubusercontent.com/apache/thrift/master/test/ThriftTest.thrift">ThriftTest.thrift</a> used by the Thrift TestFramework</li>
   <li>Thrift <a href="/tutorial/">tutorial</a></li>
-  <li>Facebook&#8217;s <a href="https://raw.githubusercontent.com/apache/thrift/master/contrib/fb303/if/fb303.thrift">fb303.thrift</a></li>
-  <li><a href="http://cassandra.apache.org/">Apache Cassandra&#8217;s</a> Thrift IDL: <a href="https://gitbox.apache.org/repos/asf?p=cassandra.git;a=blob_plain;f=interface/cassandra.thrift;hb=refs/heads/cassandra-3.0">cassandra.thrift</a></li>
+  <li>Facebook’s <a href="https://raw.githubusercontent.com/apache/thrift/master/contrib/fb303/if/fb303.thrift">fb303.thrift</a></li>
+  <li><a href="http://cassandra.apache.org/">Apache Cassandra’s</a> Thrift IDL: <a href="https://gitbox.apache.org/repos/asf?p=cassandra.git;a=blob_plain;f=interface/cassandra.thrift;hb=refs/heads/cassandra-3.0">cassandra.thrift</a></li>
   <li><a href="https://github.com/evernote/evernote-thrift">Evernote API</a></li>
 </ul>
 
@@ -319,19 +319,19 @@
 <p>Initialization of Base Types for all Languages?</p>
 
 <ul>
-  <li>Do all Languages initialize them to 0, bool=false and string=&#8221;&#8221;? or null, undefined?</li>
+  <li>Do all Languages initialize them to 0, bool=false and string=””? or null, undefined?</li>
 </ul>
 
 <p>Why does position of <code>CppType</code> vary between <code>SetType</code> and <code>ListType</code>?</p>
 
 <ul>
-  <li>std::set does sort the elements automatically, that&#8217;s the design. see <a href="/docs/types">Thrift Types</a> or the <a href="http://www.cplusplus.com/reference/stl/set/">C++ std:set reference</a> for further details</li>
+  <li>std::set does sort the elements automatically, that’s the design. see <a href="/docs/types">Thrift Types</a> or the <a href="http://www.cplusplus.com/reference/stl/set/">C++ std:set reference</a> for further details</li>
   <li>The question is, how other languages are doing that? What about custom objects, do they have a Compare function to set the order correctly?</li>
 </ul>
 
-<p>Why can&#8217;t <code>DefinitionType</code> be the same as <code>FieldType</code> (i.e. include <code>Identifier</code>)?</p>
+<p>Why can’t <code>DefinitionType</code> be the same as <code>FieldType</code> (i.e. include <code>Identifier</code>)?</p>
 
-<p>Examine the <code>smalltalk.prefix</code> and <code>smalltalk.category</code> status (esp <code>smalltalk.category</code>, which takes <code>STIdentifier</code> as its argument)&#8230;</p>
+<p>Examine the <code>smalltalk.prefix</code> and <code>smalltalk.category</code> status (esp <code>smalltalk.category</code>, which takes <code>STIdentifier</code> as its argument)…</p>
 
 <p>What to do about <code>ListSeparator</code>? Do we really want to be as lax as we currently are?</p>
 

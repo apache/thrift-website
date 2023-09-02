@@ -85,7 +85,7 @@ test/test.py --server cpp,java --client nodejs
 test/test.py --server nodejs --client cpp,java
 </code></pre>
 
-<p>Another useful flag is &#8211;regex. For example, to run all tests that involve
+<p>Another useful flag is –regex. For example, to run all tests that involve
 Java TBinaryProtocol:</p>
 
 <pre><code>test/test.py --regex "java.*binary"
@@ -144,8 +144,8 @@ comment at the opt of <a href="crossrunner/collect.py">crossrunner/collect.py</a
 <h2 id="list-of-known-failures">List of known failures</h2>
 
 <p>Since many cross tests currently fail (mainly due to partial incompatibility
-around exception handling), the test script specifically report for &#8220;not known
-before&#8221; failures.</p>
+around exception handling), the test script specifically report for “not known
+before” failures.</p>
 
 <p>For this purpose, test cases known to (occasionally) fail are listed in
 <code>known_failures_&lt;platform&gt;.json</code> where <code>&lt;platform&gt;</code> matches with python

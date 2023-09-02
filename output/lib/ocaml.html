@@ -100,8 +100,8 @@ type t =
 | SIX
 | EIGHT</p>
 
-<p>let of_i = &#8230;
-let to_i = &#8230;
+<p>let of_i = …
+let to_i = …
 end</p>
 
 <h2 id="typedef-format">typedef format</h2>
@@ -120,17 +120,17 @@ E of t that is raised/caught.</p>
 raise (Xception.E (new Xception.t))
 and
 try
-  &#8230;
-with Xception.E e -&gt; &#8230;</p>
+  …
+with Xception.E e -&gt; …</p>
 
 <h2 id="list-format">list format</h2>
 <p>Lists are turned into OCaml native lists.</p>
 
 <h2 id="mapset-formats">Map/Set formats</h2>
-<p>These are both turned into Hashtbl.t&#8217;s. Set values are bool.</p>
+<p>These are both turned into Hashtbl.t’s. Set values are bool.</p>
 
 <h2 id="services">Services</h2>
-<p>The client is a class &#8220;client&#8221; parametrized on input and output
+<p>The client is a class “client” parametrized on input and output
 protocols. The processor is a class parametrized on a handler. A
 handler is a class inheriting the iface abstract class. Unlike other
 implementations, client does not implement iface since iface functions

@@ -71,22 +71,22 @@
 <p>Here is a Cassandra example:</p>
 
 <p>```js
-var thrift = require(&#8216;thrift&#8217;),
-    Cassandra = require(&#8216;./gen-nodejs/Cassandra&#8217;)
-    ttypes = require(&#8216;./gen-nodejs/cassandra_types&#8217;);</p>
+var thrift = require(‘thrift’),
+    Cassandra = require(‘./gen-nodejs/Cassandra’)
+    ttypes = require(‘./gen-nodejs/cassandra_types’);</p>
 
-<p>var connection = thrift.createConnection(&#8220;localhost&#8221;, 9160),
+<p>var connection = thrift.createConnection(“localhost”, 9160),
     client = thrift.createClient(Cassandra, connection);</p>
 
-<p>connection.on(&#8216;error&#8217;, function(err) {
+<p>connection.on(‘error’, function(err) {
   console.error(err);
 });</p>
 
-<p>client.get_slice(&#8220;Keyspace&#8221;, &#8220;key&#8221;, new ttypes.ColumnParent({column_family: &#8220;ExampleCF&#8221;}), new ttypes.SlicePredicate({slice_range: new ttypes.SliceRange({start: &#8216;&#8217;, finish: &#8216;&#8217;})}), ttypes.ConsistencyLevel.ONE, function(err, data) {
+<p>client.get_slice(“Keyspace”, “key”, new ttypes.ColumnParent({column_family: “ExampleCF”}), new ttypes.SlicePredicate({slice_range: new ttypes.SliceRange({start: ‘’, finish: ‘’})}), ttypes.ConsistencyLevel.ONE, function(err, data) {
   if (err) {
     // handle err
   } else {
-    // data == [ttypes.ColumnOrSuperColumn, &#8230;]
+    // data == [ttypes.ColumnOrSuperColumn, …]
   }
   connection.end();
 });
@@ -105,11 +105,11 @@ var thrift = require(&#8216;thrift&#8217;),
 
 <p>You can use code generated with js:node on browsers with Webpack. Here is an example.</p>
 
-<p>thrift &#8211;gen js:node,ts,es6,with_ns</p>
+<p>thrift –gen js:node,ts,es6,with_ns</p>
 
 <p>```javascript
-import * as thrift from &#8216;thrift&#8217;;
-import { MyServiceClient } from &#8216;../gen-nodejs/MyService&#8217;;</p>
+import * as thrift from ‘thrift’;
+import { MyServiceClient } from ‘../gen-nodejs/MyService’;</p>
 
 <p>let host = window.location.hostname;
 let port = 443;
@@ -117,17 +117,17 @@ let opts = {
   transport: thrift.TBufferedTransport,
   protocol: thrift.TJSONProtocol, 
     headers: {
-     &#8216;Content-Type&#8217;: &#8216;application/vnd.apache.thrift.json&#8217;,
+     ‘Content-Type’: ‘application/vnd.apache.thrift.json’,
     },
     https: true,
-    path: &#8216;/url/path&#8217;,
+    path: ‘/url/path’,
     useCORS: true,
 };</p>
 
 <p>let connection = thrift.createXHRConnection(host, port, opts);
 let thriftClient = thrift.createXHRClient(MyServiceClient, connection);</p>
 
-<p>connection.on(&#8216;error&#8217;, (err) =&gt; {
+<p>connection.on(‘error’, (err) =&gt; {
   console.error(err);
 });</p>
 
@@ -136,7 +136,7 @@ let thriftClient = thrift.createXHRClient(MyServiceClient, connection);</p>
     console.log(result);
   })
   .catch((err) =&gt; {
-    &#8230;.
+    ….
   });
 ```</p>
 
@@ -145,8 +145,8 @@ let thriftClient = thrift.createXHRClient(MyServiceClient, connection);</p>
 
 <h3 id="browser-example-with-websocket-bufferedtransport-and-binaryprotocol">Browser example with WebSocket, BufferedTransport and BinaryProtocol</h3>
 <p>```javascript
-import thrift from &#8216;thrift&#8217;;
-import { MyServiceClient } from &#8216;../gen-nodejs/MyService&#8217;;</p>
+import thrift from ‘thrift’;
+import { MyServiceClient } from ‘../gen-nodejs/MyService’;</p>
 
 <p>const host = window.location.hostname;
 const port = 9090;
@@ -158,7 +158,7 @@ const connection = thrift.createWSConnection(host, port, opts);
 connection.open();
 const thriftClient = thrift.createWSClient(MyServiceClient, connection);</p>
 
-<p>connection.on(&#8216;error&#8217;, (err) =&gt; {
+<p>connection.on(‘error’, (err) =&gt; {
   console.error(err);
 });</p>
 
@@ -167,7 +167,7 @@ const thriftClient = thrift.createWSClient(MyServiceClient, connection);</p>
     console.log(result);
   })
   .catch((err) =&gt; {
-    &#8230;.
+    ….
   });
 ```</p>
 

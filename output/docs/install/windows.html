@@ -54,7 +54,7 @@
 
 <p>The Thrift environment consists of two main parts: The Thrift compiler EXE and the language-dependent libraries. Most of these libraries will require some kind of build and/or installation. But regarding the Thrift compiler utility, there are a number of different alternatives.</p>
 
-<p>The first one of these alternatives is to download the <strong>pre-built Thrift Compiler EXE</strong> and only build the libraries needed from source, following one of the &#8220;Setup from source&#8221; methods outlined below.</p>
+<p>The first one of these alternatives is to download the <strong>pre-built Thrift Compiler EXE</strong> and only build the libraries needed from source, following one of the “Setup from source” methods outlined below.</p>
 
 <p>The other two options are to build the Thrift compiler from source. The most recommended way to achieve this is by means of the <strong>Visual Studio C++ build project</strong>. Alternatively, the Thrift compiler can also be built via <strong>Cygwin</strong> or <strong>MinGW</strong> build environments, however this method is not only less comfortable, but more time-consuming and requires much more manual effort.</p>
 
@@ -62,13 +62,13 @@
 
 <p>The windows Thrift compiler is available as a prebuilt exe available <a href="/download">here</a>. Note that there is no installation tool, rather this EXE file <em>is</em> already the Thrift compiler utility. Download the file and put it into some suitable location of your choice.</p>
 
-<p>Now pick one of the &#8220;Build and install target libraries&#8221; below to continue.</p>
+<p>Now pick one of the “Build and install target libraries” below to continue.</p>
 
 <h2 id="setup-from-source-via-visual-studio-c-recommended">Setup from source via Visual Studio C++ (recommended)</h2>
 
 <h3 id="requirements">Requirements</h3>
 
-<p>Thrift&#8217;s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift&#8217;s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
+<p>Thrift’s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift’s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
 
 <ul>
   <li>Visual Studio C++, any recent version should do</li>
@@ -84,13 +84,13 @@
 
 <p>A few of the target language libraries also do provide Visual Studio project files, such as C++ and C#. These are located in the <code>lib/&lt;language&gt;/</code> folders.</p>
 
-<p>Most of the language packages must be built and installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, Delphi, or PHP. Look for the <code>README.md</code> file in the <code>lib/&lt;language&gt;/</code> folder for more details on how to build and install each language&#8217;s library package.</p>
+<p>Most of the language packages must be built and installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, Delphi, or PHP. Look for the <code>README.md</code> file in the <code>lib/&lt;language&gt;/</code> folder for more details on how to build and install each language’s library package.</p>
 
 <h2 id="setup-from-source-via-cygwin">Setup from source via Cygwin</h2>
 
 <h3 id="requirements-1">Requirements</h3>
 
-<p>Thrift&#8217;s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift&#8217;s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
+<p>Thrift’s compiler is written in C++ and designed to be portable, but there are some system requirements. Thrift’s runtime libraries are written in various languages, which are also required for the particular language interface.</p>
 
 <ul>
   <li>Cygwin or MinGW</li>
@@ -139,12 +139,12 @@ make install
 ./configure: line 21183: `  PKG_CHECK_MODULES(MONO, mono &gt;= 1.2.6, have_mono=yes, have_mono=no)'
 </code></pre>
 
-<p>To resolve this, you&#8217;ll need to find your pkg.m4 (installed by the pkg-config package) file and copy it to the thrift/aclocal directory.  From the top-level thrift directory, you can copy the file by running</p>
+<p>To resolve this, you’ll need to find your pkg.m4 (installed by the pkg-config package) file and copy it to the thrift/aclocal directory.  From the top-level thrift directory, you can copy the file by running</p>
 
 <pre><code>cp /usr/share/aclocal/pkg.m4 aclocal
 </code></pre>
 
-<p>Finally, re-run ./bootstrap.sh and ./configure.  (Note that pkg.m4 is created by the pkg-config tool.  If your /usr/share/aclocal directory doesn&#8217;t contain the pkg.m4 file, you may not have pkg-config installed.)</p>
+<p>Finally, re-run ./bootstrap.sh and ./configure.  (Note that pkg.m4 is created by the pkg-config tool.  If your /usr/share/aclocal directory doesn’t contain the pkg.m4 file, you may not have pkg-config installed.)</p>
 
 <h4 id="installing-perl-runtime-libraries">Installing perl runtime libraries</h4>
 
@@ -152,7 +152,7 @@ make install
 
 <p>A workaround is to avoid installing the perl libraries if they are not needed.</p>
 
-<p>If you don&#8217;t need perl, run configure with &#8211;without-perl.</p>
+<p>If you don’t need perl, run configure with –without-perl.</p>
 
 <p>If you need perl, and are happy to manually install it, replace the contents of thrift/lib/perl/Makefile with the following, after building thrift:</p>
 
@@ -221,7 +221,7 @@ LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o
 ./configure
 </code></pre>
 
-<p>'&#8217;Optional:&#8217;&#8217; To make the compiler only, change to the compiler  directory before running make:</p>
+<p>'’Optional:’’ To make the compiler only, change to the compiler  directory before running make:</p>
 
 <pre><code>cd compiler/cpp
 </code></pre>

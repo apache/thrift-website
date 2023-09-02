@@ -99,12 +99,12 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
     <ul>
       <li>Remember to provide <em>tests</em> for all submitted changes!</li>
       <li>Use test-driven development (TDD): add a test that will isolate the bug <em>before</em> applying the change that fixes it.</li>
-      <li>Verify that you follow <a href="/docs/coding_standards">Thrift Coding Standards</a> (you can run &#8216;make style&#8217;, which ensures proper format for some languages).</li>
+      <li>Verify that you follow <a href="/docs/coding_standards">Thrift Coding Standards</a> (you can run ‘make style’, which ensures proper format for some languages).</li>
       <li>[<em>optional</em>] Verify that your change works on other platforms by adding a GitHub service hook to <a href="http://docs.travis-ci.com/user/getting-started/#Step-one%3A-Sign-in">Travis CI</a> and <a href="http://www.appveyor.com/docs">AppVeyor</a>.  You can use this technique to run the Thrift CI jobs in your account to check your changes before they are made public.  Every GitHub pull request into Thrift will run the full CI build and test suite on your changes.</li>
     </ul>
   </li>
   <li>Squash your changes to a single commit.  This maintains clean change history.</li>
-  <li>Commit and push changes to your branch (please use issue name and description as commit title, e.g. &#8220;THRIFT-9999: make it perfect&#8221;), with the affected languages on the next line of the description.</li>
+  <li>Commit and push changes to your branch (please use issue name and description as commit title, e.g. “THRIFT-9999: make it perfect”), with the affected languages on the next line of the description.</li>
   <li>Use GitHub to create a pull request going from your branch to apache:master.  Ensure that the Jira ticket number is at the beginning of the title of your pull request, same as the commit title.</li>
   <li>Wait for other contributors or committers to review your new addition, and for a CI build to complete.</li>
   <li>Wait for a committer to commit your patch.  You can nudge the committers if necessary by sending a message to the <a href="https://thrift.apache.org/mailing">Apache Thrift mailing list</a>.</li>
@@ -118,18 +118,18 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 
 <p>For unix systems, see our detailed instructions on the <a href="/build/docker/README.md">Docker README</a>.</p>
 
-<h2 id="if-you-want-to-review-open-issues">If you want to review open issues&#8230;</h2>
+<h2 id="if-you-want-to-review-open-issues">If you want to review open issues…</h2>
 
 <ol>
   <li>Review the <a href="https://github.com/apache/thrift/pulls">GitHub Pull Request Backlog</a>.  Code reviews are open to all.</li>
   <li>Review the <a href="http://issues.apache.org/jira/browse/THRIFT">Jira issue tracker</a>.  You can search for tickets relating to languages you are interested in or currently using with thrift, for example a Jira search (Issues -&gt; Search For Issues) query of <code>project = THRIFT AND component in ("Erlang - Library") and status not in (resolved, closed)</code> will locate all the open Erlang Library issues.</li>
 </ol>
 
-<h2 id="if-you-discovered-a-defect">If you discovered a defect&#8230;</h2>
+<h2 id="if-you-discovered-a-defect">If you discovered a defect…</h2>
 
 <ol>
   <li>Check to see if the issue is already in the <a href="http://issues.apache.org/jira/browse/THRIFT">Jira issue tracker</a>.</li>
-  <li>If not, create a ticket describing the change you&#8217;re proposing in the Jira issue tracker.</li>
+  <li>If not, create a ticket describing the change you’re proposing in the Jira issue tracker.</li>
   <li>Contribute your code changes using the GitHub pull request method:</li>
 </ol>
 
@@ -153,12 +153,12 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 <ol>
   <li>Use the command <code>git log</code> to identify how many commits you made since you began.</li>
   <li>Use the command <code>git rebase -i HEAD~N</code> where N is the number of commits.</li>
-  <li>Leave &#8220;pull&#8221; in the first line.</li>
-  <li>Change all other lines from &#8220;pull&#8221; to &#8220;fixup&#8221;.</li>
+  <li>Leave “pull” in the first line.</li>
+  <li>Change all other lines from “pull” to “fixup”.</li>
   <li>All your changes are now in a single commit.</li>
 </ol>
 
-<p>If you already have a pull request outstanding, you will need to do a &#8220;force push&#8221; to overwrite it since you changed your commit history:</p>
+<p>If you already have a pull request outstanding, you will need to do a “force push” to overwrite it since you changed your commit history:</p>
 
 <pre><code>git push -u origin THRIFT-9999 --force
 </code></pre>

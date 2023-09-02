@@ -71,7 +71,7 @@ install code to copy to the target destination.</p>
 the Gradle build system, which tends to be predominant amongst Java
 developers.</p>
 
-<p>Currently we use gradle 7.5.1 to build the Thrift Java source. The usual way to setup gradle
+<p>Currently we use gradle 8.0 to build the Thrift Java source. The usual way to setup gradle
 project is to include the gradle-wrapper.jar in the project and then run the gradle wrapper to
 bootstrap setting up gradle binaries. However to avoid putting binary files into the source tree we
 have ignored the gradle wrapper files. You are expected to install it manually, as described in
@@ -79,13 +79,13 @@ the <a href="https://docs.gradle.org/current/userguide/installation.html">gradle
 following this step (which is also done in the travis CI docker images):</p>
 
 <p><code>bash
-export GRADLE_VERSION="7.5.1"
+export GRADLE_VERSION="8.0.2"
 # install dependencies
 apt-get install -y --no-install-recommends openjdk-17-jdk-headless wget unzip
 # download gradle distribution
 wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -q -O /tmp/gradle-$GRADLE_VERSION-bin.zip
 # check binary integrity
-echo "f6b8596b10cce501591e92f229816aa4046424f3b24d771751b06779d58c8ec4  /tmp/gradle-$GRADLE_VERSION-bin.zip" | sha256sum -c -
+echo "ff7bf6a86f09b9b2c40bb8f48b25fc19cf2b2664fd1d220cd7ab833ec758d0d7  /tmp/gradle-$GRADLE_VERSION-bin.zip" | sha256sum -c -
 # unzip and install
 unzip -d /tmp /tmp/gradle-$GRADLE_VERSION-bin.zip
 mv /tmp/gradle-$GRADLE_VERSION /usr/local/gradle
@@ -105,7 +105,7 @@ gradle wrapper --gradle-version $GRADLE_VERSION
 gradle
 </code></p>
 
-<p>Yep, that&#8217;s easy. Look for <code>libthrift-&lt;version&gt;.jar</code> in the build/libs directory.</p>
+<p>Yep, that’s easy. Look for <code>libthrift-&lt;version&gt;.jar</code> in the build/libs directory.</p>
 
 <p>The default build will run the unit tests which expect a usable
 Thrift compiler to exist on the system. You have two choices for
@@ -119,7 +119,7 @@ to look for it there.</li>
     <p>Install the published binary distribution to have Thrift
 executable in a known location and add the path to the
 ~/.gradle/gradle.properties file using the property name
-&#8220;thrift.compiler&#8221;. For example this would set the path in
+“thrift.compiler”. For example this would set the path in
 a Windows box if Thrift was installed under C:\Thrift</p>
 
     <p>thrift.compiler=C:/Thrift/thrift.exe</p>
@@ -246,7 +246,7 @@ http://gradle.org/</p>
 
 <ul>
   <li>
-    <p>The signature of the &#8216;process&#8217; method in TAsyncProcessor and TProcessor has
+    <p>The signature of the ‘process’ method in TAsyncProcessor and TProcessor has
 changed to remove the boolean return type and instead rely on Exceptions.</p>
   </li>
   <li>

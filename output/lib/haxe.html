@@ -94,7 +94,7 @@ sudo ldconfig
 <h2 id="thrift-haxe-bindings">Thrift Haxe bindings</h2>
 
 <p>Thrift Haxe bindings can be set up via the <code>haxelib</code> tool  as usual.
-Alternatively, the &#8220;github&#8221; method can be used.</p>
+Alternatively, the “github” method can be used.</p>
 
 <ul>
   <li>
@@ -121,7 +121,7 @@ or build from source, depending on your operating system. Appropriate
 downloads and more information can be found at http://thrift.apache.org</p>
 
 <p>To get started, visit the /tutorial/haxe and /test/haxe dirs for examples. 
-If you are using the HaxeDevelop IDE, you&#8217;ll find appropriate project files 
+If you are using the HaxeDevelop IDE, you’ll find appropriate project files 
 in these folders.</p>
 
 <h1 id="breaking-changes">Breaking changes</h1>
@@ -180,7 +180,7 @@ transport =	new TWrappingServerTransport(
 </code></p>
   </li>
   <li>
-    <p>TSimpleServer doesn&#8217;t stop after first call, so processor.process() should be called instead, or use runOnce property 
+    <p>TSimpleServer doesn’t stop after first call, so processor.process() should be called instead, or use runOnce property 
 <code>haxe
 var server = new TSimpleServer( processor, transport, transfactory, protfactory);
 server.runOnce = true;

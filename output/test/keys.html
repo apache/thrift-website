@@ -80,7 +80,7 @@ openssl x509 -in server.crt -text &gt; CA.pem
 cat server.crt server.key &gt; server.pem
 </code></pre>
 
-<p>Export password is &#8220;thrift&#8221; without the quotes</p>
+<p>Export password is “thrift” without the quotes</p>
 
 <pre><code>openssl pkcs12 -export -clcerts -in server.crt -inkey server.key -out server.p12
 </code></pre>
@@ -100,7 +100,7 @@ cat server.crt server.key &gt; server.pem
 <pre><code>openssl x509 -req -days 3000 -in client.csr -CA CA.pem -CAkey server.key -set_serial 01 -out client.crt
 </code></pre>
 
-<p>export certificate in PKCS12 format (Export password is &#8220;thrift&#8221; without the quotes)</p>
+<p>export certificate in PKCS12 format (Export password is “thrift” without the quotes)</p>
 
 <pre><code>openssl pkcs12 -export -clcerts -in client.crt -inkey client.key -out client.p12
 </code></pre>
@@ -134,7 +134,7 @@ IP.3=::ffff:127.0.0.1
 </code></pre>
 
 <h2 id="java-key-and-certificate-import">Java key and certificate import</h2>
-<p>Java Test Environment uses key and trust store password &#8220;thrift&#8221; without the quotes</p>
+<p>Java Test Environment uses key and trust store password “thrift” without the quotes</p>
 
 <p>list keystore entries</p>
 
