@@ -43,6 +43,6 @@ release_url: "https://www.apache.org/dist/thrift"
 mirror_url: "http://www.apache.org/dyn/closer.cgi?path="
 jira_url: "http://issues.apache.org/jira/browse/THRIFT"
 
-current_release: "0.19.0"
-current_release_date: "2023-SEP-02"
+current_release: "0.20.0"
+current_release_date: "2024-MAR-22"
 
