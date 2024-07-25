@@ -27,29 +27,21 @@ on:
 
 jobs:
   jekyll:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6
-    - name: Cache gems
-      uses: actions/cache@v2
-      with:
-        path: ~/vendor/bundle
-        key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: ${{ runner.os }}-gem
+        ruby-version: 3.2.2
+        bundler-cache: true
     - name: Test site build
       run: |
         ruby --version
-        gem install bundler
-        bundle config path ~/vendor/bundle
-        bundle install --jobs 4 --retry 3
         bundle exec jekyll build
     - name: Upload site
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: site
         path: ./_site/
