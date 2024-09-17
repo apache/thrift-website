@@ -68,46 +68,46 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="kd">var</span> <span class="nx">Calculator</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/Calculator</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">ttypes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/tutorial_types</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">assert</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">assert</span><span class="dl">'</span><span class="p">);</span>
+<div class="highlight"><pre class="codehilite"><code><span class="kd">var</span> <span class="nx">Calculator</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/Calculator</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">ttypes</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/tutorial_types</span><span class="dl">'</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">assert</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">assert</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">var</span> <span class="nx">transport</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TBufferedTransport</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">protocol</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TBinaryProtocol</span><span class="p">;</span>
 
-<span class="kd">var</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">createConnection</span><span class="p">(</span><span class="dl">"</span><span class="s2">localhost</span><span class="dl">"</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span> <span class="p">{</span>
+<span class="kd">var</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createConnection</span><span class="p">(</span><span class="dl">"</span><span class="s2">localhost</span><span class="dl">"</span><span class="p">,</span> <span class="mi">9090</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">transport</span> <span class="p">:</span> <span class="nx">transport</span><span class="p">,</span>
   <span class="na">protocol</span> <span class="p">:</span> <span class="nx">protocol</span>
 <span class="p">});</span>
 
-<span class="nx">connection</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+<span class="nx">connection</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
 <span class="p">});</span>
 
 <span class="c1">// Create a Calculator client with the connection</span>
-<span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">createClient</span><span class="p">(</span><span class="nx">Calculator</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createClient</span><span class="p">(</span><span class="nx">Calculator</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
 
 
-<span class="nx">client</span><span class="p">.</span><span class="nx">ping</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">ping()</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nf">ping</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">ping()</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">});</span>
 
 
-<span class="nx">client</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">1+1=</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">response</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">1+1=</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">response</span><span class="p">);</span>
 <span class="p">});</span>
 
 
-<span class="nx">work</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Work</span><span class="p">();</span>
+<span class="nx">work</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">Work</span><span class="p">();</span>
 <span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">=</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">DIVIDE</span><span class="p">;</span>
 <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-<span class="nx">client</span><span class="p">.</span><span class="nx">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">InvalidOperation </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nf">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">InvalidOperation </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Whoa? You know how to divide by zero?</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Whoa? You know how to divide by zero?</span><span class="dl">'</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">});</span>
 
@@ -115,14 +115,14 @@ All Apache Thrift tutorials require that you have:
 <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
 <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 
-<span class="nx">client</span><span class="p">.</span><span class="nx">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">15-10=</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">message</span><span class="p">);</span>
+<span class="nx">client</span><span class="p">.</span><span class="nf">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">15-10=</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">message</span><span class="p">);</span>
 
-  <span class="nx">client</span><span class="p">.</span><span class="nx">getStruct</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">){</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Check log: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">message</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+  <span class="nx">client</span><span class="p">.</span><span class="nf">getStruct</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">message</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Check log: </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">message</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
 
     <span class="c1">//close the connection once we're done</span>
-    <span class="nx">connection</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+    <span class="nx">connection</span><span class="p">.</span><span class="nf">end</span><span class="p">();</span>
   <span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
@@ -132,70 +132,70 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="kd">var</span> <span class="nx">Calculator</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/Calculator</span><span class="dl">"</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">ttypes</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/tutorial_types</span><span class="dl">"</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">SharedStruct</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/shared_types</span><span class="dl">"</span><span class="p">).</span><span class="nx">SharedStruct</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="kd">var</span> <span class="nx">Calculator</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/Calculator</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">ttypes</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/tutorial_types</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">SharedStruct</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">./gen-nodejs/shared_types</span><span class="dl">"</span><span class="p">).</span><span class="nx">SharedStruct</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
 
-<span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">Calculator</span><span class="p">,</span> <span class="p">{</span>
+<span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createServer</span><span class="p">(</span><span class="nx">Calculator</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">ping</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">ping()</span><span class="dl">"</span><span class="p">);</span>
-    <span class="nx">result</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">ping()</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nf">result</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="na">add</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n1</span><span class="p">,</span> <span class="nx">n2</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">add(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">n1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span> <span class="nx">n2</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
-    <span class="nx">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">n1</span> <span class="o">+</span> <span class="nx">n2</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">add(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">n1</span><span class="p">,</span> <span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span> <span class="nx">n2</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nf">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">n1</span> <span class="o">+</span> <span class="nx">n2</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="na">calculate</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">logid</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">calculate(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">logid</span><span class="p">,</span> <span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">calculate(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">logid</span><span class="p">,</span> <span class="dl">"</span><span class="s2">,</span><span class="dl">"</span><span class="p">,</span> <span class="nx">work</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
 
     <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">==</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">ADD</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">==</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">ADD</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">val</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">+</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">SUBTRACT</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">SUBTRACT</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">val</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">-</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">MULTIPLY</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">MULTIPLY</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">val</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">*</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">DIVIDE</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">num2</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">InvalidOperation</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">op</span> <span class="o">===</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">Operation</span><span class="p">.</span><span class="nx">DIVIDE</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if </span><span class="p">(</span><span class="nx">work</span><span class="p">.</span><span class="nx">num2</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">InvalidOperation</span><span class="p">();</span>
         <span class="nx">x</span><span class="p">.</span><span class="nx">whatOp</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">op</span><span class="p">;</span>
         <span class="nx">x</span><span class="p">.</span><span class="nx">why</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Cannot divide by 0</span><span class="dl">'</span><span class="p">;</span>
-        <span class="nx">result</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+        <span class="nf">result</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
         <span class="k">return</span><span class="p">;</span>
       <span class="p">}</span>
       <span class="nx">val</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num1</span> <span class="o">/</span> <span class="nx">work</span><span class="p">.</span><span class="nx">num2</span><span class="p">;</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">InvalidOperation</span><span class="p">();</span>
+      <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">InvalidOperation</span><span class="p">();</span>
       <span class="nx">x</span><span class="p">.</span><span class="nx">whatOp</span> <span class="o">=</span> <span class="nx">work</span><span class="p">.</span><span class="nx">op</span><span class="p">;</span>
       <span class="nx">x</span><span class="p">.</span><span class="nx">why</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Invalid operation</span><span class="dl">'</span><span class="p">;</span>
-      <span class="nx">result</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+      <span class="nf">result</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
       <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="kd">var</span> <span class="nx">entry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SharedStruct</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">entry</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SharedStruct</span><span class="p">();</span>
     <span class="nx">entry</span><span class="p">.</span><span class="nx">key</span> <span class="o">=</span> <span class="nx">logid</span><span class="p">;</span>
     <span class="nx">entry</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">""</span><span class="o">+</span><span class="nx">val</span><span class="p">;</span>
     <span class="nx">data</span><span class="p">[</span><span class="nx">logid</span><span class="p">]</span> <span class="o">=</span> <span class="nx">entry</span><span class="p">;</span>
 
-    <span class="nx">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+    <span class="nf">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
   <span class="p">},</span>
 
   <span class="na">getStruct</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">getStruct(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
-    <span class="nx">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">getStruct(</span><span class="dl">"</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="dl">"</span><span class="s2">)</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nf">result</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">data</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
   <span class="p">},</span>
 
   <span class="na">zip</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">zip()</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">zip()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
 
 <span class="p">});</span>
 
-<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">9090</span><span class="p">);</span>
+<span class="nx">server</span><span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="mi">9090</span><span class="p">);</span>
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/nodejs/NodeServer.js">tutorial/nodejs/NodeServer.js</a>

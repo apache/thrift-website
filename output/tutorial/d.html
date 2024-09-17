@@ -68,17 +68,17 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="n">module</span> <span class="n">client</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">module</span> <span class="n">client</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="n">std</span><span class="p">.</span><span class="n">stdio</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">base</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">codegen</span><span class="p">.</span><span class="n">client</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">binary</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">buffered</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">socket</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">stdio</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">base</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">codegen</span><span class="p">.</span><span class="n">client</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">binary</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">buffered</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">socket</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Calculator</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">tutorial_types</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Calculator</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">tutorial_types</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">auto</span> <span class="n">socket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TSocket</span><span class="p">(</span><span class="s">"localhost"</span><span class="p">,</span> <span class="mi">9090</span><span class="p">);</span>
@@ -121,20 +121,20 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="n">module</span> <span class="n">server</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">module</span> <span class="n">server</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="n">std</span><span class="p">.</span><span class="n">conv</span> <span class="o">:</span> <span class="n">to</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">std</span><span class="p">.</span><span class="n">stdio</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">codegen</span><span class="p">.</span><span class="n">processor</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">binary</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">server</span><span class="p">.</span><span class="n">simple</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">server</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">socket</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">buffered</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">conv</span> <span class="o">:</span> <span class="n">to</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">std</span><span class="p">.</span><span class="n">stdio</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">codegen</span><span class="p">.</span><span class="n">processor</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">protocol</span><span class="p">.</span><span class="n">binary</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">server</span><span class="p">.</span><span class="n">simple</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">server</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">socket</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">thrift</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">buffered</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="n">share</span><span class="p">.</span><span class="n">SharedService</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">share</span><span class="p">.</span><span class="n">shared_types</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Calculator</span><span class="p">;</span>
-<span class="n">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">tutorial_types</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">share</span><span class="p">.</span><span class="n">SharedService</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">share</span><span class="p">.</span><span class="n">shared_types</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">Calculator</span><span class="p">;</span>
+<span class="k">import</span> <span class="n">tutorial</span><span class="p">.</span><span class="n">tutorial_types</span><span class="p">;</span>
 
 <span class="cm">/**
  * The actual implementation of the Calculator interface that is called by
@@ -145,12 +145,12 @@ All Apache Thrift tutorials require that you have:
     <span class="n">writeln</span><span class="p">(</span><span class="s">"ping()"</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">int</span> <span class="n">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">n1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">n1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n2</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">writefln</span><span class="p">(</span><span class="s">"add(%s,%s)"</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="kt">int</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">ref</span> <span class="k">const</span><span class="p">(</span><span class="n">Work</span><span class="p">)</span> <span class="n">work</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="nf">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">ref</span> <span class="k">const</span><span class="p">(</span><span class="n">Work</span><span class="p">)</span> <span class="n">work</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">writefln</span><span class="p">(</span><span class="s">"calculate(%s, {%s, %s, %s})"</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">,</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span><span class="p">,</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">);</span>
     <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
 
@@ -173,8 +173,8 @@ All Apache Thrift tutorials require that you have:
       <span class="p">}</span>
       <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">/</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
       <span class="k">break</span><span class="p">;</span>
-    <span class="nl">default:</span>
-      <span class="k">auto</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InvalidOperation</span><span class="p">();</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="k">auto</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">InvalidOperation</span><span class="p">();</span>
       <span class="n">io</span><span class="p">.</span><span class="n">whatOp</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">;</span>
       <span class="n">io</span><span class="p">.</span><span class="n">why</span> <span class="o">=</span> <span class="s">"Invalid Operation"</span><span class="p">;</span>
       <span class="k">throw</span> <span class="n">io</span><span class="p">;</span>
@@ -188,16 +188,16 @@ All Apache Thrift tutorials require that you have:
     <span class="k">return</span> <span class="n">val</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="n">SharedStruct</span> <span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">SharedStruct</span> <span class="nf">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">writefln</span><span class="p">(</span><span class="s">"getStruct(%s)"</span><span class="p">,</span> <span class="n">logid</span><span class="p">);</span>
     <span class="k">return</span> <span class="n">log</span><span class="p">[</span><span class="n">logid</span><span class="p">];</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">zip</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">zip</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">writeln</span><span class="p">(</span><span class="s">"zip()"</span><span class="p">);</span>
   <span class="p">}</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
   <span class="n">SharedStruct</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span> <span class="n">log</span><span class="p">;</span>
 <span class="p">}</span>
 

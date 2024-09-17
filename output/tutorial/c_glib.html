@@ -66,14 +66,14 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;stdio.h&gt;
-#include &lt;glib-object.h&gt;
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;glib-object.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include &lt;thrift/c_glib/protocol/thrift_binary_protocol.h&gt;
-#include &lt;thrift/c_glib/transport/thrift_buffered_transport.h&gt;
-#include &lt;thrift/c_glib/transport/thrift_socket.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;thrift/c_glib/protocol/thrift_binary_protocol.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/transport/thrift_buffered_transport.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/transport/thrift_socket.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include "gen-c_glib/calculator.h"
+<span class="cp">#include</span> <span class="cpf">"gen-c_glib/calculator.h"</span><span class="cp">
 </span>
 <span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
@@ -244,21 +244,21 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;glib-object.h&gt;
-#include &lt;signal.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include</span> <span class="cpf">&lt;glib-object.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include &lt;thrift/c_glib/thrift.h&gt;
-#include &lt;thrift/c_glib/protocol/thrift_binary_protocol_factory.h&gt;
-#include &lt;thrift/c_glib/protocol/thrift_protocol_factory.h&gt;
-#include &lt;thrift/c_glib/server/thrift_server.h&gt;
-#include &lt;thrift/c_glib/server/thrift_simple_server.h&gt;
-#include &lt;thrift/c_glib/transport/thrift_buffered_transport_factory.h&gt;
-#include &lt;thrift/c_glib/transport/thrift_server_socket.h&gt;
-#include &lt;thrift/c_glib/transport/thrift_server_transport.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;thrift/c_glib/thrift.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/protocol/thrift_binary_protocol_factory.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/protocol/thrift_protocol_factory.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/server/thrift_server.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/server/thrift_simple_server.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/transport/thrift_buffered_transport_factory.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/transport/thrift_server_socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/c_glib/transport/thrift_server_transport.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include "gen-c_glib/calculator.h"
+<span class="cp">#include</span> <span class="cpf">"gen-c_glib/calculator.h"</span><span class="cp">
 </span>
 <span class="n">G_BEGIN_DECLS</span>
 

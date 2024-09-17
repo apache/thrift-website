@@ -68,13 +68,13 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;iostream&gt;
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
 </span>
-<span class="cp">#include &lt;thrift/protocol/TBinaryProtocol.h&gt;
-#include &lt;thrift/transport/TSocket.h&gt;
-#include &lt;thrift/transport/TTransportUtils.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;thrift/protocol/TBinaryProtocol.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/transport/TSocket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/transport/TTransportUtils.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include "../gen-cpp/Calculator.h"
+<span class="cp">#include</span> <span class="cpf">"../gen-cpp/Calculator.h"</span><span class="cp">
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">apache</span><span class="o">::</span><span class="n">thrift</span><span class="p">;</span>
@@ -94,9 +94,9 @@ All Apache Thrift tutorials require that you have:
     <span class="n">transport</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">();</span>
 
     <span class="n">client</span><span class="p">.</span><span class="n">ping</span><span class="p">();</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ping()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ping()"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
 
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"1 + 1 = "</span> <span class="o">&lt;&lt;</span> <span class="n">client</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"1 + 1 = "</span> <span class="o">&lt;&lt;</span> <span class="n">client</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
 
     <span class="n">Work</span> <span class="n">work</span><span class="p">;</span>
     <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">Operation</span><span class="o">::</span><span class="n">DIVIDE</span><span class="p">;</span>
@@ -105,28 +105,28 @@ All Apache Thrift tutorials require that you have:
 
     <span class="k">try</span> <span class="p">{</span>
       <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">);</span>
-      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Whoa? We can divide by zero!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Whoa? We can divide by zero!"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
     <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">InvalidOperation</span><span class="o">&amp;</span> <span class="n">io</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"InvalidOperation: "</span> <span class="o">&lt;&lt;</span> <span class="n">io</span><span class="p">.</span><span class="n">why</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-      <span class="c1">// or using generated operator&lt;&lt;: cout &lt;&lt; io &lt;&lt; endl;</span>
-      <span class="c1">// or by using std::exception native method what(): cout &lt;&lt; io.what() &lt;&lt; endl;</span>
+      <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"InvalidOperation: "</span> <span class="o">&lt;&lt;</span> <span class="n">io</span><span class="p">.</span><span class="n">why</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+      <span class="c1">// or using generated operator&lt;&lt;: cout &lt;&lt; io &lt;&lt; '\n';</span>
+      <span class="c1">// or by using std::exception native method what(): cout &lt;&lt; io.what() &lt;&lt; '\n';</span>
     <span class="p">}</span>
 
     <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">Operation</span><span class="o">::</span><span class="n">SUBTRACT</span><span class="p">;</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
     <span class="kt">int32_t</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">);</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"15 - 10 = "</span> <span class="o">&lt;&lt;</span> <span class="n">diff</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"15 - 10 = "</span> <span class="o">&lt;&lt;</span> <span class="n">diff</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
 
     <span class="c1">// Note that C++ uses return by reference for complex types to avoid</span>
     <span class="c1">// costly copy construction</span>
     <span class="n">SharedStruct</span> <span class="n">ss</span><span class="p">;</span>
     <span class="n">client</span><span class="p">.</span><span class="n">getStruct</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Received log: "</span> <span class="o">&lt;&lt;</span> <span class="n">ss</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Received log: "</span> <span class="o">&lt;&lt;</span> <span class="n">ss</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
 
     <span class="n">transport</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">TException</span><span class="o">&amp;</span> <span class="n">tx</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ERROR: "</span> <span class="o">&lt;&lt;</span> <span class="n">tx</span><span class="p">.</span><span class="n">what</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ERROR: "</span> <span class="o">&lt;&lt;</span> <span class="n">tx</span><span class="p">.</span><span class="n">what</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -136,22 +136,22 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="cp">#include &lt;thrift/concurrency/ThreadManager.h&gt;
-#include &lt;thrift/concurrency/ThreadFactory.h&gt;
-#include &lt;thrift/protocol/TBinaryProtocol.h&gt;
-#include &lt;thrift/server/TSimpleServer.h&gt;
-#include &lt;thrift/server/TThreadPoolServer.h&gt;
-#include &lt;thrift/server/TThreadedServer.h&gt;
-#include &lt;thrift/transport/TServerSocket.h&gt;
-#include &lt;thrift/transport/TSocket.h&gt;
-#include &lt;thrift/transport/TTransportUtils.h&gt;
-#include &lt;thrift/TToString.h&gt;
+<div class="highlight"><pre class="codehilite"><code><span class="cp">#include</span> <span class="cpf">&lt;thrift/concurrency/ThreadManager.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/concurrency/ThreadFactory.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/protocol/TBinaryProtocol.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/server/TSimpleServer.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/server/TThreadPoolServer.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/server/TThreadedServer.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/transport/TServerSocket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/transport/TSocket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/transport/TTransportUtils.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;thrift/TToString.h&gt;</span><span class="cp">
 </span>
-<span class="cp">#include &lt;iostream&gt;
-#include &lt;stdexcept&gt;
-#include &lt;sstream&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sstream&gt;</span><span class="cp">
 </span>
-<span class="cp">#include "../gen-cpp/Calculator.h"
+<span class="cp">#include</span> <span class="cpf">"../gen-cpp/Calculator.h"</span><span class="cp">
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">apache</span><span class="o">::</span><span class="n">thrift</span><span class="p">;</span>
@@ -167,15 +167,15 @@ All Apache Thrift tutorials require that you have:
 <span class="nl">public:</span>
   <span class="n">CalculatorHandler</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
 
-  <span class="kt">void</span> <span class="n">ping</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ping()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">ping</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ping()"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span> <span class="p">}</span>
 
   <span class="kt">int32_t</span> <span class="n">add</span><span class="p">(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">n1</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">n2</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"add("</span> <span class="o">&lt;&lt;</span> <span class="n">n1</span> <span class="o">&lt;&lt;</span> <span class="s">", "</span> <span class="o">&lt;&lt;</span> <span class="n">n2</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"add("</span> <span class="o">&lt;&lt;</span> <span class="n">n1</span> <span class="o">&lt;&lt;</span> <span class="s">", "</span> <span class="o">&lt;&lt;</span> <span class="n">n2</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
     <span class="k">return</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span><span class="p">;</span>
   <span class="p">}</span>
 
   <span class="kt">int32_t</span> <span class="n">calculate</span><span class="p">(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">logid</span><span class="p">,</span> <span class="k">const</span> <span class="n">Work</span><span class="o">&amp;</span> <span class="n">work</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"calculate("</span> <span class="o">&lt;&lt;</span> <span class="n">logid</span> <span class="o">&lt;&lt;</span> <span class="s">", "</span> <span class="o">&lt;&lt;</span> <span class="n">work</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"calculate("</span> <span class="o">&lt;&lt;</span> <span class="n">logid</span> <span class="o">&lt;&lt;</span> <span class="s">", "</span> <span class="o">&lt;&lt;</span> <span class="n">work</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
     <span class="kt">int32_t</span> <span class="n">val</span><span class="p">;</span>
 
     <span class="k">switch</span> <span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">)</span> <span class="p">{</span>
@@ -197,7 +197,7 @@ All Apache Thrift tutorials require that you have:
       <span class="p">}</span>
       <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">/</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
       <span class="k">break</span><span class="p">;</span>
-    <span class="nl">default:</span>
+    <span class="k">default</span><span class="o">:</span>
       <span class="n">InvalidOperation</span> <span class="n">io</span><span class="p">;</span>
       <span class="n">io</span><span class="p">.</span><span class="n">whatOp</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">;</span>
       <span class="n">io</span><span class="p">.</span><span class="n">why</span> <span class="o">=</span> <span class="s">"Invalid Operation"</span><span class="p">;</span>
@@ -214,13 +214,13 @@ All Apache Thrift tutorials require that you have:
   <span class="p">}</span>
 
   <span class="kt">void</span> <span class="n">getStruct</span><span class="p">(</span><span class="n">SharedStruct</span><span class="o">&amp;</span> <span class="n">ret</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">logid</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"getStruct("</span> <span class="o">&lt;&lt;</span> <span class="n">logid</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"getStruct("</span> <span class="o">&lt;&lt;</span> <span class="n">logid</span> <span class="o">&lt;&lt;</span> <span class="s">")"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">log</span><span class="p">[</span><span class="n">logid</span><span class="p">];</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">zip</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"zip()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">zip</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"zip()"</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span> <span class="p">}</span>
 
-<span class="nl">protected:</span>
+<span class="k">protected</span><span class="o">:</span>
   <span class="n">map</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">log</span><span class="p">;</span>
 <span class="p">};</span>
 
@@ -285,11 +285,11 @@ All Apache Thrift tutorials require that you have:
     <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">PeerAddress: "</span> <span class="o">&lt;&lt;</span> <span class="n">sock</span><span class="o">-&gt;</span><span class="n">getPeerAddress</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
     <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">PeerPort: "</span>    <span class="o">&lt;&lt;</span> <span class="n">sock</span><span class="o">-&gt;</span><span class="n">getPeerPort</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
     <span class="k">return</span> <span class="k">new</span> <span class="n">CalculatorHandler</span><span class="p">;</span>
-  <span class="err">}</span>
+  <span class="p">}</span>
   <span class="kt">void</span> <span class="n">releaseHandler</span><span class="p">(</span> <span class="o">::</span><span class="n">shared</span><span class="o">::</span><span class="n">SharedServiceIf</span><span class="o">*</span> <span class="n">handler</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
     <span class="k">delete</span> <span class="n">handler</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="err">}</span><span class="p">;</span>
+<span class="p">};</span>
 
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:

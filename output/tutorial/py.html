@@ -68,67 +68,67 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'gen-py'</span><span class="p">)</span>
-<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">'../../lib/py/build/lib*'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight"><pre class="codehilite"><code><span class="kn">import</span> <span class="n">sys</span>
+<span class="kn">import</span> <span class="n">glob</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="sh">'</span><span class="s">gen-py</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">glob</span><span class="p">.</span><span class="nf">glob</span><span class="p">(</span><span class="sh">'</span><span class="s">../../lib/py/build/lib*</span><span class="sh">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="kn">from</span> <span class="nn">tutorial</span> <span class="kn">import</span> <span class="n">Calculator</span>
-<span class="kn">from</span> <span class="nn">tutorial.ttypes</span> <span class="kn">import</span> <span class="n">InvalidOperation</span><span class="p">,</span> <span class="n">Operation</span><span class="p">,</span> <span class="n">Work</span>
+<span class="kn">from</span> <span class="n">tutorial</span> <span class="kn">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span> <span class="n">tutorial.ttypes</span> <span class="kn">import</span> <span class="n">InvalidOperation</span><span class="p">,</span> <span class="n">Operation</span><span class="p">,</span> <span class="n">Work</span>
 
-<span class="kn">from</span> <span class="nn">thrift</span> <span class="kn">import</span> <span class="n">Thrift</span>
-<span class="kn">from</span> <span class="nn">thrift.transport</span> <span class="kn">import</span> <span class="n">TSocket</span>
-<span class="kn">from</span> <span class="nn">thrift.transport</span> <span class="kn">import</span> <span class="n">TTransport</span>
-<span class="kn">from</span> <span class="nn">thrift.protocol</span> <span class="kn">import</span> <span class="n">TBinaryProtocol</span>
+<span class="kn">from</span> <span class="n">thrift</span> <span class="kn">import</span> <span class="n">Thrift</span>
+<span class="kn">from</span> <span class="n">thrift.transport</span> <span class="kn">import</span> <span class="n">TSocket</span>
+<span class="kn">from</span> <span class="n">thrift.transport</span> <span class="kn">import</span> <span class="n">TTransport</span>
+<span class="kn">from</span> <span class="n">thrift.protocol</span> <span class="kn">import</span> <span class="n">TBinaryProtocol</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># Make socket
-</span>    <span class="n">transport</span> <span class="o">=</span> <span class="n">TSocket</span><span class="p">.</span><span class="n">TSocket</span><span class="p">(</span><span class="s">'localhost'</span><span class="p">,</span> <span class="mi">9090</span><span class="p">)</span>
+</span>    <span class="n">transport</span> <span class="o">=</span> <span class="n">TSocket</span><span class="p">.</span><span class="nc">TSocket</span><span class="p">(</span><span class="sh">'</span><span class="s">localhost</span><span class="sh">'</span><span class="p">,</span> <span class="mi">9090</span><span class="p">)</span>
 
     <span class="c1"># Buffering is critical. Raw sockets are very slow
-</span>    <span class="n">transport</span> <span class="o">=</span> <span class="n">TTransport</span><span class="p">.</span><span class="n">TBufferedTransport</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
+</span>    <span class="n">transport</span> <span class="o">=</span> <span class="n">TTransport</span><span class="p">.</span><span class="nc">TBufferedTransport</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
 
     <span class="c1"># Wrap in a protocol
-</span>    <span class="n">protocol</span> <span class="o">=</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
+</span>    <span class="n">protocol</span> <span class="o">=</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="nc">TBinaryProtocol</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
 
     <span class="c1"># Create a client to use the protocol encoder
-</span>    <span class="n">client</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
+</span>    <span class="n">client</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">.</span><span class="nc">Client</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
 
     <span class="c1"># Connect!
-</span>    <span class="n">transport</span><span class="p">.</span><span class="nb">open</span><span class="p">()</span>
+</span>    <span class="n">transport</span><span class="p">.</span><span class="nf">open</span><span class="p">()</span>
 
-    <span class="n">client</span><span class="p">.</span><span class="n">ping</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'ping()'</span><span class="p">)</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">ping</span><span class="p">()</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">ping()</span><span class="sh">'</span><span class="p">)</span>
 
-    <span class="n">sum_</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'1+1=%d'</span> <span class="o">%</span> <span class="n">sum_</span><span class="p">)</span>
+    <span class="n">sum_</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">1+1=%d</span><span class="sh">'</span> <span class="o">%</span> <span class="n">sum_</span><span class="p">)</span>
 
-    <span class="n">work</span> <span class="o">=</span> <span class="n">Work</span><span class="p">()</span>
+    <span class="n">work</span> <span class="o">=</span> <span class="nc">Work</span><span class="p">()</span>
 
     <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">quotient</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'Whoa? You know how to divide by zero?'</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'FYI the answer is %d'</span> <span class="o">%</span> <span class="n">quotient</span><span class="p">)</span>
+        <span class="n">quotient</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">Whoa? You know how to divide by zero?</span><span class="sh">'</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">FYI the answer is %d</span><span class="sh">'</span> <span class="o">%</span> <span class="n">quotient</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">InvalidOperation</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'InvalidOperation: %r'</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">InvalidOperation: %r</span><span class="sh">'</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
 
     <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">Operation</span><span class="p">.</span><span class="n">SUBTRACT</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="mi">15</span>
     <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="mi">10</span>
 
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'15-10=%d'</span> <span class="o">%</span> <span class="n">diff</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">15-10=%d</span><span class="sh">'</span> <span class="o">%</span> <span class="n">diff</span><span class="p">)</span>
 
-    <span class="n">log</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">getStruct</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'Check log: %s'</span> <span class="o">%</span> <span class="n">log</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">getStruct</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">Check log: %s</span><span class="sh">'</span> <span class="o">%</span> <span class="n">log</span><span class="p">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="c1"># Close!
-</span>    <span class="n">transport</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+</span>    <span class="n">transport</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
 
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
@@ -137,35 +137,35 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'gen-py'</span><span class="p">)</span>
-<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">'../../lib/py/build/lib*'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight"><pre class="codehilite"><code><span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="n">sys</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="sh">'</span><span class="s">gen-py</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">glob</span><span class="p">.</span><span class="nf">glob</span><span class="p">(</span><span class="sh">'</span><span class="s">../../lib/py/build/lib*</span><span class="sh">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="kn">from</span> <span class="nn">tutorial</span> <span class="kn">import</span> <span class="n">Calculator</span>
-<span class="kn">from</span> <span class="nn">tutorial.ttypes</span> <span class="kn">import</span> <span class="n">InvalidOperation</span><span class="p">,</span> <span class="n">Operation</span>
+<span class="kn">from</span> <span class="n">tutorial</span> <span class="kn">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span> <span class="n">tutorial.ttypes</span> <span class="kn">import</span> <span class="n">InvalidOperation</span><span class="p">,</span> <span class="n">Operation</span>
 
-<span class="kn">from</span> <span class="nn">shared.ttypes</span> <span class="kn">import</span> <span class="n">SharedStruct</span>
+<span class="kn">from</span> <span class="n">shared.ttypes</span> <span class="kn">import</span> <span class="n">SharedStruct</span>
 
-<span class="kn">from</span> <span class="nn">thrift.transport</span> <span class="kn">import</span> <span class="n">TSocket</span>
-<span class="kn">from</span> <span class="nn">thrift.transport</span> <span class="kn">import</span> <span class="n">TTransport</span>
-<span class="kn">from</span> <span class="nn">thrift.protocol</span> <span class="kn">import</span> <span class="n">TBinaryProtocol</span>
-<span class="kn">from</span> <span class="nn">thrift.server</span> <span class="kn">import</span> <span class="n">TServer</span>
+<span class="kn">from</span> <span class="n">thrift.transport</span> <span class="kn">import</span> <span class="n">TSocket</span>
+<span class="kn">from</span> <span class="n">thrift.transport</span> <span class="kn">import</span> <span class="n">TTransport</span>
+<span class="kn">from</span> <span class="n">thrift.protocol</span> <span class="kn">import</span> <span class="n">TBinaryProtocol</span>
+<span class="kn">from</span> <span class="n">thrift.server</span> <span class="kn">import</span> <span class="n">TServer</span>
 
 
 <span class="k">class</span> <span class="nc">CalculatorHandler</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="p">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'ping()'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">ping()</span><span class="sh">'</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'add(%d,%d)'</span> <span class="o">%</span> <span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">add(%d,%d)</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span>
 
-    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">work</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'calculate(%d, %r)'</span> <span class="o">%</span> <span class="p">(</span><span class="n">logid</span><span class="p">,</span> <span class="n">work</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">work</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">calculate(%d, %r)</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">logid</span><span class="p">,</span> <span class="n">work</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">==</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">+</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span>
@@ -175,34 +175,34 @@ All Apache Thrift tutorials require that you have:
             <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">*</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span>
         <span class="k">elif</span> <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">==</span> <span class="n">Operation</span><span class="p">.</span><span class="n">DIVIDE</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InvalidOperation</span><span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">,</span> <span class="s">'Cannot divide by 0'</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="nc">InvalidOperation</span><span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">,</span> <span class="sh">'</span><span class="s">Cannot divide by 0</span><span class="sh">'</span><span class="p">)</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">/</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidOperation</span><span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">,</span> <span class="s">'Invalid operation'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="nc">InvalidOperation</span><span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">,</span> <span class="sh">'</span><span class="s">Invalid operation</span><span class="sh">'</span><span class="p">)</span>
 
-        <span class="n">log</span> <span class="o">=</span> <span class="n">SharedStruct</span><span class="p">()</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="nc">SharedStruct</span><span class="p">()</span>
         <span class="n">log</span><span class="p">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">logid</span>
-        <span class="n">log</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">'%d'</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="n">logid</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="n">log</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="sh">'</span><span class="s">%d</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="n">logid</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span>
 
         <span class="k">return</span> <span class="n">val</span>
 
-    <span class="k">def</span> <span class="nf">getStruct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'getStruct(%d)'</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">getStruct</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">getStruct(%d)</span><span class="sh">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">log</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">'zip()'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">zip</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">zip()</span><span class="sh">'</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">handler</span> <span class="o">=</span> <span class="n">CalculatorHandler</span><span class="p">()</span>
-    <span class="n">processor</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Processor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-    <span class="n">transport</span> <span class="o">=</span> <span class="n">TSocket</span><span class="p">.</span><span class="n">TServerSocket</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9090</span><span class="p">)</span>
-    <span class="n">tfactory</span> <span class="o">=</span> <span class="n">TTransport</span><span class="p">.</span><span class="n">TBufferedTransportFactory</span><span class="p">()</span>
-    <span class="n">pfactory</span> <span class="o">=</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="n">TBinaryProtocolFactory</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="nc">CalculatorHandler</span><span class="p">()</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">.</span><span class="nc">Processor</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+    <span class="n">transport</span> <span class="o">=</span> <span class="n">TSocket</span><span class="p">.</span><span class="nc">TServerSocket</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="sh">'</span><span class="s">127.0.0.1</span><span class="sh">'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9090</span><span class="p">)</span>
+    <span class="n">tfactory</span> <span class="o">=</span> <span class="n">TTransport</span><span class="p">.</span><span class="nc">TBufferedTransportFactory</span><span class="p">()</span>
+    <span class="n">pfactory</span> <span class="o">=</span> <span class="n">TBinaryProtocol</span><span class="p">.</span><span class="nc">TBinaryProtocolFactory</span><span class="p">()</span>
 
-    <span class="n">server</span> <span class="o">=</span> <span class="n">TServer</span><span class="p">.</span><span class="n">TSimpleServer</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">transport</span><span class="p">,</span> <span class="n">tfactory</span><span class="p">,</span> <span class="n">pfactory</span><span class="p">)</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">TServer</span><span class="p">.</span><span class="nc">TSimpleServer</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">transport</span><span class="p">,</span> <span class="n">tfactory</span><span class="p">,</span> <span class="n">pfactory</span><span class="p">)</span>
 
     <span class="c1"># You could do one of these for a multithreaded server
 </span>    <span class="c1"># server = TServer.TThreadedServer(
@@ -210,9 +210,9 @@ All Apache Thrift tutorials require that you have:
 </span>    <span class="c1"># server = TServer.TThreadPoolServer(
 </span>    <span class="c1">#     processor, transport, tfactory, pfactory)
 </span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'Starting the server...'</span><span class="p">)</span>
-    <span class="n">server</span><span class="p">.</span><span class="n">serve</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">'done.'</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">Starting the server...</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">server</span><span class="p">.</span><span class="nf">serve</span><span class="p">()</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">'</span><span class="s">done.</span><span class="sh">'</span><span class="p">)</span>
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/py/PythonServer.py">tutorial/py/PythonServer.py</a>

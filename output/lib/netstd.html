@@ -58,7 +58,8 @@
 
 <h2 id="how-to-build-on-windows">How to build on Windows</h2>
 <ul>
-  <li>Get Thrift IDL compiler executable, add to some folder and add path to this folder into PATH variable</li>
+  <li>Get Thrift IDL compiler executable, add to some folder and add path to this folder into PATH variable.</li>
+  <li>Alternatively, build from source by using the cmake target “copy-thrift-compiler”, which places the binary to a suitable place.</li>
   <li>Open the Thrift.sln project with Visual Studio and build.
 or</li>
   <li>Build with scripts</li>
@@ -66,7 +67,7 @@ or</li>
 
 <h2 id="how-to-build-on-unixlinux">How to build on Unix/Linux</h2>
 <ul>
-  <li>Ensure you have .NET Core SDK 3.1 (LTS) installed, or use the <a href="../../build/docker/README.md">Ubuntu docker image</a></li>
+  <li>Ensure you have a suitable .NET Core SDK installed, or use the <a href="../../build/docker/README.md">Ubuntu docker image</a></li>
   <li>Follow common automake build practice: <code>./ bootstrap &amp;&amp; ./ configure &amp;&amp; make</code></li>
 </ul>
 

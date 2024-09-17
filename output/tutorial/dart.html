@@ -70,12 +70,12 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">html</span><span class="err">'</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">html</span><span class="err">'</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_browser</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_browser</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
 
 <span class="c1">/// Adapted from the AS3 tutorial</span>
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
@@ -95,13 +95,13 @@ All Apache Thrift tutorials require that you have:
     <span class="n">_initConnection</span><span class="p">();</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_validate</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_validate</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_transport</span><span class="p">.</span><span class="n">isOpen</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">window</span><span class="p">.</span><span class="n">alert</span><span class="p">(</span><span class="s">"The transport is not open!"</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_initConnection</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_initConnection</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">_transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TAsyncClientSocketTransport</span><span class="p">(</span>
         <span class="k">new</span> <span class="n">TWebSocket</span><span class="p">(</span><span class="n">Uri</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="err">'</span><span class="n">ws</span><span class="o">:</span><span class="c1">//127.0.0.1:9090/ws')),</span>
         <span class="k">new</span> <span class="n">TMessageReader</span><span class="p">(</span><span class="k">new</span> <span class="n">TBinaryProtocolFactory</span><span class="p">()));</span>
@@ -111,7 +111,7 @@ All Apache Thrift tutorials require that you have:
     <span class="n">_calculatorClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CalculatorClient</span><span class="p">(</span><span class="n">protocol</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_buildInterface</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_buildInterface</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">output</span><span class="p">.</span><span class="n">children</span><span class="p">.</span><span class="n">forEach</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">e</span><span class="p">.</span><span class="n">remove</span><span class="p">();</span>
     <span class="p">});</span>
@@ -125,7 +125,7 @@ All Apache Thrift tutorials require that you have:
     <span class="n">_buildGetStructComponent</span><span class="p">();</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_buildPingComponent</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_buildPingComponent</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Ping"</span><span class="p">);</span>
     <span class="n">ButtonElement</span> <span class="n">pingButton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ButtonElement</span><span class="p">()</span>
       <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"PING"</span>
@@ -133,13 +133,13 @@ All Apache Thrift tutorials require that you have:
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pingButton</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_onPingClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_onPingClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
     <span class="n">_calculatorClient</span><span class="p">.</span><span class="n">ping</span><span class="p">();</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_buildAddComponent</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_buildAddComponent</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Add"</span><span class="p">);</span>
     <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
       <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"add1"</span>
@@ -172,7 +172,7 @@ All Apache Thrift tutorials require that you have:
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_onAddClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_onAddClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
     <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add1"</span><span class="p">);</span>
@@ -186,7 +186,7 @@ All Apache Thrift tutorials require that you have:
     <span class="p">});</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_buildCalculatorComponent</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_buildCalculatorComponent</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Calculator"</span><span class="p">);</span>
     <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputElement</span><span class="p">()</span>
       <span class="p">..</span><span class="n">id</span> <span class="o">=</span> <span class="s">"calc1"</span>
@@ -263,7 +263,7 @@ All Apache Thrift tutorials require that you have:
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">comment</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_onCalcClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_onCalcClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
     <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc1"</span><span class="p">);</span>
@@ -287,7 +287,7 @@ All Apache Thrift tutorials require that you have:
     <span class="p">});</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_buildGetStructComponent</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_buildGetStructComponent</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">new</span> <span class="n">HeadingElement</span><span class="p">.</span><span class="n">h3</span><span class="p">()..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Get Struct"</span><span class="p">);</span>
     <span class="n">LabelElement</span> <span class="n">logIdLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LabelElement</span><span class="p">()</span>
       <span class="p">..</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Struct Key:"</span>
@@ -318,7 +318,7 @@ All Apache Thrift tutorials require that you have:
     <span class="n">output</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="kt">void</span> <span class="n">_onGetStructClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="nf">_onGetStructClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
     <span class="n">InputElement</span> <span class="n">structKey</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#structKey"</span><span class="p">);</span>
@@ -362,15 +362,15 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">async</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">io</span><span class="err">'</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">async</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">io</span><span class="err">'</span><span class="p">;</span>
 
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">args</span><span class="o">/</span><span class="n">args</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">logging</span><span class="o">/</span><span class="n">logging</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_console</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
-<span class="n">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">args</span><span class="o">/</span><span class="n">args</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">logging</span><span class="o">/</span><span class="n">logging</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_console</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
 
 <span class="n">TProtocol</span> <span class="n">_protocol</span><span class="p">;</span>
 <span class="n">TProcessor</span> <span class="n">_processor</span><span class="p">;</span>
@@ -382,13 +382,13 @@ All Apache Thrift tutorials require that you have:
     <span class="n">print</span><span class="p">(</span><span class="err">'$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">level</span><span class="p">.</span><span class="n">name</span><span class="p">}</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">time</span><span class="p">}</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">rec</span><span class="p">.</span><span class="n">message</span><span class="p">}</span><span class="err">'</span><span class="p">);</span>
   <span class="p">});</span>
 
-  <span class="n">var</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArgParser</span><span class="p">();</span>
+  <span class="n">var</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ArgParser</span><span class="p">();</span>
   <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">port</span><span class="err">'</span><span class="p">,</span> <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="mi">9090</span><span class="err">'</span><span class="p">,</span> <span class="n">help</span><span class="o">:</span> <span class="err">'</span><span class="n">The</span> <span class="n">port</span> <span class="n">to</span> <span class="n">listen</span> <span class="n">on</span><span class="err">'</span><span class="p">);</span>
   <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">type</span><span class="err">'</span><span class="p">,</span>
-      <span class="nl">defaultsTo:</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span>
-      <span class="nl">allowed:</span> <span class="p">[</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">],</span>
-      <span class="nl">help:</span> <span class="err">'</span><span class="n">The</span> <span class="n">type</span> <span class="n">of</span> <span class="n">socket</span><span class="err">'</span><span class="p">,</span>
-      <span class="nl">allowedHelp:</span> <span class="p">{</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">WebSocket</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">TCP</span> <span class="n">Socket</span><span class="err">'</span><span class="p">});</span>
+      <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span>
+      <span class="n">allowed</span><span class="o">:</span> <span class="p">[</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">],</span>
+      <span class="n">help</span><span class="o">:</span> <span class="err">'</span><span class="n">The</span> <span class="n">type</span> <span class="n">of</span> <span class="n">socket</span><span class="err">'</span><span class="p">,</span>
+      <span class="n">allowedHelp</span><span class="o">:</span> <span class="p">{</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">WebSocket</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">TCP</span> <span class="n">Socket</span><span class="err">'</span><span class="p">});</span>
 
   <span class="n">ArgResults</span> <span class="n">results</span><span class="p">;</span>
   <span class="k">try</span> <span class="p">{</span>
@@ -407,7 +407,7 @@ All Apache Thrift tutorials require that you have:
 
   <span class="k">if</span> <span class="p">(</span><span class="n">socketType</span> <span class="o">==</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_runTcpServer</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">socketType</span> <span class="o">==</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">socketType</span> <span class="o">==</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_runWebSocketServer</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -424,7 +424,7 @@ All Apache Thrift tutorials require that you have:
       <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">Invalid</span> <span class="n">path</span><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="n">request</span><span class="p">.</span><span class="n">uri</span><span class="p">.</span><span class="n">path</span><span class="p">}</span><span class="err">'</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">});</span>
-<span class="err">}</span>
+<span class="p">}</span>
 
 <span class="n">Future</span> <span class="nf">_runTcpServer</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
   <span class="n">var</span> <span class="n">serverSocket</span> <span class="o">=</span> <span class="n">await</span> <span class="n">ServerSocket</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="err">'</span><span class="mf">127.0.0.1</span><span class="err">'</span><span class="p">,</span> <span class="n">port</span><span class="p">);</span>
@@ -432,7 +432,7 @@ All Apache Thrift tutorials require that you have:
 
   <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="n">await</span> <span class="n">serverSocket</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
   <span class="n">await</span> <span class="nf">_initProcessor</span><span class="p">(</span><span class="k">new</span> <span class="n">TTcpSocket</span><span class="p">(</span><span class="n">socket</span><span class="p">));</span>
-<span class="err">}</span>
+<span class="p">}</span>
 
 <span class="n">Future</span> <span class="nf">_initProcessor</span><span class="p">(</span><span class="n">TSocket</span> <span class="n">socket</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
   <span class="n">TServerSocketTransport</span> <span class="n">transport</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TServerSocketTransport</span><span class="p">(</span><span class="n">socket</span><span class="p">);</span>
@@ -442,16 +442,16 @@ All Apache Thrift tutorials require that you have:
   <span class="n">await</span> <span class="n">_protocol</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">open</span><span class="p">();</span>
 
   <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">connected</span><span class="err">'</span><span class="p">);</span>
-<span class="err">}</span>
+<span class="p">}</span>
 
 <span class="n">Future</span> <span class="nf">_processMessage</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
   <span class="n">_processor</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="n">_protocol</span><span class="p">,</span> <span class="n">_protocol</span><span class="p">);</span>
-<span class="err">}</span>
+<span class="p">}</span>
 
 <span class="k">class</span> <span class="nc">CalculatorServer</span> <span class="n">implements</span> <span class="n">Calculator</span> <span class="p">{</span>
   <span class="k">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">_log</span> <span class="o">=</span> <span class="p">{};</span>
 
-  <span class="n">Future</span> <span class="n">ping</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">Future</span> <span class="nf">ping</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
     <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">ping</span><span class="p">()</span><span class="err">'</span><span class="p">);</span>
   <span class="p">}</span>
 
@@ -490,7 +490,7 @@ All Apache Thrift tutorials require that you have:
         <span class="k">break</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">var</span> <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SharedStruct</span><span class="p">();</span>
+    <span class="n">var</span> <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SharedStruct</span><span class="p">();</span>
     <span class="n">log</span><span class="p">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">logid</span><span class="p">;</span>
     <span class="n">log</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="err">'$</span><span class="n">val</span> <span class="s">"${work.comment}"</span><span class="err">'</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="n">_log</span><span class="p">[</span><span class="n">logid</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span><span class="p">;</span>
@@ -498,7 +498,7 @@ All Apache Thrift tutorials require that you have:
     <span class="k">return</span> <span class="n">val</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="n">Future</span> <span class="n">zip</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">Future</span> <span class="nf">zip</span><span class="p">()</span> <span class="n">async</span> <span class="p">{</span>
     <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">zip</span><span class="p">()</span><span class="err">'</span><span class="p">);</span>
   <span class="p">}</span>
 
