@@ -41,6 +41,14 @@ title: Home
     </p>
     <p>
       <small>
+       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256">SHA256</a>
+      </small>
+      |
+      <small>
+       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1">SHA1</a>
+      </small>
+      |
+      <small>
        <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5">MD5</a>
       </small>
       |

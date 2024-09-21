@@ -6,8 +6,13 @@ title: "Download"
 The latest stable release of Thrift is {{ site.current_release }} (released on {{ site.current_release_date }}).
 
 * [thrift-{{ site.current_release }}.tar.gz]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc)\]
+\[[SHA256]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256)\]
+\[[SHA1]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1)\]
 \[[MD5]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5)\]
-* [Thrift compiler for Windows (thrift-{{ site.current_release }}.exe)]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.exe) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.asc)\] \[[MD5]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.md5)\]
+* [Thrift compiler for Windows (thrift-{{ site.current_release }}.exe)]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.exe) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.asc)\]
+\[[SHA256]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.sha256)\]
+\[[SHA1]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.sha1)\]
+\[[MD5]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.exe.md5)\]
 
 ## Maven artifact
 <pre><code>&lt;dependency&gt;
@@ -17,7 +22,7 @@ The latest stable release of Thrift is {{ site.current_release }} (released on {
 &lt;/dependency&gt;
 </code></pre>
 
-When downloading from a mirror, please be sure to [verify](http://www.apache.org/info/verification.html) the checksums and signature (see the MD5 and PGP links above). The [KEYS]({{ site.release_url }}/KEYS) file contains the public key(s) used for signing releases.
+When downloading from a mirror, please be sure to [verify](http://www.apache.org/info/verification.html) the checksums and signature (see the SHA256/SHA1/MD5 and PGP links above). The [KEYS]({{ site.release_url }}/KEYS) file contains the public key(s) used for signing releases.
 
 ---
 
