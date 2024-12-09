@@ -68,8 +68,8 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">System</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Generic</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Linq</span><span class="p">;</span>
@@ -78,17 +78,13 @@ All Apache Thrift tutorials require that you have:
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Cryptography</span><span class="p">.</span><span class="n">X509Certificates</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">DependencyInjection</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Client</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">tutorial</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">shared</span><span class="p">;</span>
 
-<span class="cp">#pragma warning disable IDE0063  // using
-#pragma warning disable IDE0057  // substr
+<span class="cp">#pragma warning disable IDE0057  // substr
 </span>
 <span class="k">namespace</span> <span class="n">Client</span>
 <span class="p">{</span>
@@ -111,7 +107,7 @@ All Apache Thrift tutorials require that you have:
     <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
     <span class="p">{</span>
         <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ILogger</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="k">new</span><span class="p">();</span>
 
         <span class="k">private</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">DisplayHelp</span><span class="p">()</span>
         <span class="p">{</span>
@@ -150,11 +146,12 @@ All Apache Thrift tutorials require that you have:
 </span><span class="s">"</span><span class="p">);</span>
         <span class="p">}</span>
 
-        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="nf">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="nf">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">args</span> <span class="o">??=</span> <span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+            <span class="n">args</span> <span class="o">??=</span> <span class="p">[];</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
+            <span class="c1">// -help is rather unusual but we leave it for compatibility</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"--help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-h"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-?"</span><span class="p">)))</span>
             <span class="p">{</span>
                 <span class="n">DisplayHelp</span><span class="p">();</span>
                 <span class="k">return</span><span class="p">;</span>
@@ -162,10 +159,8 @@ All Apache Thrift tutorials require that you have:
 
             <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting client..."</span><span class="p">);</span>
 
-            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationTokenSource</span><span class="p">())</span>
-            <span class="p">{</span>
-                <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
-            <span class="p">}</span>
+            <span class="k">using</span> <span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationTokenSource</span><span class="p">();</span>
+            <span class="n">await</span> <span class="nf">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
         <span class="p">}</span>
 
         
@@ -203,7 +198,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Protocol</span> <span class="nf">GetProtocol</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">protocol</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span><span class="p">;</span>
 
@@ -216,7 +211,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Buffering</span> <span class="nf">GetBuffering</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">buffering</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="s">":"</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">buffering</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">buffering</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">None</span><span class="p">;</span>
 
@@ -229,7 +224,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Transport</span> <span class="nf">GetTransport</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">transport</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Tcp</span><span class="p">;</span>
 
@@ -244,7 +239,7 @@ All Apache Thrift tutorials require that you have:
         <span class="k">private</span> <span class="k">static</span> <span class="n">TTransport</span> <span class="nf">MakeTransport</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="c1">// construct endpoint transport</span>
-            <span class="n">TTransport</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="n">TTransport</span><span class="o">?</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
             <span class="n">Transport</span> <span class="n">selectedTransport</span> <span class="o">=</span> <span class="n">GetTransport</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
             <span class="p">{</span>
                 <span class="k">switch</span> <span class="p">(</span><span class="n">selectedTransport</span><span class="p">)</span>
@@ -294,7 +289,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="kt">int</span> <span class="nf">GetNumberOfClients</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-mc"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-mc"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
 
             <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected # of clients: {numClients}"</span><span class="p">,</span> <span class="n">numClients</span><span class="p">);</span>
 
@@ -307,35 +302,42 @@ All Apache Thrift tutorials require that you have:
         <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate2</span> <span class="nf">GetCertificate</span><span class="p">()</span>
         <span class="p">{</span>
             <span class="c1">// due to files location in net core better to take certs from top folder</span>
-            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetParent</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">()));</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="n">X509Certificate2</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
+            <span class="n">var</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">Directory</span><span class="p">.</span><span class="n">GetParent</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">());</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">dir</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+                <span class="c1">//return new X509Certificate2(certFile, "ThriftTest");</span>
+                <span class="k">return</span> <span class="n">X509CertificateLoader</span><span class="p">.</span><span class="n">LoadPkcs12FromFile</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="s">"Root path of {path} not found"</span><span class="p">,</span> <span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">());</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="p">(</span><span class="err">$</span><span class="s">"Root path of {Directory.GetCurrentDirectory()} not found"</span><span class="p">);</span>
+            <span class="p">}</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="nf">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="nf">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span><span class="o">?</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">var</span> <span class="n">topDir</span> <span class="o">=</span> <span class="n">di</span><span class="p">;</span>
-            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span>
-                <span class="n">topDir</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">)</span>
-                    <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">topDir</span><span class="o">?</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">certFile</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
             <span class="p">{</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">maxCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
                     <span class="k">throw</span> <span class="k">new</span> <span class="n">FileNotFoundException</span><span class="p">(</span><span class="s">"Cannot find file in directories"</span><span class="p">);</span>
-                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">maxCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="o">?</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="o">--</span><span class="n">maxCount</span><span class="p">);</span>
             <span class="p">}</span>
 
             <span class="k">return</span> <span class="n">certFile</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate</span> <span class="nf">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate2</span> <span class="nf">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
             <span class="n">string</span> <span class="n">targetHost</span><span class="p">,</span> <span class="n">X509CertificateCollection</span> <span class="n">localCertificates</span><span class="p">,</span>
-            <span class="n">X509Certificate</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
+            <span class="n">X509Certificate</span><span class="o">?</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="k">return</span> <span class="n">GetCertificate</span><span class="p">();</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">CertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span> <span class="n">certificate</span><span class="p">,</span>
-            <span class="n">X509Chain</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">CertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span><span class="o">?</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">X509Chain</span><span class="o">?</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
         <span class="p">}</span>
@@ -405,8 +407,6 @@ All Apache Thrift tutorials require that you have:
                 <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">work</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Whoa we can divide by 0"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">);</span>
             <span class="p">}</span>
-            <span class="k">catch</span> <span class="p">(</span><span class="n">InvalidOperation</span> <span class="n">io</span><span class="p">)</span>
-            <span class="p">{</span>
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Client/Program.cs">tutorial/netstd/Client/Program.cs</a>
@@ -414,7 +414,13 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">System</span><span class="p">;</span>
+<div class="highlight"><pre class="codehilite"><code><span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Builder</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Hosting</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Configuration</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">DependencyInjection</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">shared</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">System</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Collections</span><span class="p">.</span><span class="n">Generic</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">IO</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Linq</span><span class="p">;</span>
@@ -422,20 +428,13 @@ All Apache Thrift tutorials require that you have:
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Cryptography</span><span class="p">.</span><span class="n">X509Certificates</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Threading</span><span class="p">.</span><span class="n">Tasks</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Builder</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Hosting</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Configuration</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">DependencyInjection</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Extensions</span><span class="p">.</span><span class="n">Logging</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Processor</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Protocol</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Server</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Transport</span><span class="p">.</span><span class="n">Server</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">tutorial</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">shared</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">Thrift</span><span class="p">.</span><span class="n">Processor</span><span class="p">;</span>
-<span class="k">using</span> <span class="n">System</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
 
 <span class="cp">#pragma warning disable IDE0057  // substr
 </span>
@@ -460,27 +459,25 @@ All Apache Thrift tutorials require that you have:
     <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
     <span class="p">{</span>
         <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">ILogger</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">LoggingHelper</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">Program</span><span class="o">&gt;</span><span class="p">();</span>
-        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>  <span class="c1">// new TConfiguration() if  needed</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">readonly</span> <span class="n">TConfiguration</span> <span class="n">Configuration</span> <span class="o">=</span> <span class="k">new</span><span class="p">();</span>
 
-        <span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">args</span> <span class="o">??=</span> <span class="n">Array</span><span class="p">.</span><span class="n">Empty</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+            <span class="n">args</span> <span class="o">??=</span> <span class="p">[];</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-help"</span><span class="p">,</span> <span class="n">StringComparison</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">)))</span>
+            <span class="c1">// -help is rather unusual but we leave it for compatibility</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"--help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-h"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-?"</span><span class="p">)))</span>
             <span class="p">{</span>
                 <span class="n">DisplayHelp</span><span class="p">();</span>
                 <span class="k">return</span><span class="p">;</span>
             <span class="p">}</span>
 
-            <span class="k">using</span> <span class="p">(</span><span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationTokenSource</span><span class="p">())</span>
-            <span class="p">{</span>
-                <span class="n">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">).</span><span class="n">GetAwaiter</span><span class="p">().</span><span class="n">GetResult</span><span class="p">();</span>
+            <span class="k">using</span> <span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationTokenSource</span><span class="p">();</span>
+            <span class="n">await</span> <span class="nf">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
 
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Press any key to stop..."</span><span class="p">);</span>
-
-                <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
-                <span class="n">source</span><span class="p">.</span><span class="n">Cancel</span><span class="p">();</span>
-            <span class="p">}</span>
+            <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Press any key to stop..."</span><span class="p">);</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+            <span class="n">source</span><span class="p">.</span><span class="n">Cancel</span><span class="p">();</span>
 
             <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Server stopped"</span><span class="p">);</span>
         <span class="p">}</span>
@@ -548,7 +545,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Protocol</span> <span class="nf">GetProtocol</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-pr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">protocol</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Protocol</span><span class="p">.</span><span class="n">Binary</span><span class="p">;</span>
 
@@ -561,7 +558,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Buffering</span> <span class="nf">GetBuffering</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">buffering</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="s">":"</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">buffering</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-bf"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">buffering</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Buffering</span><span class="p">.</span><span class="n">None</span><span class="p">;</span>
 
@@ -574,7 +571,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">Transport</span> <span class="nf">GetTransport</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">)</span><span class="o">?</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">transport</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">StartsWith</span><span class="p">(</span><span class="s">"-tr"</span><span class="p">))</span><span class="o">?</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">':'</span><span class="p">).</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">Take</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">string</span><span class="p">.</span><span class="n">IsNullOrEmpty</span><span class="p">(</span><span class="n">transport</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">Transport</span><span class="p">.</span><span class="n">Tcp</span><span class="p">;</span>
 
@@ -595,7 +592,7 @@ All Apache Thrift tutorials require that you have:
                 <span class="n">_</span> <span class="o">=&gt;</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s">"unsupported value $transport"</span><span class="p">,</span> <span class="n">nameof</span><span class="p">(</span><span class="n">transport</span><span class="p">)),</span>
             <span class="p">};</span>
 
-            <span class="n">TTransportFactory</span> <span class="n">transportFactory</span> <span class="o">=</span> <span class="n">buffering</span> <span class="k">switch</span>
+            <span class="n">TTransportFactory</span><span class="o">?</span> <span class="n">transportFactory</span> <span class="o">=</span> <span class="n">buffering</span> <span class="k">switch</span>
             <span class="p">{</span>
                 <span class="n">Buffering</span><span class="p">.</span><span class="n">Buffered</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="n">TBufferedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">(),</span>
                 <span class="n">Buffering</span><span class="p">.</span><span class="n">Framed</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="n">TFramedTransport</span><span class="p">.</span><span class="n">Factory</span><span class="p">(),</span>
@@ -657,34 +654,32 @@ All Apache Thrift tutorials require that you have:
         <span class="p">{</span>
             <span class="c1">// due to files location in net core better to take certs from top folder</span>
             <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetParent</span><span class="p">(</span><span class="n">Directory</span><span class="p">.</span><span class="n">GetCurrentDirectory</span><span class="p">()));</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="n">X509Certificate2</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
+            <span class="c1">//return new X509Certificate2(certFile, "ThriftTest");</span>
+            <span class="k">return</span> <span class="n">X509CertificateLoader</span><span class="p">.</span><span class="n">LoadPkcs12FromFile</span><span class="p">(</span><span class="n">certFile</span><span class="p">,</span> <span class="s">"ThriftTest"</span><span class="p">);</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="nf">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">string</span> <span class="nf">GetCertPath</span><span class="p">(</span><span class="n">DirectoryInfo</span><span class="o">?</span> <span class="n">di</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxCount</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">var</span> <span class="n">topDir</span> <span class="o">=</span> <span class="n">di</span><span class="p">;</span>
-            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span>
-                <span class="n">topDir</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">)</span>
-                    <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+            <span class="n">var</span> <span class="n">certFile</span> <span class="o">=</span> <span class="n">topDir</span><span class="o">?</span><span class="p">.</span><span class="n">EnumerateFiles</span><span class="p">(</span><span class="s">"ThriftTest.pfx"</span><span class="p">,</span> <span class="n">SearchOption</span><span class="p">.</span><span class="n">AllDirectories</span><span class="p">).</span><span class="n">FirstOrDefault</span><span class="p">();</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">certFile</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
             <span class="p">{</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">maxCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
                     <span class="k">throw</span> <span class="k">new</span> <span class="n">FileNotFoundException</span><span class="p">(</span><span class="s">"Cannot find file in directories"</span><span class="p">);</span>
-                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">maxCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+                <span class="k">return</span> <span class="n">GetCertPath</span><span class="p">(</span><span class="n">di</span><span class="o">?</span><span class="p">.</span><span class="n">Parent</span><span class="p">,</span> <span class="o">--</span><span class="n">maxCount</span><span class="p">);</span>
             <span class="p">}</span>
 
             <span class="k">return</span> <span class="n">certFile</span><span class="p">.</span><span class="n">FullName</span><span class="p">;</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate</span> <span class="nf">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">X509Certificate2</span> <span class="nf">LocalCertificateSelectionCallback</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span>
             <span class="n">string</span> <span class="n">targetHost</span><span class="p">,</span> <span class="n">X509CertificateCollection</span> <span class="n">localCertificates</span><span class="p">,</span>
-            <span class="n">X509Certificate</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
+            <span class="n">X509Certificate</span><span class="o">?</span> <span class="n">remoteCertificate</span><span class="p">,</span> <span class="n">string</span><span class="p">[]</span> <span class="n">acceptableIssuers</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="k">return</span> <span class="n">GetCertificate</span><span class="p">();</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">ClientCertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span> <span class="n">certificate</span><span class="p">,</span>
-            <span class="n">X509Chain</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">ClientCertValidator</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">X509Certificate</span><span class="o">?</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">X509Chain</span><span class="o">?</span> <span class="n">chain</span><span class="p">,</span> <span class="n">SslPolicyErrors</span> <span class="n">sslPolicyErrors</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
         <span class="p">}</span>
@@ -768,7 +763,7 @@ All Apache Thrift tutorials require that you have:
 
         <span class="k">public</span> <span class="k">class</span> <span class="nc">CalculatorAsyncHandler</span> <span class="o">:</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">IAsync</span>
         <span class="p">{</span>
-            <span class="k">private</span> <span class="n">readonly</span> <span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">_log</span> <span class="o">=</span> <span class="k">new</span><span class="p">();</span>
+            <span class="k">private</span> <span class="n">readonly</span> <span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">_log</span> <span class="o">=</span> <span class="p">[];</span>
 
             <span class="k">public</span> <span class="n">CalculatorAsyncHandler</span><span class="p">()</span>
             <span class="p">{</span>
@@ -793,12 +788,12 @@ All Apache Thrift tutorials require that you have:
                 <span class="k">return</span> <span class="n">await</span> <span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">);</span>
             <span class="p">}</span>
 
-            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span> <span class="n">w</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+            <span class="k">public</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span><span class="o">?</span> <span class="n">w</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
             <span class="p">{</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Calculate({logid}, [{w.Op},{w.Num1},{w.Num2}])"</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span><span class="p">,</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">);</span>
+                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Calculate({logid}, [{w.Op},{w.Num1},{w.Num2}])"</span><span class="p">,</span> <span class="n">logid</span><span class="p">,</span> <span class="n">w</span><span class="o">?</span><span class="p">.</span><span class="n">Op</span><span class="p">,</span> <span class="n">w</span><span class="o">?</span><span class="p">.</span><span class="n">Num1</span><span class="p">,</span> <span class="n">w</span><span class="o">?</span><span class="p">.</span><span class="n">Num2</span><span class="p">);</span>
 
                 <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-                <span class="k">switch</span> <span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
+                <span class="k">switch</span> <span class="p">(</span><span class="n">w</span><span class="o">?</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span>
                 <span class="p">{</span>
                     <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">:</span>
                         <span class="n">val</span> <span class="o">=</span> <span class="n">w</span><span class="p">.</span><span class="n">Num1</span> <span class="o">+</span> <span class="n">w</span><span class="p">.</span><span class="n">Num2</span><span class="p">;</span>
@@ -827,6 +822,11 @@ All Apache Thrift tutorials require that you have:
                         <span class="k">break</span><span class="p">;</span>
 
                     <span class="k">default</span><span class="o">:</span>
+                    <span class="p">{</span>
+                        <span class="n">var</span> <span class="n">io</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InvalidOperation</span>
+                        <span class="p">{</span>
+                            <span class="n">WhatOp</span> <span class="o">=</span> <span class="p">((</span><span class="kt">int</span><span class="o">?</span><span class="p">)</span><span class="n">w</span><span class="o">?</span><span class="p">.</span><span class="n">Op</span><span class="p">)</span> <span class="o">??</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">Why</span> <span class="o">=</span> <span class="s">"Unknown operation"</span>
 </code></pre></div>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Server/Program.cs">tutorial/netstd/Server/Program.cs</a>
