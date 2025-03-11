@@ -24,7 +24,7 @@ Now fork the [Apache Thrift code base](https://thrift.apache.org/developers) on 
 
 ### Implement a minimal feature set
 
-* Implement the [code generator](https://github.com/apache/thrift/tree/master/compiler/cpp/src/generate), typically by picking one from the existing pool that is close to what you need. There are already plenty of languages supported, and you'll find oop, procedural and functional styles. If in doubt, which one to choose of the two or three candidates you found, head to the next point
+* Implement the [code generator](https://github.com/apache/thrift/tree/master/compiler/cpp/src/thrift/generate), typically by picking one from the existing pool that is close to what you need. There are already plenty of languages supported, and you'll find oop, procedural and functional styles. If in doubt, which one to choose of the two or three candidates you found, head to the next point
 
 * Implement the Thrift library for that particular language, again by picking one of the [existing libraries](https://github.com/apache/thrift/tree/master/lib) as a starting point. Because the libraries differ largely with regard to the "depth" of their implementations it is recommended to have a closer look on what is implemented, and what is not.
 
