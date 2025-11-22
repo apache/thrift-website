@@ -25,6 +25,7 @@ github:
   labels:
     - thrift
     - asf-site
+    - jekyll
   features:
     wiki: false
     issues: false
