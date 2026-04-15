@@ -22,7 +22,7 @@ class RemoteSnippet < Liquid::Tag
   def render(context)
     title = context.registers[:site].config['title']
     prefix = context.registers[:site].config['gitbox_url']
-    url = "#{prefix};a=blob_plain;hb=HEAD;f=#{@path}"
+    url = ENV["THRIFT_DIR"] ? File.new("#{ENV["THRIFT_DIR"]}/#{@path}") : "#{prefix};a=blob_plain;hb=HEAD;f=#{@path}"
     pretty_url = "#{prefix};a=blob;hb=HEAD;f=#{@path}"
     content = ""
     if @range == "all"
@@ -42,13 +42,17 @@ class RemoteSnippet < Liquid::Tag
     end
     snippet_type = "snippet"
     if @type == "direct"
-      content = Kramdown::Document.new(content).to_html
+      content = context.registers[:site]
+        .find_converter_instance(Jekyll::Converters::Markdown)
+        .convert(content.to_s)
       snippet_type = "page"
     else
       content = content.force_encoding("utf-8")
-      formatter = Rouge::Formatters::HTMLLegacy.new
+      formatter = Rouge::Formatters::HTML.new
       lexer = Rouge::Lexer.find_fancy(@type, content)
       content = formatter.format(lexer.lex(content))
+
+      content = %Q(<figure class="highlight"><pre><code class="language-#{@type.to_s.tr("+", "-")}" data-lang="#{@type}">#{content}</code></pre></figure>)
     end
     #content = CGI::escapeHTML(content)
     return """
@@ -61,4 +65,3 @@ class RemoteSnippet < Liquid::Tag
 end
 
 Liquid::Template.register_tag('remote_snippet', RemoteSnippet)
-
