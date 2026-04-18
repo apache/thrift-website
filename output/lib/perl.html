@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -111,15 +111,15 @@ to use Thrift.</p>
 
 <h1 id="breaking-changes">Breaking Changes</h1>
 
-<h2 id="section">0.10.0</h2>
+<h2 id="0100">0.10.0</h2>
 
 <p>The socket classes were refactored in 0.10.0 so that there is one package per
-file.  This means <code>use Socket;</code> no longer defines SSLSocket.  You can use this
+file.  This means <code class="language-plaintext highlighter-rouge">use Socket;</code> no longer defines SSLSocket.  You can use this
 technique to make your application run against 0.10.0 as well as earlier versions:</p>
 
-<p><code>eval { require Thrift::SSLSocket; } or do { require Thrift::Socket; }</code></p>
+<p><code class="language-plaintext highlighter-rouge">eval { require Thrift::SSLSocket; } or do { require Thrift::Socket; }</code></p>
 
-<h2 id="section-1">0.11.0</h2>
+<h2 id="0110">0.11.0</h2>
 
 <ul>
   <li>Namespaces of packages that were not scoped within Thrift have been fixed.
@@ -137,7 +137,7 @@ namespace changes, you can make the new, correct namespaces behave like the old 
 in your files with this technique to create an alias, which will allow you code to
 run against either version of the perl runtime for thrift:</p>
 
-<p><code>BEGIN {*TType:: = *Thrift::TType::}</code></p>
+<p><code class="language-plaintext highlighter-rouge">BEGIN {*TType:: = *Thrift::TType::}</code></p>
 
 <ul>
   <li>Packages found in Thrift.pm were moved into the Thrift/ directory in separate files:
@@ -150,12 +150,12 @@ run against either version of the perl runtime for thrift:</p>
 <p>If you need to modify your code to work against both older or newer thrift versions,
 you can deal with these changes in a backwards compatible way in your projects using eval:</p>
 
-<p><code>eval  { require Thrift::Exception; require Thrift::MessageType; require Thrift::Type; }
+<p><code class="language-plaintext highlighter-rouge">eval  { require Thrift::Exception; require Thrift::MessageType; require Thrift::Type; }
  or do { require Thrift; }</code></p>
 
 <h1 id="deprecations">Deprecations</h1>
 
-<h2 id="section-2">0.11.0</h2>
+<h2 id="0110-1">0.11.0</h2>
 
 <p>Thrift::HttpClient setRecvTimeout() and setSendTimeout() are deprecated. 
 Use setTimeout instead.</p>
@@ -191,7 +191,7 @@ Use setTimeout instead.</p>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -55,8 +55,8 @@
 <p>When using a CMake build from the source distribution on Linux the
 easiest way to build and install is this simple command line:</p>
 
-<pre><code>make all &amp;&amp; sudo make install/fast
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make all &amp;&amp; sudo make install/fast
+</code></pre></div></div>
 
 <p>It is important to use the install/fast option to eliminate
 the automatic rebuild by dependency that causes issues because
@@ -78,34 +78,31 @@ have ignored the gradle wrapper files. You are expected to install it manually, 
 the <a href="https://docs.gradle.org/current/userguide/installation.html">gradle documentation</a>, or
 following this step (which is also done in the travis CI docker images):</p>
 
-<p><code>bash
-export GRADLE_VERSION="8.4"
-# install dependencies
-apt-get install -y --no-install-recommends openjdk-17-jdk-headless wget unzip
-# download gradle distribution
-wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -q -O /tmp/gradle-$GRADLE_VERSION-bin.zip
-# check binary integrity
-echo "3e1af3ae886920c3ac87f7a91f816c0c7c436f276a6eefdb3da152100fef72ae  /tmp/gradle-$GRADLE_VERSION-bin.zip" | sha256sum -c -
-# unzip and install
-unzip -d /tmp /tmp/gradle-$GRADLE_VERSION-bin.zip
-mv /tmp/gradle-$GRADLE_VERSION /usr/local/gradle
-ln -s /usr/local/gradle/bin/gradle /usr/local/bin
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">GRADLE_VERSION</span><span class="o">=</span><span class="s2">"8.4"</span>
+<span class="c"># install dependencies</span>
+apt-get <span class="nb">install</span> <span class="nt">-y</span> <span class="nt">--no-install-recommends</span> openjdk-17-jdk-headless wget unzip
+<span class="c"># download gradle distribution</span>
+wget https://services.gradle.org/distributions/gradle-<span class="nv">$GRADLE_VERSION</span><span class="nt">-bin</span>.zip <span class="nt">-q</span> <span class="nt">-O</span> /tmp/gradle-<span class="nv">$GRADLE_VERSION</span><span class="nt">-bin</span>.zip
+<span class="c"># check binary integrity</span>
+<span class="nb">echo</span> <span class="s2">"3e1af3ae886920c3ac87f7a91f816c0c7c436f276a6eefdb3da152100fef72ae  /tmp/gradle-</span><span class="nv">$GRADLE_VERSION</span><span class="s2">-bin.zip"</span> | <span class="nb">sha256sum</span> <span class="nt">-c</span> -
+<span class="c"># unzip and install</span>
+unzip <span class="nt">-d</span> /tmp /tmp/gradle-<span class="nv">$GRADLE_VERSION</span><span class="nt">-bin</span>.zip
+<span class="nb">mv</span> /tmp/gradle-<span class="nv">$GRADLE_VERSION</span> /usr/local/gradle
+<span class="nb">ln</span> <span class="nt">-s</span> /usr/local/gradle/bin/gradle /usr/local/bin
+</code></pre></div></div>
 
-<p>After the above step, <code>gradle</code> binary will be available in <code>/usr/local/bin/</code>. You can further choose
+<p>After the above step, <code class="language-plaintext highlighter-rouge">gradle</code> binary will be available in <code class="language-plaintext highlighter-rouge">/usr/local/bin/</code>. You can further choose
 to locally create the gradle wrapper (even if they are ignored) using:</p>
 
-<p><code>bash
-gradle wrapper --gradle-version $GRADLE_VERSION
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle wrapper <span class="nt">--gradle-version</span> <span class="nv">$GRADLE_VERSION</span>
+</code></pre></div></div>
 
 <p>To compile the Java Thrift libraries, simply do the following:</p>
 
-<p><code>bash
-gradle
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle
+</code></pre></div></div>
 
-<p>Yep, that’s easy. Look for <code>libthrift-&lt;version&gt;.jar</code> in the build/libs directory.</p>
+<p>Yep, that’s easy. Look for <code class="language-plaintext highlighter-rouge">libthrift-&lt;version&gt;.jar</code> in the build/libs directory.</p>
 
 <p>The default build will run the unit tests which expect a usable
 Thrift compiler to exist on the system. You have two choices for
@@ -128,16 +125,14 @@ a Windows box if Thrift was installed under C:\Thrift</p>
 
 <p>To just build the library without running unit tests you simply do this.</p>
 
-<p><code>bash
-gradle assemble
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle assemble
+</code></pre></div></div>
 
 <p>To install the library in the local Maven repository location
 where other Maven or Gradle builds can reference it simply do this.</p>
 
-<p><code>bash
-gradle publishToMavenLocal
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle publishToMavenLocal
+</code></pre></div></div>
 
 <p>The library will be placed in your home directory under .m2/repository</p>
 
@@ -146,15 +141,13 @@ classpath, or install if in your default system classpath of choice.</p>
 
 <p>Build Thrift behind a proxy:</p>
 
-<p><code>bash
-gradle -Dhttp.proxyHost=myproxyhost -Dhttp.proxyPort=8080 -Dhttp.proxyUser=thriftuser -Dhttp.proxyPassword=topsecret
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle <span class="nt">-Dhttp</span>.proxyHost<span class="o">=</span>myproxyhost <span class="nt">-Dhttp</span>.proxyPort<span class="o">=</span>8080 <span class="nt">-Dhttp</span>.proxyUser<span class="o">=</span>thriftuser <span class="nt">-Dhttp</span>.proxyPassword<span class="o">=</span>topsecret
+</code></pre></div></div>
 
 <p>or via</p>
 
-<p><code>bash
-./configure --with-java GRADLE_OPTS='-Dhttp.proxyHost=myproxyhost -Dhttp.proxyPort=8080 -Dhttp.proxyUser=thriftuser -Dhttp.proxyPassword=topsecret'
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure <span class="nt">--with-java</span> <span class="nv">GRADLE_OPTS</span><span class="o">=</span><span class="s1">'-Dhttp.proxyHost=myproxyhost -Dhttp.proxyPort=8080 -Dhttp.proxyUser=thriftuser -Dhttp.proxyPassword=topsecret'</span>
+</code></pre></div></div>
 
 <h1 id="unit-test-html-reports">Unit Test HTML Reports</h1>
 
@@ -165,17 +158,16 @@ directly from that location.</p>
 <h1 id="clover-code-coverage-for-thrift">Clover Code Coverage for Thrift</h1>
 
 <p>The build will optionally generate Clover Code coverage if the Gradle property
-<code>cloverEnabled=true</code> is set in ~/.gradle/gradle.properties or on the command line
-via <code>-PcloverEnabled=true</code>. The generated report can be found under the location
+<code class="language-plaintext highlighter-rouge">cloverEnabled=true</code> is set in ~/.gradle/gradle.properties or on the command line
+via <code class="language-plaintext highlighter-rouge">-PcloverEnabled=true</code>. The generated report can be found under the location
 build/reports/clover/html/index.html. It can be viewed with a browser
 directly from that location. Additionally, a PDF report is generated and is found
 under the location build/reports/clover/clover.pdf.</p>
 
 <p>The following command will build, unit test, and generate Clover reports:</p>
 
-<p><code>bash
-gradle -PcloverEnabled=true
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle <span class="nt">-PcloverEnabled</span><span class="o">=</span><span class="nb">true</span>
+</code></pre></div></div>
 
 <h1 id="publishing-maven-artifacts-to-maven-central">Publishing Maven Artifacts to Maven Central</h1>
 
@@ -185,28 +177,26 @@ version number. The Gradle build will receive the correct value for the build.
 The same applies to the CMake build, the value from the configure.ac file will
 be used if you execute these commands:</p>
 
-<p><code>bash
-make maven-publish   -- This is for an Automake Linux build
-make MavenPublish    -- This is for a CMake generated build
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make maven-publish   <span class="nt">--</span> This is <span class="k">for </span>an Automake Linux build
+make MavenPublish    <span class="nt">--</span> This is <span class="k">for </span>a CMake generated build
+</code></pre></div></div>
 
-<p>The <code>publish</code> task in Gradle is preconfigured with all necessary details
+<p>The <code class="language-plaintext highlighter-rouge">publish</code> task in Gradle is preconfigured with all necessary details
 to sign and publish the artifacts from the build to the Apache Maven staging
 repository. The task requires the following externally provided properties to
 authenticate to the repository and sign the artifacts. The preferred approach
 is to create or edit the ~/.gradle/gradle.properties file and add the following
 properties to it.</p>
 
-<p>```properties
-# Signing key information for artifacts PGP signature (values are examples)
-signing.keyId=24875D73
-signing.password=secret
-signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg</p>
+<div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Signing key information for artifacts PGP signature (values are examples)
+</span><span class="py">signing.keyId</span><span class="p">=</span><span class="s">24875D73</span>
+<span class="py">signing.password</span><span class="p">=</span><span class="s">secret</span>
+<span class="py">signing.secretKeyRingFile</span><span class="p">=</span><span class="s">/Users/me/.gnupg/secring.gpg</span>
 
-<h1 id="apache-maven-staging-repository-user-credentials">Apache Maven staging repository user credentials</h1>
-<p>mavenUser=meMyselfAndI
-mavenPassword=MySuperAwesomeSecretPassword
-```</p>
+<span class="c"># Apache Maven staging repository user credentials
+</span><span class="py">mavenUser</span><span class="p">=</span><span class="s">meMyselfAndI</span>
+<span class="py">mavenPassword</span><span class="p">=</span><span class="s">MySuperAwesomeSecretPassword</span>
+</code></pre></div></div>
 
 <p>NOTE: If you do not have a secring.gpg file, see the
 <a href="https://docs.gradle.org/current/userguide/signing_plugin.html">gradle signing docs</a>
@@ -216,24 +206,21 @@ for instructions on how to generate it.</p>
 With the key information and credentials in place the following will generate
 if needed the build artifacts and proceed to publish the results.</p>
 
-<p><code>bash
-gradle -Prelease=true publish
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle <span class="nt">-Prelease</span><span class="o">=</span><span class="nb">true </span>publish
+</code></pre></div></div>
 
 <p>It is also possible to override the target repository for the Maven Publication
 by using a Gradle property, for example you can publish signed JAR files to your
 company internal server if you add this to the command line or in the
 ~/.gradle/gradle.properties file. The URL below assumes a Nexus Repository.</p>
 
-<p><code>properties
-maven-repository-url=https://my.company.com/service/local/staging/deploy/maven2
-</code></p>
+<div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">maven-repository-url</span><span class="p">=</span><span class="s">https://my.company.com/service/local/staging/deploy/maven2</span>
+</code></pre></div></div>
 
 <p>Or the same on the command line:</p>
 
-<p><code>bash
-gradle -Pmaven-repository-url=https://my.company.com/service/local/staging/deploy/maven2 -Prelease=true -Pthrift.version=0.11.0 publish
-</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle <span class="nt">-Pmaven-repository-url</span><span class="o">=</span>https://my.company.com/service/local/staging/deploy/maven2 <span class="nt">-Prelease</span><span class="o">=</span><span class="nb">true</span> <span class="nt">-Pthrift</span>.version<span class="o">=</span>0.11.0 publish
+</code></pre></div></div>
 
 <h1 id="dependencies">Dependencies</h1>
 
@@ -242,7 +229,7 @@ http://gradle.org/</p>
 
 <h1 id="breaking-changes">Breaking Changes</h1>
 
-<h2 id="section">0.13.0</h2>
+<h2 id="0130">0.13.0</h2>
 
 <ul>
   <li>
@@ -251,11 +238,11 @@ changed to remove the boolean return type and instead rely on Exceptions.</p>
   </li>
   <li>
     <p>Per THRIFT-4805, TSaslTransportException has been removed. The same condition
-is now covered by TTansportException, where <code>TTransportException.getType() == END_OF_FILE</code>.</p>
+is now covered by TTansportException, where <code class="language-plaintext highlighter-rouge">TTransportException.getType() == END_OF_FILE</code>.</p>
   </li>
 </ul>
 
-<h2 id="section-1">0.12.0</h2>
+<h2 id="0120">0.12.0</h2>
 
 <p>The access modifier of the AutoExpandingBuffer class has been changed from
 public to default (package) and will no longer be accessible by third-party
@@ -296,7 +283,7 @@ libraries.</p>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

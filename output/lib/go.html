@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -76,8 +76,8 @@ and as a result no longer works on go1.12.</p>
 <p>After initializing the go modules file in your project, use the following
 command to add the most recent version of the package:</p>
 
-<pre><code>$ go get github.com/apache/thrift
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go get github.com/apache/thrift
+</code></pre></div></div>
 
 <h1 id="a-note-about-optional-fields">A note about optional fields</h1>
 
@@ -90,26 +90,26 @@ code represents optional fields via pointers.</p>
 have a syntax for creating a pointer to a constant in a single expression. That
 is, given a struct like</p>
 
-<pre><code>struct SomeIDLType {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct SomeIDLType {
 	OptionalField *int32
 }
-</code></pre>
+</code></pre></div></div>
 
 <p>, the following will not compile:</p>
 
-<pre><code>x := &amp;SomeIDLType{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x := &amp;SomeIDLType{
 	OptionalField: &amp;(3),
 }
-</code></pre>
+</code></pre></div></div>
 
 <p>(Nor is there any other syntax that’s built in to the language)</p>
 
 <p>As such, we provide some helpers that do just this under lib/go/thrift/. E.g.,</p>
 
-<pre><code>x := &amp;SomeIDLType{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x := &amp;SomeIDLType{
 	OptionalField: thrift.Int32Ptr(3),
 }
-</code></pre>
+</code></pre></div></div>
 
 <p>And so on. The code generator also creates analogous helpers for user-defined
 typedefs and enums.</p>
@@ -118,17 +118,17 @@ typedefs and enums.</p>
 
 <p>You can add tags to the auto-generated thrift structs using the following format:</p>
 
-<pre><code>struct foo {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct foo {
   1: required string Bar (go.tag = "some_tag:\"some_tag_value\"")
 }
-</code></pre>
+</code></pre></div></div>
 
 <p>which will generate:</p>
 
-<pre><code>type Foo struct {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Foo struct {
   Bar string `thrift:"bar,1,required" some_tag:"some_tag_value"`
 }
-</code></pre>
+</code></pre></div></div>
 
 <h1 id="a-note-about-server-handler-implementations">A note about server handler implementations</h1>
 
@@ -136,13 +136,13 @@ typedefs and enums.</p>
 the client closes the connection (this is a best effort check, not a guarantee
 – there’s no guarantee that the context object is always canceled when client
 closes the connection, but when it’s canceled you can always assume the client
-closed the connection). The cause of the cancellation (via <code>context.Cause(ctx)</code>)
-would also be set to <code>thrift.ErrAbandonRequest</code>.</p>
+closed the connection). The cause of the cancellation (via <code class="language-plaintext highlighter-rouge">context.Cause(ctx)</code>)
+would also be set to <code class="language-plaintext highlighter-rouge">thrift.ErrAbandonRequest</code>.</p>
 
 <p>When implementing Go Thrift server, you can take advantage of that to abandon
-requests that’s no longer needed by returning <code>thrift.ErrAbandonRequest</code>:</p>
+requests that’s no longer needed by returning <code class="language-plaintext highlighter-rouge">thrift.ErrAbandonRequest</code>:</p>
 
-<pre><code>func MyEndpoint(ctx context.Context, req *thriftRequestType) (*thriftResponseType, error) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func MyEndpoint(ctx context.Context, req *thriftRequestType) (*thriftResponseType, error) {
     ...
     if ctx.Err() == context.Canceled {
         return nil, thrift.ErrAbandonRequest
@@ -152,15 +152,15 @@ requests that’s no longer needed by returning <code>thrift.ErrAbandonRequest</
     }
     ...
 }
-</code></pre>
+</code></pre></div></div>
 
 <p>This feature would add roughly 1 millisecond of latency overhead to the server
 handlers (along with roughly 2 goroutines per request).
 If that is unacceptable, it can be disabled by having this line early in your
 main function:</p>
 
-<pre><code>thrift.ServerConnectivityCheckInterval = 0
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift.ServerConnectivityCheckInterval = 0
+</code></pre></div></div>
 
 <p>Please be advised that due to a
 <a href="https://github.com/golang/go/issues/27707">Go runtime bug</a>, currently
@@ -173,18 +173,20 @@ excessive cpu overhead.</p>
 
 <p><a href="https://pkg.go.dev/github.com/apache/thrift/lib/go/thrift#TSimpleServer.Stop">TSimpleServer.Stop</a> will wait for all client connections to be closed after 
 the last received request to be handled, as the time spent by Stop
- may sometimes be too long:
-* When socket timeout is not set, server might be hanged before all active
-  clients to finish handling the last received request.
-* When the socket timeout is too long (e.g one hour), server will
-  hang for that duration before all active clients to finish handling the
-  last received request.</p>
+ may sometimes be too long:</p>
+<ul>
+  <li>When socket timeout is not set, server might be hanged before all active
+clients to finish handling the last received request.</li>
+  <li>When the socket timeout is too long (e.g one hour), server will
+hang for that duration before all active clients to finish handling the
+last received request.</li>
+</ul>
 
 <p>To prevent Stop from hanging for too long, you can set 
 thrift.ServerStopTimeout in your main or init function:</p>
 
-<pre><code>thrift.ServerStopTimeout = &lt;max_duration_to_stop&gt;
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift.ServerStopTimeout = &lt;max_duration_to_stop&gt;
+</code></pre></div></div>
 
 <p>If it’s set to &lt;=0, the feature will be disabled (by default), and server 
 will wait for all the client connections to be closed gracefully with 
@@ -224,7 +226,7 @@ will be closed abruptly which may cause some client errors.</p>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

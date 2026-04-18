@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -78,13 +78,13 @@
 
 <h3 id="build-and-install-the-compiler">Build and install the compiler</h3>
 
-<p>After all requirements are in place, use the <code>compiler/cpp/compiler.vcxproj</code> build project to build the Thrift compiler. Copy the resulting EXE file to a location of your choice.</p>
+<p>After all requirements are in place, use the <code class="language-plaintext highlighter-rouge">compiler/cpp/compiler.vcxproj</code> build project to build the Thrift compiler. Copy the resulting EXE file to a location of your choice.</p>
 
 <h3 id="build-and-install-target-libraries">Build and install target libraries</h3>
 
-<p>A few of the target language libraries also do provide Visual Studio project files, such as C++ and C#. These are located in the <code>lib/&lt;language&gt;/</code> folders.</p>
+<p>A few of the target language libraries also do provide Visual Studio project files, such as C++ and C#. These are located in the <code class="language-plaintext highlighter-rouge">lib/&lt;language&gt;/</code> folders.</p>
 
-<p>Most of the language packages must be built and installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, Delphi, or PHP. Look for the <code>README.md</code> file in the <code>lib/&lt;language&gt;/</code> folder for more details on how to build and install each language’s library package.</p>
+<p>Most of the language packages must be built and installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, Delphi, or PHP. Look for the <code class="language-plaintext highlighter-rouge">README.md</code> file in the <code class="language-plaintext highlighter-rouge">lib/&lt;language&gt;/</code> folder for more details on how to build and install each language’s library package.</p>
 
 <h2 id="setup-from-source-via-cygwin">Setup from source via Cygwin</h2>
 
@@ -101,31 +101,31 @@
 
 <p>If you are building from the first time out of the source repository, you will need to generate the configure scripts.  (This is not necessary if you downloaded a tarball.)  From the top directory, do:</p>
 
-<pre><code>./bootstrap.sh
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
+</code></pre></div></div>
 
 <p>Once the configure scripts are generated, thrift can be configured. From the top directory, do:</p>
 
-<pre><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
 ./configure
-</code></pre>
+</code></pre></div></div>
 
 <p>Setting the CXXFLAGS environmental variable works around compile errors with PTHREAD_MUTEX_RECURSIVE_NP being undeclared, by replacing it with the newer, portable PTHREAD_MUTEX_RECURSIVE. (Tested on cygwin 20100320, Thrift r760184, latest pthread.)</p>
 
 <p><strong>Optional:</strong> You <strong>may not</strong> be able to make from the root  Thrift directory due to errors (see below to resolve). To make the compiler only, change to the compiler directory before running make:</p>
 
-<pre><code>cd compiler/cpp
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd compiler/cpp
+</code></pre></div></div>
 
 <p>Now make the thrift compiler (&amp; runtime libraries if make is run from the thrift root directory):</p>
 
-<pre><code>make
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make
 make install
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="build-and-install-target-libraries-1">Build and install target libraries</h3>
 
-<p>Some language packages must be installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, or PHP. Look for the README file in the <code>lib/&lt;language&gt;/</code> folder for more details on the installation of each language library package.</p>
+<p>Some language packages must be installed manually using build tools better suited to those languages. Typical examples are Java, Ruby, or PHP. Look for the README file in the <code class="language-plaintext highlighter-rouge">lib/&lt;language&gt;/</code> folder for more details on the installation of each language library package.</p>
 
 <h3 id="possible-issues-with-cygwin-install">Possible issues with Cygwin install</h3>
 
@@ -135,14 +135,14 @@ make install
 
 <p>The following error occurs for some users when running ./configure:</p>
 
-<pre><code>./configure: line 21183: syntax error near unexpected token `MONO,'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure: line 21183: syntax error near unexpected token `MONO,'
 ./configure: line 21183: `  PKG_CHECK_MODULES(MONO, mono &gt;= 1.2.6, have_mono=yes, have_mono=no)'
-</code></pre>
+</code></pre></div></div>
 
 <p>To resolve this, you’ll need to find your pkg.m4 (installed by the pkg-config package) file and copy it to the thrift/aclocal directory.  From the top-level thrift directory, you can copy the file by running</p>
 
-<pre><code>cp /usr/share/aclocal/pkg.m4 aclocal
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cp /usr/share/aclocal/pkg.m4 aclocal
+</code></pre></div></div>
 
 <p>Finally, re-run ./bootstrap.sh and ./configure.  (Note that pkg.m4 is created by the pkg-config tool.  If your /usr/share/aclocal directory doesn’t contain the pkg.m4 file, you may not have pkg-config installed.)</p>
 
@@ -156,8 +156,8 @@ make install
 
 <p>If you need perl, and are happy to manually install it, replace the contents of thrift/lib/perl/Makefile with the following, after building thrift:</p>
 
-<pre><code>TODO
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TODO
+</code></pre></div></div>
 
 <h4 id="linking-to-installed-c-runtime-libraries">Linking to installed C++ runtime libraries</h4>
 
@@ -167,14 +167,14 @@ make install
 
 <p>This can be implemented in a Makefile using the following lines:</p>
 
-<pre><code>THRIFT_O=&lt;path to&gt;/thrift/lib/cpp
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>THRIFT_O=&lt;path to&gt;/thrift/lib/cpp
 LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o $(THRIFT_O)/TBufferTransports.o
-</code></pre>
+</code></pre></div></div>
 
 <p>Then linking using $(LTHRIFT) instead of -lthrift.</p>
 
-<pre><code>TODO - diagnose the issue further
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TODO - diagnose the issue further
+</code></pre></div></div>
 
 <h4 id="c-runtime-segfault-with-cygwin-175-1-g-434-fork-and-throw">C++ runtime segfault with cygwin 1.7.5-1, g++-4.3.4, fork() and throw</h4>
 
@@ -197,39 +197,39 @@ LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o
 
 <p>In addition, you need to add the following entry to your windows PATH variable.</p>
 
-<pre><code>C:\MINGW\BIN
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\MINGW\BIN
+</code></pre></div></div>
 
 <p>Next, open compiler/cpp/Makefile.am and add the following line to thrift_CXXFLAGS</p>
 
-<pre><code>-DMINGW -mno-cygwin -lfl
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-DMINGW -mno-cygwin -lfl
+</code></pre></div></div>
 
 <p>Run bootstrap.sh:</p>
 
-<pre><code>./bootstrap.sh
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
+</code></pre></div></div>
 
 <p>Make sure you have java in your $PATH variable, if not do(adjust path if necessary):</p>
 
-<pre><code>export PATH=$PATH:"/cygdrive/c/program files/java/jre1.8.0_191/bin"
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH=$PATH:"/cygdrive/c/program files/java/jre1.8.0_191/bin"
+</code></pre></div></div>
 
 <p>Run configure - using CXXFLAGS to work around an issue with an old pthreads define (untested on MinGW - works on Cygwin):</p>
 
-<pre><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export CXXFLAGS="-D PTHREAD_MUTEX_RECURSIVE_NP=PTHREAD_MUTEX_RECURSIVE"
 ./configure
-</code></pre>
+</code></pre></div></div>
 
 <p>'’Optional:’’ To make the compiler only, change to the compiler  directory before running make:</p>
 
-<pre><code>cd compiler/cpp
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd compiler/cpp
+</code></pre></div></div>
 
 <p>Run make:</p>
 
-<pre><code>mingw32-make.exe
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mingw32-make.exe
+</code></pre></div></div>
 
 <h3 id="possible-issues-with-mingw-install">Possible issues with MinGW install</h3>
 
@@ -243,8 +243,8 @@ LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o
 
 <p>Try and change the include dir to use the windows path from c like this: Edit compiler/cpp/Makefile, look for the declaration of BOOST_CPPFLAGS, change that line for</p>
 
-<pre><code>BOOST_CPPFLAGS = -Ic:/cygwin/usr/include/boost-1_53_0
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BOOST_CPPFLAGS = -Ic:/cygwin/usr/include/boost-1_53_0
+</code></pre></div></div>
 
 <h4 id="realpath-is-not-found">realpath is not found</h4>
 
@@ -287,7 +287,7 @@ LTHRIFT=$(THRIFT_O)/Thrift.o $(THRIFT_O)/TSocket.o $(THRIFT_O)/TBinaryProtocol.o
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

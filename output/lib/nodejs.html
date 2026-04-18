@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -56,44 +56,43 @@
 
 <h2 id="install">Install</h2>
 
-<pre><code>npm install thrift 
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install thrift 
+</code></pre></div></div>
 
 <h2 id="thrift-compiler">Thrift Compiler</h2>
 
 <p>You can compile IDL sources for Node.js with the following command:</p>
 
-<pre><code>thrift --gen js:node thrift_file
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift --gen js:node thrift_file
+</code></pre></div></div>
 
 <h2 id="cassandra-client-example">Cassandra Client Example:</h2>
 
 <p>Here is a Cassandra example:</p>
 
-<p>```js
-var thrift = require(‘thrift’),
-    Cassandra = require(‘./gen-nodejs/Cassandra’)
-    ttypes = require(‘./gen-nodejs/cassandra_types’);</p>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">thrift</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">thrift</span><span class="dl">'</span><span class="p">),</span>
+    <span class="nx">Cassandra</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/Cassandra</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nx">ttypes</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./gen-nodejs/cassandra_types</span><span class="dl">'</span><span class="p">);</span>
 
-<p>var connection = thrift.createConnection(“localhost”, 9160),
-    client = thrift.createClient(Cassandra, connection);</p>
+<span class="kd">var</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createConnection</span><span class="p">(</span><span class="dl">"</span><span class="s2">localhost</span><span class="dl">"</span><span class="p">,</span> <span class="mi">9160</span><span class="p">),</span>
+    <span class="nx">client</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createClient</span><span class="p">(</span><span class="nx">Cassandra</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
 
-<p>connection.on(‘error’, function(err) {
-  console.error(err);
-});</p>
+<span class="nx">connection</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+<span class="p">});</span>
 
-<p>client.get_slice(“Keyspace”, “key”, new ttypes.ColumnParent({column_family: “ExampleCF”}), new ttypes.SlicePredicate({slice_range: new ttypes.SliceRange({start: ‘’, finish: ‘’})}), ttypes.ConsistencyLevel.ONE, function(err, data) {
-  if (err) {
-    // handle err
-  } else {
-    // data == [ttypes.ColumnOrSuperColumn, …]
-  }
-  connection.end();
-});
-```</p>
+<span class="nx">client</span><span class="p">.</span><span class="nf">get_slice</span><span class="p">(</span><span class="dl">"</span><span class="s2">Keyspace</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">key</span><span class="dl">"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">ColumnParent</span><span class="p">({</span><span class="na">column_family</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ExampleCF</span><span class="dl">"</span><span class="p">}),</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">SlicePredicate</span><span class="p">({</span><span class="na">slice_range</span><span class="p">:</span> <span class="k">new</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nc">SliceRange</span><span class="p">({</span><span class="na">start</span><span class="p">:</span> <span class="dl">''</span><span class="p">,</span> <span class="na">finish</span><span class="p">:</span> <span class="dl">''</span><span class="p">})}),</span> <span class="nx">ttypes</span><span class="p">.</span><span class="nx">ConsistencyLevel</span><span class="p">.</span><span class="nx">ONE</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// handle err</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// data == [ttypes.ColumnOrSuperColumn, ...]</span>
+  <span class="p">}</span>
+  <span class="nx">connection</span><span class="p">.</span><span class="nf">end</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div></div>
 
-<p><a name="int64"></a>
-## Int64</p>
+<p><a name="int64"></a></p>
+<h2 id="int64">Int64</h2>
 
 <p>Since JavaScript represents all numbers as doubles, int64 values cannot be accurately represented naturally. To solve this, int64 values in responses will be wrapped with Thrift.Int64 objects. The Int64 implementation used is <a href="https://github.com/broofa/node-int64">broofa/node-int64</a>.</p>
 
@@ -107,69 +106,67 @@ var thrift = require(‘thrift’),
 
 <p>thrift –gen js:node,ts,es6,with_ns</p>
 
-<p>```javascript
-import * as thrift from ‘thrift’;
-import { MyServiceClient } from ‘../gen-nodejs/MyService’;</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">thrift</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">thrift</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">MyServiceClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../gen-nodejs/MyService</span><span class="dl">'</span><span class="p">;</span>
 
-<p>let host = window.location.hostname;
-let port = 443;
-let opts = {
-  transport: thrift.TBufferedTransport,
-  protocol: thrift.TJSONProtocol, 
-    headers: {
-     ‘Content-Type’: ‘application/vnd.apache.thrift.json’,
-    },
-    https: true,
-    path: ‘/url/path’,
-    useCORS: true,
-};</p>
+<span class="kd">let</span> <span class="nx">host</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">443</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">transport</span><span class="p">:</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TBufferedTransport</span><span class="p">,</span>
+  <span class="na">protocol</span><span class="p">:</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TJSONProtocol</span><span class="p">,</span> 
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+     <span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">application/vnd.apache.thrift.json</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">https</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/url/path</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">useCORS</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">};</span>
 
-<p>let connection = thrift.createXHRConnection(host, port, opts);
-let thriftClient = thrift.createXHRClient(MyServiceClient, connection);</p>
+<span class="kd">let</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createXHRConnection</span><span class="p">(</span><span class="nx">host</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">opts</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">thriftClient</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createXHRClient</span><span class="p">(</span><span class="nx">MyServiceClient</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
 
-<p>connection.on(‘error’, (err) =&gt; {
-  console.error(err);
-});</p>
+<span class="nx">connection</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+<span class="p">});</span>
 
-<p>thriftClient.myService(param)
-  .then((result) =&gt; {
-    console.log(result);
-  })
-  .catch((err) =&gt; {
-    ….
-  });
-```</p>
+<span class="nx">thriftClient</span><span class="p">.</span><span class="nf">myService</span><span class="p">(</span><span class="nx">param</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">then</span><span class="p">((</span><span class="nx">result</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="p">....</span>
+  <span class="p">});</span>
+</code></pre></div></div>
 
 <p>Bundlers, like webpack, will use thrift/browser.js by default because of the 
-<code>"browser": "./lib/nodejs/lib/thrift/browser.js"</code> field in package.json.</p>
+<code class="language-plaintext highlighter-rouge">"browser": "./lib/nodejs/lib/thrift/browser.js"</code> field in package.json.</p>
 
 <h3 id="browser-example-with-websocket-bufferedtransport-and-binaryprotocol">Browser example with WebSocket, BufferedTransport and BinaryProtocol</h3>
-<p>```javascript
-import thrift from ‘thrift’;
-import { MyServiceClient } from ‘../gen-nodejs/MyService’;</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">thrift</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">thrift</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">MyServiceClient</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../gen-nodejs/MyService</span><span class="dl">'</span><span class="p">;</span>
 
-<p>const host = window.location.hostname;
-const port = 9090;
-const opts = {
-  transport: thrift.TBufferedTransport,
-  protocol: thrift.TBinaryProtocol
-}
-const connection = thrift.createWSConnection(host, port, opts);
-connection.open();
-const thriftClient = thrift.createWSClient(MyServiceClient, connection);</p>
+<span class="kd">const</span> <span class="nx">host</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">9090</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">transport</span><span class="p">:</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TBufferedTransport</span><span class="p">,</span>
+  <span class="na">protocol</span><span class="p">:</span> <span class="nx">thrift</span><span class="p">.</span><span class="nx">TBinaryProtocol</span>
+<span class="p">}</span>
+<span class="kd">const</span> <span class="nx">connection</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createWSConnection</span><span class="p">(</span><span class="nx">host</span><span class="p">,</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">opts</span><span class="p">);</span>
+<span class="nx">connection</span><span class="p">.</span><span class="nf">open</span><span class="p">();</span>
+<span class="kd">const</span> <span class="nx">thriftClient</span> <span class="o">=</span> <span class="nx">thrift</span><span class="p">.</span><span class="nf">createWSClient</span><span class="p">(</span><span class="nx">MyServiceClient</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
 
-<p>connection.on(‘error’, (err) =&gt; {
-  console.error(err);
-});</p>
+<span class="nx">connection</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">error</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+<span class="p">});</span>
 
-<p>thriftClient.myService(param)
-  .then((result) =&gt; {
-    console.log(result);
-  })
-  .catch((err) =&gt; {
-    ….
-  });
-```</p>
+<span class="nx">thriftClient</span><span class="p">.</span><span class="nf">myService</span><span class="p">(</span><span class="nx">param</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">then</span><span class="p">((</span><span class="nx">result</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="p">....</span>
+  <span class="p">});</span>
+</code></pre></div></div>
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/nodejs/README.md">lib/nodejs/README.md</a>
@@ -202,7 +199,7 @@ const thriftClient = thrift.createWSClient(MyServiceClient, connection);</p>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

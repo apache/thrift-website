@@ -79,6 +79,20 @@ can be quite useful if trying to get some CSS or HTML styled
 Jekyll will print a local URL where the site can be viewed
 (usually, [http://0.0.0.0:4000/](http://0.0.0.0:4000/)).
 
+### Testing with a Local Thrift Checkout
+
+Some pages on this site are rendered from files in the Apache Thrift
+repository via the `{% remote_snippet %}` tag. By default those snippets
+are fetched from the `master` branch of the Thrift repository while Jekyll
+builds the site.
+
+If you want to test local changes to those source files before pushing
+them, point the website build at your local Thrift checkout:
+
+```bash
+THRIFT_DIR=/path/to/thrift bundle exec jekyll serve -w
+```
+
 ## Publishing
 
 ### Automatic Staging

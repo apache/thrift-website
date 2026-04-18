@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -65,22 +65,22 @@
   <li>DEF-SERVICE forms for thrift service definitions.</li>
 </ul>
 
-<p>Each service definition expands in a collection of generic function definitions. For each <code>op</code>
+<p>Each service definition expands in a collection of generic function definitions. For each <code class="language-plaintext highlighter-rouge">op</code>
  in the service definition, two functions are defined</p>
 
 <ul>
-  <li><code>op</code>-request is defined for use by a client. It accepts an additional initial <code>protocol</code> argument,
+  <li><code class="language-plaintext highlighter-rouge">op</code>-request is defined for use by a client. It accepts an additional initial <code class="language-plaintext highlighter-rouge">protocol</code> argument,
 to act as the client proxy for the operation and mediate the interaction with a remote process
 through a Thrift-encoded transport stream.</li>
-  <li><code>op</code>-response is defined for use by a server. It accepts a single <code>protocol</code> argument. A server
-uses it to decode the request message, invoke the base <code>op</code> function with the message arguments,
+  <li><code class="language-plaintext highlighter-rouge">op</code>-response is defined for use by a server. It accepts a single <code class="language-plaintext highlighter-rouge">protocol</code> argument. A server
+uses it to decode the request message, invoke the base <code class="language-plaintext highlighter-rouge">op</code> function with the message arguments,
 encode and send the the result as a response, and handles exceptions.</li>
 </ul>
 
 <p>The client interface is one operator</p>
 
 <ul>
-  <li><code>with-client (variable location) . body</code> : creates a connection in a dynamic context and closes it
+  <li><code class="language-plaintext highlighter-rouge">with-client (variable location) . body</code> : creates a connection in a dynamic context and closes it
 upon exit. The variable is bound to a client proxy stream/protocol instance, which wraps the
 base i/o stream - socket, file, etc, with an operators which implement the Thrift protocol
 and transport mechanisms.</li>
@@ -89,13 +89,13 @@ and transport mechanisms.</li>
 <p>The server interface combines server and service objects</p>
 
 <ul>
-  <li><code>serve (location service)</code> : accepts connections on the designated port and responds to
+  <li><code class="language-plaintext highlighter-rouge">serve (location service)</code> : accepts connections on the designated port and responds to
 requests of the service’s operations.</li>
 </ul>
 
 <h2 id="building">Building</h2>
 
-<p>The Thrift Common Lisp library is packaged as the ASDF[<a href="www.common-lisp.net/asdf">1</a>] system <code>thrift</code>.
+<p>The Thrift Common Lisp library is packaged as the ASDF[<a href="www.common-lisp.net/asdf">1</a>] system <code class="language-plaintext highlighter-rouge">thrift</code>.
 It depends on the systems</p>
 
 <ul>
@@ -113,8 +113,8 @@ it is possible to use those bundles to load the library, too.</p>
 
 <p>In order to build it, register those systems with ASDF and evaluate:</p>
 
-<pre><code>(asdf:load-system :thrift)
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(asdf:load-system :thrift)
+</code></pre></div></div>
 
 <p>This will compile and load the Lisp compiler for Thrift definition files, the
 transport and protocol implementations, and the client and server interface
@@ -137,7 +137,7 @@ IDL files, as there is no facility to generate them from a service implementatio
 
 <h2 id="implement-the-service">Implement the Service</h2>
 
-<p>The tutorial comprises serveral functions: <code>add</code>, <code>ping</code>, <code>zip</code>, and <code>calculate</code>.
+<p>The tutorial comprises serveral functions: <code class="language-plaintext highlighter-rouge">add</code>, <code class="language-plaintext highlighter-rouge">ping</code>, <code class="language-plaintext highlighter-rouge">zip</code>, and <code class="language-plaintext highlighter-rouge">calculate</code>.
 Each translated IDL file generates three packages for every service. In the case of
 the tutorial file, the relevant packages are:</p>
 
@@ -150,11 +150,11 @@ the tutorial file, the relevant packages are:</p>
 <p>This is to separate the request (generated), response (generated) and implementation
 (meant to be implemented by the programmer) functions for defined Thrift methods.</p>
 
-<p>It is suggested to work in the <code>tutorial-implementation</code> package while implementing
-the services - it imports the <code>common-lisp</code> package, while the service-specific ones
-don’t (to avoid conflicts between Thrift method names and function names in <code>common-lisp</code>).</p>
+<p>It is suggested to work in the <code class="language-plaintext highlighter-rouge">tutorial-implementation</code> package while implementing
+the services - it imports the <code class="language-plaintext highlighter-rouge">common-lisp</code> package, while the service-specific ones
+don’t (to avoid conflicts between Thrift method names and function names in <code class="language-plaintext highlighter-rouge">common-lisp</code>).</p>
 
-<pre><code>;; define the base operations
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>;; define the base operations
 
 (in-package :tutorial-implementation)
 
@@ -187,43 +187,46 @@ don’t (to avoid conflicts between Thrift method names and function names in <c
     (/ arg1 arg2)))
 
 (defun zip () (print 'zip))
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="translate-the-thrift-idl">Translate the Thrift IDL</h2>
 
-<p>IDL files employ the file extension <code>thrift</code>. In this case, there are two files to translate
-  * <code>tutorial.thrift</code>
-  * <code>shared.thrift</code>
+<p>IDL files employ the file extension <code class="language-plaintext highlighter-rouge">thrift</code>. In this case, there are two files to translate</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">tutorial.thrift</code></li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">shared.thrift</code>
 As the former includes the latter, one uses it to generate the interfaces:</p>
 
-<pre><code>$THRIFT/bin/thrift -r --gen cl $THRIFT/tutorial/tutorial.thrift
-</code></pre>
+    <p>$THRIFT/bin/thrift -r –gen cl $THRIFT/tutorial/tutorial.thrift</p>
+  </li>
+</ul>
 
-<p><code>-r</code> stands for recursion, while <code>--gen</code> lets one choose the language to translate to.</p>
+<p><code class="language-plaintext highlighter-rouge">-r</code> stands for recursion, while <code class="language-plaintext highlighter-rouge">--gen</code> lets one choose the language to translate to.</p>
 
 <h2 id="load-the-lisp-translated-service-interfaces">Load the Lisp translated service interfaces</h2>
 
-<p>The translator generates three files for each IDL file. For example <code>tutorial-types.lisp</code>,
-<code>tutorial-vars.lisp</code> and an <code>.asd</code> file that can be used to load them both and pull in
-other includes (like <code>shared</code> within the tutorial) as dependencies.</p>
+<p>The translator generates three files for each IDL file. For example <code class="language-plaintext highlighter-rouge">tutorial-types.lisp</code>,
+<code class="language-plaintext highlighter-rouge">tutorial-vars.lisp</code> and an <code class="language-plaintext highlighter-rouge">.asd</code> file that can be used to load them both and pull in
+other includes (like <code class="language-plaintext highlighter-rouge">shared</code> within the tutorial) as dependencies.</p>
 
 <h2 id="run-a-server-for-the-service">Run a Server for the Service</h2>
 
-<p>The actual service name, as specified in the <code>def-service</code> form in <code>tutorial.lisp</code>, is <code>calculator</code>. 
+<p>The actual service name, as specified in the <code class="language-plaintext highlighter-rouge">def-service</code> form in <code class="language-plaintext highlighter-rouge">tutorial.lisp</code>, is <code class="language-plaintext highlighter-rouge">calculator</code>. 
 Each service definition defines a global variable with the service name and binds it to a
 service instance whch describes the operations.</p>
 
 <p>In order to start a service, specify a location and the service instance.</p>
 
-<pre><code>(in-package :tutorial)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(in-package :tutorial)
 (serve #u"thrift://127.0.0.1:9091" calculator)
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="use-a-client-to-access-the-service-remotely">Use a Client to Access the Service Remotely</h2>
 
 <p>[in some other process] run the client</p>
 
-<pre><code>(in-package :cl-user)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(in-package :cl-user)
 
 (macrolet ((show (form)
              `(format *trace-output* "~%~s =&gt;~{ ~s~}"
@@ -246,7 +249,7 @@ service instance whch describes the operations.</p>
     (show (shared.shared-service:get-struct protocol 1))
 
     (show (zip protocol))))
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="issues">Issues</h2>
 
@@ -265,7 +268,7 @@ service instance whch describes the operations.</p>
 <p>Maps are now represented as hash tables. As data through the call/reply interface is all statically
  typed, it is not necessary for the objects to themselves indicate the coding form. Association lists
  would be sufficient. As the key type is arbitrary, property lists offer no additional convenience:
- as <code>getf</code> operates with <code>eq</code> a new access interface would be necessary and they would not be
+ as <code class="language-plaintext highlighter-rouge">getf</code> operates with <code class="language-plaintext highlighter-rouge">eq</code> a new access interface would be necessary and they would not be
  available for function application.</p>
 
 <ul>
@@ -306,7 +309,7 @@ service instance whch describes the operations.</p>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

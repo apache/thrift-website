@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -70,7 +70,7 @@ All Apache Thrift tutorials require that you have:
 
 <h3 id="client">Client</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">html</span><span class="err">'</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">html</span><span class="err">'</span><span class="p">;</span>
 
 <span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
 <span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">thrift</span><span class="o">/</span><span class="n">thrift_browser</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
@@ -79,7 +79,7 @@ All Apache Thrift tutorials require that you have:
 
 <span class="c1">/// Adapted from the AS3 tutorial</span>
 <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">new</span> <span class="n">CalculatorUI</span><span class="p">(</span><span class="n">querySelector</span><span class="p">(</span><span class="err">'#</span><span class="n">output</span><span class="err">'</span><span class="p">)).</span><span class="n">start</span><span class="p">();</span>
+  <span class="k">new</span> <span class="n">CalculatorUI</span><span class="p">(</span><span class="n">querySelector</span><span class="p">(</span><span class="err">'#</span><span class="n">output</span><span class="err">'</span><span class="p">)</span> <span class="n">as</span> <span class="n">DivElement</span> <span class="p">).</span><span class="n">start</span><span class="p">();</span>
 <span class="p">}</span>
 
 <span class="k">class</span> <span class="nc">CalculatorUI</span> <span class="p">{</span>
@@ -87,8 +87,8 @@ All Apache Thrift tutorials require that you have:
 
   <span class="n">CalculatorUI</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">output</span><span class="p">);</span>
 
-  <span class="n">TTransport</span> <span class="n">_transport</span><span class="p">;</span>
-  <span class="n">Calculator</span> <span class="n">_calculatorClient</span><span class="p">;</span>
+  <span class="n">late</span> <span class="n">TTransport</span> <span class="n">_transport</span><span class="p">;</span>
+  <span class="n">late</span> <span class="n">Calculator</span> <span class="n">_calculatorClient</span><span class="p">;</span>
 
   <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">_buildInterface</span><span class="p">();</span>
@@ -175,12 +175,12 @@ All Apache Thrift tutorials require that you have:
   <span class="kt">void</span> <span class="nf">_onAddClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
-    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add1"</span><span class="p">);</span>
-    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add2"</span><span class="p">);</span>
-    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#addResult"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add1"</span><span class="p">)</span> <span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#add2"</span><span class="p">)</span><span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#addResult"</span><span class="p">)</span> <span class="n">as</span> <span class="n">SpanElement</span><span class="p">;</span>
 
     <span class="n">_calculatorClient</span>
-        <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span><span class="p">),</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span> <span class="o">??</span> <span class="s">"0"</span><span class="p">),</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span> <span class="o">??</span> <span class="s">"0"</span><span class="p">))</span>
         <span class="p">.</span><span class="n">then</span><span class="p">((</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"$n"</span><span class="p">;</span>
     <span class="p">});</span>
@@ -266,21 +266,21 @@ All Apache Thrift tutorials require that you have:
   <span class="kt">void</span> <span class="nf">_onCalcClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
-    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc1"</span><span class="p">);</span>
-    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc2"</span><span class="p">);</span>
-    <span class="n">SelectElement</span> <span class="n">op</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcOp"</span><span class="p">);</span>
-    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcResult"</span><span class="p">);</span>
-    <span class="n">InputElement</span> <span class="n">logId</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#logId"</span><span class="p">);</span>
-    <span class="n">InputElement</span> <span class="n">comment</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#comment"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">num1</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc1"</span><span class="p">)</span> <span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">InputElement</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calc2"</span><span class="p">)</span><span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">SelectElement</span> <span class="n">op</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcOp"</span><span class="p">)</span> <span class="n">as</span> <span class="n">SelectElement</span><span class="p">;</span>
+    <span class="n">SpanElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#calcResult"</span><span class="p">)</span> <span class="n">as</span> <span class="n">SpanElement</span><span class="p">;</span>
+    <span class="n">InputElement</span> <span class="n">logId</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#logId"</span><span class="p">)</span> <span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">InputElement</span> <span class="n">comment</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#comment"</span><span class="p">)</span> <span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
 
-    <span class="kt">int</span> <span class="n">logIdValue</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">logId</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">logIdValue</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">logId</span><span class="p">.</span><span class="n">value</span> <span class="o">??</span> <span class="s">"0"</span><span class="p">);</span>
     <span class="n">logId</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">logIdValue</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="n">toString</span><span class="p">();</span>
 
     <span class="n">Work</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Work</span><span class="p">();</span>
-    <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
-    <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
-    <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">op</span><span class="p">.</span><span class="n">options</span><span class="p">[</span><span class="n">op</span><span class="p">.</span><span class="n">selectedIndex</span><span class="p">].</span><span class="n">value</span><span class="p">);</span>
-    <span class="n">work</span><span class="p">.</span><span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num1</span><span class="p">.</span><span class="n">value</span><span class="o">!</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">num2</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">num2</span><span class="p">.</span><span class="n">value</span><span class="o">!</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">op</span> <span class="o">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">op</span><span class="p">.</span><span class="n">options</span><span class="p">[</span><span class="n">op</span><span class="p">.</span><span class="n">selectedIndex</span><span class="o">!</span><span class="p">].</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">work</span><span class="p">.</span><span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="p">.</span><span class="n">value</span><span class="o">!</span><span class="p">;</span>
 
     <span class="n">_calculatorClient</span><span class="p">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">logIdValue</span><span class="p">,</span> <span class="n">work</span><span class="p">).</span><span class="n">then</span><span class="p">((</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"$n"</span><span class="p">;</span>
@@ -321,24 +321,24 @@ All Apache Thrift tutorials require that you have:
   <span class="kt">void</span> <span class="nf">_onGetStructClick</span><span class="p">(</span><span class="n">MouseEvent</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">_validate</span><span class="p">();</span>
 
-    <span class="n">InputElement</span> <span class="n">structKey</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#structKey"</span><span class="p">);</span>
-    <span class="n">TextAreaElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#getStructResult"</span><span class="p">);</span>
+    <span class="n">InputElement</span> <span class="n">structKey</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#structKey"</span><span class="p">)</span> <span class="n">as</span> <span class="n">InputElement</span><span class="p">;</span>
+    <span class="n">TextAreaElement</span> <span class="n">result</span> <span class="o">=</span> <span class="n">querySelector</span><span class="p">(</span><span class="s">"#getStructResult"</span><span class="p">)</span> <span class="n">as</span> <span class="n">TextAreaElement</span><span class="p">;</span>
 
     <span class="n">_calculatorClient</span>
-        <span class="p">.</span><span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">structKey</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
-        <span class="p">.</span><span class="n">then</span><span class="p">((</span><span class="n">SharedStruct</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"${s.toString()}"</span><span class="p">;</span>
+        <span class="p">.</span><span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">structKey</span><span class="p">.</span><span class="n">value</span><span class="o">!</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">then</span><span class="p">((</span><span class="n">SharedStruct</span><span class="o">?</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"${s?.toString()}"</span><span class="p">;</span>
     <span class="p">});</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div>
+</code></pre></figure>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/client/web/client.dart">tutorial/dart/client/web/client.dart</a>
 </p>
 
 <h3 id="client-web-page">Client web page</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
 <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
@@ -355,14 +355,14 @@ All Apache Thrift tutorials require that you have:
 
 <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</code></pre></div>
+</code></pre></figure>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/client/web/index.html">tutorial/dart/client/web/index.html</a>
 </p>
 
 <h3 id="server">Server</h3>
 
-<div class="highlight"><pre class="codehilite"><code><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">async</span><span class="err">'</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">async</span><span class="err">'</span><span class="p">;</span>
 <span class="k">import</span> <span class="err">'</span><span class="n">dart</span><span class="o">:</span><span class="n">io</span><span class="err">'</span><span class="p">;</span>
 
 <span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">args</span><span class="o">/</span><span class="n">args</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
@@ -372,9 +372,9 @@ All Apache Thrift tutorials require that you have:
 <span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">tutorial</span><span class="o">/</span><span class="n">tutorial</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
 <span class="k">import</span> <span class="err">'</span><span class="n">package</span><span class="o">:</span><span class="n">shared</span><span class="o">/</span><span class="n">shared</span><span class="p">.</span><span class="n">dart</span><span class="err">'</span><span class="p">;</span>
 
-<span class="n">TProtocol</span> <span class="n">_protocol</span><span class="p">;</span>
-<span class="n">TProcessor</span> <span class="n">_processor</span><span class="p">;</span>
-<span class="n">WebSocket</span> <span class="n">_webSocket</span><span class="p">;</span>
+<span class="n">late</span> <span class="n">TProtocol</span> <span class="n">_protocol</span><span class="p">;</span>
+<span class="n">late</span> <span class="n">TProcessor</span> <span class="n">_processor</span><span class="p">;</span>
+<span class="n">late</span> <span class="n">WebSocket</span> <span class="n">_webSocket</span><span class="p">;</span>
 
 <span class="n">main</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">Logger</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">Level</span><span class="p">.</span><span class="n">ALL</span><span class="p">;</span>
@@ -385,12 +385,12 @@ All Apache Thrift tutorials require that you have:
   <span class="n">var</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ArgParser</span><span class="p">();</span>
   <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">port</span><span class="err">'</span><span class="p">,</span> <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="mi">9090</span><span class="err">'</span><span class="p">,</span> <span class="n">help</span><span class="o">:</span> <span class="err">'</span><span class="n">The</span> <span class="n">port</span> <span class="n">to</span> <span class="n">listen</span> <span class="n">on</span><span class="err">'</span><span class="p">);</span>
   <span class="n">parser</span><span class="p">.</span><span class="n">addOption</span><span class="p">(</span><span class="err">'</span><span class="n">type</span><span class="err">'</span><span class="p">,</span>
-      <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span>
+      <span class="n">defaultsTo</span><span class="o">:</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">,</span>
       <span class="n">allowed</span><span class="o">:</span> <span class="p">[</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="p">],</span>
       <span class="n">help</span><span class="o">:</span> <span class="err">'</span><span class="n">The</span> <span class="n">type</span> <span class="n">of</span> <span class="n">socket</span><span class="err">'</span><span class="p">,</span>
       <span class="n">allowedHelp</span><span class="o">:</span> <span class="p">{</span><span class="err">'</span><span class="n">ws</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">WebSocket</span><span class="err">'</span><span class="p">,</span> <span class="err">'</span><span class="n">tcp</span><span class="err">'</span><span class="o">:</span> <span class="err">'</span><span class="n">TCP</span> <span class="n">Socket</span><span class="err">'</span><span class="p">});</span>
 
-  <span class="n">ArgResults</span> <span class="n">results</span><span class="p">;</span>
+  <span class="n">ArgResults</span><span class="o">?</span> <span class="n">results</span><span class="p">;</span>
   <span class="k">try</span> <span class="p">{</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
@@ -461,12 +461,12 @@ All Apache Thrift tutorials require that you have:
     <span class="k">return</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span> <span class="n">work</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">calculate</span><span class="p">(</span><span class="kt">int</span> <span class="n">logid</span><span class="p">,</span> <span class="n">Work</span><span class="o">?</span> <span class="n">work</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
     <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">calulate</span><span class="p">(</span><span class="err">$</span><span class="n">logid</span><span class="p">,</span> <span class="err">$</span><span class="p">{</span><span class="n">work</span><span class="p">.</span><span class="n">toString</span><span class="p">()})</span><span class="err">'</span><span class="p">);</span>
 
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
+    <span class="n">late</span> <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
 
-    <span class="k">switch</span> <span class="p">(</span><span class="n">work</span><span class="p">.</span><span class="n">op</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">work</span><span class="o">!</span><span class="p">.</span><span class="n">op</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">case</span> <span class="n">Operation</span><span class="p">.</span><span class="n">ADD</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">work</span><span class="p">.</span><span class="n">num1</span> <span class="o">+</span> <span class="n">work</span><span class="p">.</span><span class="n">num2</span><span class="p">;</span>
         <span class="k">break</span><span class="p">;</span>
@@ -502,13 +502,13 @@ All Apache Thrift tutorials require that you have:
     <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">zip</span><span class="p">()</span><span class="err">'</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="n">Future</span><span class="o">&lt;</span><span class="n">SharedStruct</span><span class="o">&gt;</span> <span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">key</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
+  <span class="n">Future</span><span class="o">&lt;</span><span class="n">SharedStruct</span><span class="o">?&gt;</span> <span class="n">getStruct</span><span class="p">(</span><span class="kt">int</span> <span class="n">key</span><span class="p">)</span> <span class="n">async</span> <span class="p">{</span>
     <span class="n">print</span><span class="p">(</span><span class="err">'</span><span class="n">getStruct</span><span class="p">(</span><span class="err">$</span><span class="n">key</span><span class="p">)</span><span class="err">'</span><span class="p">);</span>
 
     <span class="k">return</span> <span class="n">_log</span><span class="p">[</span><span class="n">key</span><span class="p">];</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div>
+</code></pre></figure>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/dart/server/bin/main.dart">tutorial/dart/server/bin/main.dart</a>
 </p>
@@ -545,7 +545,7 @@ All Apache Thrift tutorials require that you have:
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

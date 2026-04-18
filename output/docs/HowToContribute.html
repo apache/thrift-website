@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -75,15 +75,15 @@ for a successful pull request:</p>
   <li>
     <p>The pull request title must begin with the Jira THRIFT ticket identifier if it has an associated ticket, for example:</p>
 
-    <pre><code>THRIFT-9999: an example pull request title
-</code></pre>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>THRIFT-9999: an example pull request title
+</code></pre></div>    </div>
   </li>
   <li>
     <p>Commit messages must follow this pattern for code changes (deviations will not be merged):</p>
 
-    <pre><code>THRIFT-9999: [summary of fix, one line if possible]
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>THRIFT-9999: [summary of fix, one line if possible]
 Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
-</code></pre>
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -122,7 +122,7 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 
 <ol>
   <li>Review the <a href="https://github.com/apache/thrift/pulls">GitHub Pull Request Backlog</a>.  Code reviews are open to all.</li>
-  <li>Review the <a href="http://issues.apache.org/jira/browse/THRIFT">Jira issue tracker</a>.  You can search for tickets relating to languages you are interested in or currently using with thrift, for example a Jira search (Issues -&gt; Search For Issues) query of <code>project = THRIFT AND component in ("Erlang - Library") and status not in (resolved, closed)</code> will locate all the open Erlang Library issues.</li>
+  <li>Review the <a href="http://issues.apache.org/jira/browse/THRIFT">Jira issue tracker</a>.  You can search for tickets relating to languages you are interested in or currently using with thrift, for example a Jira search (Issues -&gt; Search For Issues) query of <code class="language-plaintext highlighter-rouge">project = THRIFT AND component in ("Erlang - Library") and status not in (resolved, closed)</code> will locate all the open Erlang Library issues.</li>
 </ol>
 
 <h2 id="if-you-discovered-a-defect">If you discovered a defect…</h2>
@@ -137,8 +137,8 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 
 <p>To create a patch from changes in your local directory:</p>
 
-<pre><code>git diff &gt; ../THRIFT-NNNN.patch
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git diff &gt; ../THRIFT-NNNN.patch
+</code></pre></div></div>
 
 <p>then wait for contributors or committers to review your changes, and then for a committer to apply your patch.  This is not the preferred way to submit changes and incurs additional overhead for committers who must then create a pull request for you.</p>
 
@@ -151,8 +151,8 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 <p>If you have not submitted a pull request yet, or if you have not yet rebased your existing pull request, you can squash all your commits down to a single commit.  This makes life easier for the committers.  If your pull request on GitHub has more than one commit, you should do this.</p>
 
 <ol>
-  <li>Use the command <code>git log</code> to identify how many commits you made since you began.</li>
-  <li>Use the command <code>git rebase -i HEAD~N</code> where N is the number of commits.</li>
+  <li>Use the command <code class="language-plaintext highlighter-rouge">git log</code> to identify how many commits you made since you began.</li>
+  <li>Use the command <code class="language-plaintext highlighter-rouge">git rebase -i HEAD~N</code> where N is the number of commits.</li>
   <li>Leave “pull” in the first line.</li>
   <li>Change all other lines from “pull” to “fixup”.</li>
   <li>All your changes are now in a single commit.</li>
@@ -160,8 +160,8 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 
 <p>If you already have a pull request outstanding, you will need to do a “force push” to overwrite it since you changed your commit history:</p>
 
-<pre><code>git push -u origin THRIFT-9999 --force
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push -u origin THRIFT-9999 --force
+</code></pre></div></div>
 
 <p>A more detailed walkthrough of a squash can be found at <a href="http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html">Git Ready</a>.</p>
 
@@ -169,26 +169,32 @@ Client: [language(s) affected, comma separated, for example: "cpp,erl,perl"]
 
 <p>If your pull request has a conflict with master, it needs to be rebased:</p>
 
-<pre><code>git checkout THRIFT-9999
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout THRIFT-9999
 git rebase upstream master
   (resolve any conflicts, make sure it builds)
 git push -u origin THRIFT-9999 --force
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="fix-a-bad-merge">Fix a bad merge</h3>
 
 <p>If your pull request contains commits that are not yours, then you should use the following technique to fix the bad merge in your branch:</p>
 
-<pre><code>git checkout master
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout master
 git pull upstream master
 git checkout -b THRIFT-9999-take-2
 git cherry-pick ...
     (pick only your commits from your original pull request in ascending chronological order)
 squash your changes to a single commit if there is more than one (see above)
 git push -u origin THRIFT-9999-take-2:THRIFT-9999
-</code></pre>
+</code></pre></div></div>
 
 <p>This procedure will apply only your commits in order to the current master, then you will squash them to a single commit, and then you force push your local THRIFT-9999-take-2 into remote THRIFT-9999 which represents your pull request, replacing all the commits with the new one.</p>
+
+<h2 id="ai-generated-content">AI generated content</h2>
+
+<p>The <a href="https://www.apache.org/legal/generative-tooling.html">ASF Generative Tooling Guidance</a> serves as a great summary. It also outlines potential issues that come with generative tools. For the reasons set out in this document, but also to make it absolutely clear to the reviewers, we strongly recommend using either the <code class="language-plaintext highlighter-rouge">Generated-by:</code> (as recommended by the linked ASF source) or <code class="language-plaintext highlighter-rouge">Co-Authored-By:</code> clause (widely adopted common practice, e.g. <a href="https://issues.apache.org/jira/browse/SPARK-25018">here</a> and <a href="https://archive.kernel.org/oldwiki/git.wiki.kernel.org/index.php/CommitMessageConventions.html">here</a>) in commits and pull requests, if applicable.</p>
+
+<hr />
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=CONTRIBUTING.md">CONTRIBUTING.md</a>
@@ -221,7 +227,7 @@ git push -u origin THRIFT-9999-take-2:THRIFT-9999
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -55,14 +55,14 @@
 <h2 id="haxe-setup">Haxe setup</h2>
 
 <p>Thrift requires Haxe 4.2.1. Installers for Windows and OSX
-platforms are available at <code>http://haxe.org/download</code>.</p>
+platforms are available at <code class="language-plaintext highlighter-rouge">http://haxe.org/download</code>.</p>
 
 <p>Depending on the desired targets, you may have to install the appropriate HaxeLibs 
 after installing Haxe itself. For example, if you plan to target C++, enter the 
 following command after installing Haxe:</p>
 
-<pre><code>haxelib install hxcpp
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>haxelib install hxcpp
+</code></pre></div></div>
 
 <p>For other targets, please consult the Haxe documentation whether or not any additional
 target libraries need to be installed and how to achieve this.</p>
@@ -75,46 +75,46 @@ Haxe Linux download section: http://haxe.org/download/linux</p>
 
 <p>If you run into the error message</p>
 
-<pre><code>Uncaught exception - load.c(237) : Failed to load library : /usr/lib/neko/regexp.ndll  
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Uncaught exception - load.c(237) : Failed to load library : /usr/lib/neko/regexp.ndll  
 (libpcre.so.3: cannot open shared object file: No such file or directory)
-</code></pre>
+</code></pre></div></div>
 
 <p>this can be solved depending on your OSes bitness by either</p>
 
-<pre><code>sudo ln -sf /usr/lib/libpcre.so.1 /usr/lib/libpcre.so.3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo ln -sf /usr/lib/libpcre.so.1 /usr/lib/libpcre.so.3
 sudo ldconfig
-</code></pre>
+</code></pre></div></div>
 
 <p>or</p>
 
-<pre><code>sudo ln -sf /usr/lib64/libpcre.so.1 /usr/lib64/libpcre.so.3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo ln -sf /usr/lib64/libpcre.so.1 /usr/lib64/libpcre.so.3
 sudo ldconfig
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="thrift-haxe-bindings">Thrift Haxe bindings</h2>
 
-<p>Thrift Haxe bindings can be set up via the <code>haxelib</code> tool  as usual.
+<p>Thrift Haxe bindings can be set up via the <code class="language-plaintext highlighter-rouge">haxelib</code> tool  as usual.
 Alternatively, the “github” method can be used.</p>
 
 <ul>
   <li>
-    <p>To set up any <strong>stable version</strong>, choose the appropriate branch (e.g. <code>0.14.1</code>):</p>
+    <p>To set up any <strong>stable version</strong>, choose the appropriate branch (e.g. <code class="language-plaintext highlighter-rouge">0.14.1</code>):</p>
 
     <ul>
-      <li><code>haxelib git thrift https://github.com/apache/thrift.git 0.14.1 lib/haxe</code></li>
+      <li><code class="language-plaintext highlighter-rouge">haxelib git thrift https://github.com/apache/thrift.git 0.14.1 lib/haxe</code></li>
     </ul>
   </li>
   <li>
-    <p>To set up the current <strong>development version</strong>, use the <code>master</code> branch:</p>
+    <p>To set up the current <strong>development version</strong>, use the <code class="language-plaintext highlighter-rouge">master</code> branch:</p>
 
     <ul>
-      <li><code>haxelib git thrift https://github.com/apache/thrift.git master lib/haxe</code></li>
+      <li><code class="language-plaintext highlighter-rouge">haxelib git thrift https://github.com/apache/thrift.git master lib/haxe</code></li>
     </ul>
   </li>
 </ul>
 
-<p>As usual, the installed library can be updated using <code>haxelib upgrade</code> 
-or <code>haxelib update thrift</code>.</p>
+<p>As usual, the installed library can be updated using <code class="language-plaintext highlighter-rouge">haxelib upgrade</code> 
+or <code class="language-plaintext highlighter-rouge">haxelib update thrift</code>.</p>
 
 <p>In order to work with Thrift, you will need to install the Thrift compiler 
 or build from source, depending on your operating system. Appropriate 
@@ -131,60 +131,52 @@ in these folders.</p>
 to the new version. Otherwise you may run into troubles with leftovers from 
 previous versions.</p>
 
-<p>The compiler option <code>callbacks</code> is now obsolete. The compiler will always 
+<p>The compiler option <code class="language-plaintext highlighter-rouge">callbacks</code> is now obsolete. The compiler will always 
 generate a dual interface (i.e. with optional callback style) for use on the 
-client side, plus a new <code>_service</code> interface to be used for server 
+client side, plus a new <code class="language-plaintext highlighter-rouge">_service</code> interface to be used for server 
 implementations. Consequentially, your client and server implementations will
 need some manual intervention.</p>
 
 <h1 id="php-http-server-notes">PHP HTTP Server notes</h1>
 
 <ul>
-  <li>
-    <p>you have to import PHP files generated by haxe into PHP
-<code>php
-require_once  dirname(__FILE__) . '/bin/php-web-server/Main-debug.php';
-</code></p>
+  <li>you have to import PHP files generated by haxe into PHP
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">require_once</span>  <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span> <span class="mf">.</span> <span class="s1">'/bin/php-web-server/Main-debug.php'</span><span class="p">;</span>
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>trace() by default outputs into stdout (http response), so you have to redirect it to stderr or you own logs, something like
-<code>haxe
-//remap trace to error log
-haxe.Log.trace = function(v:Dynamic, ?infos:haxe.PosInfos) 
-{ 
-  //simulate normal trace https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/Log.hx
-  var newValue : Dynamic;
-  if (infos != null &amp;&amp; infos.customParams!=null) {
-      var extra:String = "";
-      for( v in infos.customParams )
-          extra += "," + v;
-      newValue = v + extra;
-  }
-  else {
-      newValue = v;
-  }
-  var msg = infos != null ? infos.fileName + ':' + infos.lineNumber + ': ' : '';
-  Sys.stderr().writeString('${msg}${newValue}\n');
-}
-</code></p>
+  <li>trace() by default outputs into stdout (http response), so you have to redirect it to stderr or you own logs, something like
+    <div class="language-haxe highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//remap trace to error log</span>
+<span class="nx">haxe</span><span class="p">.</span><span class="nx">Log</span><span class="p">.</span><span class="kr">trace</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="nx">v</span><span class="o">:</span><span class="nb">Dynamic</span><span class="p">,</span> <span class="p">?</span><span class="nx">infos</span><span class="p">:</span><span class="nx">haxe</span><span class="p">.</span><span class="nx">PosInfos</span><span class="p">)</span> 
+<span class="p">{</span> 
+  <span class="c1">//simulate normal trace https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/Log.hx</span>
+  <span class="kd">var</span> <span class="nx">newValue</span> <span class="o">:</span> <span class="nb">Dynamic</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">infos</span> <span class="o">!=</span> <span class="k">null</span> <span class="o">&amp;&amp;</span> <span class="nx">infos</span><span class="p">.</span><span class="nx">customParams</span><span class="o">!=</span><span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">extra</span><span class="o">:</span><span class="nb">String</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+      <span class="k">for</span><span class="p">(</span> <span class="nx">v</span> <span class="k">in</span> <span class="nx">infos</span><span class="p">.</span><span class="nx">customParams</span> <span class="p">)</span>
+          <span class="nx">extra</span> <span class="o">+=</span> <span class="s2">","</span> <span class="o">+</span> <span class="nx">v</span><span class="p">;</span>
+      <span class="nx">newValue</span> <span class="o">=</span> <span class="nx">v</span> <span class="o">+</span> <span class="nx">extra</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">newValue</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">infos</span> <span class="o">!=</span> <span class="k">null</span> <span class="p">?</span> <span class="nx">infos</span><span class="p">.</span><span class="nx">fileName</span> <span class="o">+</span> <span class="s1">':'</span> <span class="o">+</span> <span class="nx">infos</span><span class="p">.</span><span class="nx">lineNumber</span> <span class="o">+</span> <span class="s1">': '</span> <span class="p">:</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="nb">Sys</span><span class="p">.</span><span class="nx">stderr</span><span class="p">().</span><span class="nx">writeString</span><span class="p">(</span><span class="s1">'</span><span class="si">${</span><span class="nx">msg</span><span class="si">}${</span><span class="nx">newValue</span><span class="si">}</span><span class="se">\n</span><span class="s1">'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>to allow thrift server to read/write HTTP request/response, it should be pointed out to php streams
-<code>haxe
-transport =	new TWrappingServerTransport(
-              new TStreamTransport(
-                  new TFileStream("php://input", Read),
-                  new TFileStream("php://output", Append)
-                  )
-              );
-</code></p>
+  <li>to allow thrift server to read/write HTTP request/response, it should be pointed out to php streams
+    <div class="language-haxe highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">transport</span> <span class="o">=</span>	<span class="k">new</span> <span class="nx">TWrappingServerTransport</span><span class="p">(</span>
+              <span class="k">new</span> <span class="nx">TStreamTransport</span><span class="p">(</span>
+                  <span class="k">new</span> <span class="nx">TFileStream</span><span class="p">(</span><span class="s2">"php://input"</span><span class="p">,</span> <span class="nx">Read</span><span class="p">),</span>
+                  <span class="k">new</span> <span class="nx">TFileStream</span><span class="p">(</span><span class="s2">"php://output"</span><span class="p">,</span> <span class="nx">Append</span><span class="p">)</span>
+                  <span class="p">)</span>
+              <span class="p">);</span>
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>TSimpleServer doesn’t stop after first call, so processor.process() should be called instead, or use runOnce property 
-<code>haxe
-var server = new TSimpleServer( processor, transport, transfactory, protfactory);
-server.runOnce = true;
-</code></p>
+  <li>TSimpleServer doesn’t stop after first call, so processor.process() should be called instead, or use runOnce property
+    <div class="language-haxe highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TSimpleServer</span><span class="p">(</span> <span class="nx">processor</span><span class="p">,</span> <span class="nx">transport</span><span class="p">,</span> <span class="nx">transfactory</span><span class="p">,</span> <span class="nx">protfactory</span><span class="p">);</span>
+<span class="nx">server</span><span class="p">.</span><span class="nx">runOnce</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+</code></pre></div>    </div>
   </li>
 </ul>
 
@@ -219,7 +211,7 @@ server.runOnce = true;
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

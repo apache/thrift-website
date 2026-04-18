@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -56,23 +56,23 @@
 <h3 id="install-boost">Install Boost</h3>
 <p>Download the boost library from <a href="http://www.boost.org">boost.org</a> untar compile with</p>
 
-<pre><code>./bootstrap.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
 sudo ./b2 threading=multi address-model=64 variant=release stage install
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="install-libevent">Install libevent</h3>
 <p>Download <a href="http://monkey.org/~provos/libevent">libevent</a>, untar and compile with</p>
 
-<pre><code>./configure --prefix=/usr/local 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --prefix=/usr/local 
 make
 sudo make install
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="building-apache-thrift">Building Apache Thrift</h3>
 <p>Download the latest version of <a href="/download">Apache Thrift</a>, untar and compile with</p>
 
-<pre><code>./configure --prefix=/usr/local/ --with-boost=/usr/local --with-libevent=/usr/local
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --prefix=/usr/local/ --with-boost=/usr/local --with-libevent=/usr/local
+</code></pre></div></div>
 
 <h2 id="additional-reading">Additional reading</h2>
 
@@ -111,7 +111,7 @@ sudo make install
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

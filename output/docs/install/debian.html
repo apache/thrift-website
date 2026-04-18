@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -53,19 +53,19 @@
 <h2 id="debianubuntu-install">Debian/Ubuntu install</h2>
 <p>The following command will install tools and libraries required to build and install the Apache Thrift compiler and C++ libraries on a Debian/Ubuntu Linux based system.</p>
 
-<pre><code>sudo apt-get install automake bison flex g++ git libboost-all-dev libevent-dev libssl-dev libtool make pkg-config
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install automake bison flex g++ git libboost-all-dev libevent-dev libssl-dev libtool make pkg-config
+</code></pre></div></div>
 
 <p>Debian 7/Ubuntu 12 users need to manually install a more recent version of automake and (for C++ library and test support) boost:</p>
 
-<pre><code>wget http://ftp.debian.org/debian/pool/main/a/automake-1.15/automake_1.15-3_all.deb
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://ftp.debian.org/debian/pool/main/a/automake-1.15/automake_1.15-3_all.deb
 sudo dpkg -i automake_1.15-3_all.deb
 
 wget http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz                                                                      tar xvf boost_1_60_0.tar.gz
 cd boost_1_60_0
 ./bootstrap.sh
 sudo ./b2 install
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="optional-packages">Optional packages</h2>
 
@@ -202,7 +202,7 @@ sudo ./b2 install
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

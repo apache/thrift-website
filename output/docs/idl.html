@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -52,7 +52,7 @@
       
 <h2 id="thrift-interface-description-language">Thrift interface description language</h2>
 
-<p>For Thrift version 0.23.0.</p>
+<p>For Thrift version 0.24.0.</p>
 
 <p>The Thrift interface definition language (IDL) allows for the definition of <a href="/docs/types">Thrift Types</a>. A Thrift IDL file is processed by the Thrift code generator to produce code for the various target languages to support the defined structs and services in the IDL file.</p>
 
@@ -64,111 +64,111 @@
 
 <p>Every Thrift document contains 0 or more headers followed by 0 or more definitions.</p>
 
-<pre><code>[1]  Document        ::=  Header* Definition*
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1]  Document        ::=  Header* Definition*
+</code></pre></div></div>
 
 <h2 id="header">Header</h2>
 
 <p>A header is either a Thrift include, a C++ include, or a namespace declaration.</p>
 
-<pre><code>[2]  Header          ::=  Include | CppInclude | Namespace
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[2]  Header          ::=  Include | CppInclude | Namespace
+</code></pre></div></div>
 
 <h3 id="thrift-include">Thrift Include</h3>
 
 <p>An include makes all the symbols from another file visible (with a prefix) and adds corresponding include statements into the code generated for this Thrift document.</p>
 
-<pre><code>[3]  Include         ::=  'include' Literal
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[3]  Include         ::=  'include' Literal
+</code></pre></div></div>
 
 <h3 id="c-include">C++ Include</h3>
 
 <p>A C++ include adds a custom C++ include to the output of the C++ code generator for this Thrift document.</p>
 
-<pre><code>[4]  CppInclude      ::=  'cpp_include' Literal
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[4]  CppInclude      ::=  'cpp_include' Literal
+</code></pre></div></div>
 
 <h3 id="namespace">Namespace</h3>
 
 <p>A namespace declares which namespaces/package/module/etc. the type definitions in this file will be declared in for the target languages. The namespace scope indicates which language the namespace applies to; a scope of ‘*’ indicates that the namespace applies to all target languages.</p>
 
-<pre><code>[5]  Namespace       ::=  ( 'namespace' ( NamespaceScope Identifier ) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[5]  Namespace       ::=  ( 'namespace' ( NamespaceScope Identifier ) )
 
 [6]  NamespaceScope  ::=  '*' | 'c_glib' | 'cpp' | 'delphi' | 'haxe' | 'go' | 'java' | 'js' | 'lua' | 'netstd' | 'perl' | 'php' | 'py' | 'py.twisted' | 'rb' | 'st' | 'xsd'
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="definition">Definition</h2>
 
-<pre><code>[7]  Definition      ::=  Const | Typedef | Enum | Struct | Union | Exception | Service
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[7]  Definition      ::=  Const | Typedef | Enum | Struct | Union | Exception | Service
+</code></pre></div></div>
 
 <h3 id="const">Const</h3>
 
-<pre><code>[8]  Const           ::=  'const' FieldType Identifier '=' ConstValue ListSeparator?
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[8]  Const           ::=  'const' FieldType Identifier '=' ConstValue ListSeparator?
+</code></pre></div></div>
 
 <h3 id="typedef">Typedef</h3>
 
 <p>A typedef creates an alternate name for a type.</p>
 
-<pre><code>[9]  Typedef         ::=  'typedef' DefinitionType Identifier
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[9]  Typedef         ::=  'typedef' DefinitionType Identifier
+</code></pre></div></div>
 
 <h3 id="enum">Enum</h3>
 
 <p>An enum creates an enumerated type, with named values. If no constant value is supplied, the value is either 0 for the first element, or one greater than the preceding value for any subsequent element. Any constant value that is supplied must be non-negative.</p>
 
-<pre><code>[10] Enum            ::=  'enum' Identifier '{' (Identifier ('=' IntConstant)? ListSeparator?)* '}'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[10] Enum            ::=  'enum' Identifier '{' (Identifier ('=' IntConstant)? ListSeparator?)* '}'
+</code></pre></div></div>
 
 <h3 id="struct">Struct</h3>
 
 <p>Structs are the fundamental compositional type in Thrift. The name of each field must be unique within the struct.</p>
 
-<pre><code>[11] Struct          ::=  'struct' Identifier 'xsd_all'? '{' Field* '}'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[11] Struct          ::=  'struct' Identifier 'xsd_all'? '{' Field* '}'
+</code></pre></div></div>
 
-<p>N.B.: The <code>xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
+<p>N.B.: The <code class="language-plaintext highlighter-rouge">xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
 
 <h3 id="union">Union</h3>
 
 <p>Unions are similar to structs, except that they provide a means to transport exactly one field of a possible set of fields, just like union {} in C++. Consequently, union members are implicitly considered optional (see requiredness).</p>
 
-<pre><code>[12] Union          ::=  'union' Identifier 'xsd_all'? '{' Field* '}'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[12] Union          ::=  'union' Identifier 'xsd_all'? '{' Field* '}'
+</code></pre></div></div>
 
-<p>N.B.: The <code>xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
+<p>N.B.: The <code class="language-plaintext highlighter-rouge">xsd_all</code> keyword has some purpose internal to Facebook but serves no purpose in Thrift itself. Use of this feature is strongly discouraged</p>
 
 <h3 id="exception">Exception</h3>
 
 <p>Exceptions are similar to structs except that they are intended to integrate with the native exception handling mechanisms in the target languages. The name of each field must be unique within the exception.</p>
 
-<pre><code>[13] Exception       ::=  'exception' Identifier '{' Field* '}'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[13] Exception       ::=  'exception' Identifier '{' Field* '}'
+</code></pre></div></div>
 
 <h3 id="service">Service</h3>
 
 <p>A service provides the interface for a set of functionality provided by a Thrift server. The interface is simply a list of functions. A service can extend another service, which simply means that it provides the functions of the extended service in addition to its own.</p>
 
-<pre><code>[14] Service         ::=  'service' Identifier ( 'extends' Identifier )? '{' Function* '}'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[14] Service         ::=  'service' Identifier ( 'extends' Identifier )? '{' Function* '}'
+</code></pre></div></div>
 
 <h2 id="field">Field</h2>
 
-<pre><code>[15] Field           ::=  FieldID? FieldReq? FieldType Identifier ('=' ConstValue)? XsdFieldOptions ListSeparator?
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[15] Field           ::=  FieldID? FieldReq? FieldType Identifier ('=' ConstValue)? XsdFieldOptions ListSeparator?
+</code></pre></div></div>
 
 <h3 id="field-id">Field ID</h3>
 
-<pre><code>[16] FieldID         ::=  IntConstant ':'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[16] FieldID         ::=  IntConstant ':'
+</code></pre></div></div>
 
 <h3 id="field-requiredness">Field Requiredness</h3>
 
 <p>There are two explicit requiredness values, and a third one that is applied implicitly if neither  <em>required</em> nor <em>optional</em> are given: <em>default</em> requiredness.</p>
 
-<pre><code>[17] FieldReq        ::=  'required' | 'optional' 
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[17] FieldReq        ::=  'required' | 'optional' 
+</code></pre></div></div>
 
 <p>The general rules for requiredness are as follows:</p>
 
@@ -214,23 +214,23 @@
 
 <p>N.B.: These have some internal purpose at Facebook but serve no current purpose in Thrift. The use of these options is strongly discouraged.</p>
 
-<pre><code>[18] XsdFieldOptions ::=  'xsd_optional'? 'xsd_nillable'? XsdAttrs?
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[18] XsdFieldOptions ::=  'xsd_optional'? 'xsd_nillable'? XsdAttrs?
 
 [19] XsdAttrs        ::=  'xsd_attrs' '{' Field* '}'
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="functions">Functions</h2>
 
-<pre><code>[20] Function        ::=  'oneway'? FunctionType Identifier '(' Field* ')' Throws? ListSeparator?
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[20] Function        ::=  'oneway'? FunctionType Identifier '(' Field* ')' Throws? ListSeparator?
 
 [21] FunctionType    ::=  FieldType | 'void'
 
 [22] Throws          ::=  'throws' '(' Field* ')'
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="types">Types</h2>
 
-<pre><code>[23] FieldType       ::=  Identifier | BaseType | ContainerType
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[23] FieldType       ::=  Identifier | BaseType | ContainerType
 
 [24] DefinitionType  ::=  BaseType | ContainerType
 
@@ -245,11 +245,11 @@
 [29] ListType        ::=  'list' CppType? '&lt;' FieldType '&gt;' 
 
 [30] CppType         ::=  'cpp_type' Literal
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="constant-values">Constant Values</h2>
 
-<pre><code>[31] ConstValue      ::=  IntConstant | DoubleConstant | Literal | Identifier | ConstList | ConstMap
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[31] ConstValue      ::=  IntConstant | DoubleConstant | Literal | Identifier | ConstList | ConstMap
 
 [32] IntConstant     ::=  ('+' | '-')? Digit+
 
@@ -258,37 +258,37 @@
 [34] ConstList       ::=  '[' (ConstValue ListSeparator?)* ']'
 
 [35] ConstMap        ::=  '{' (ConstValue ':' ConstValue ListSeparator?)* '}'
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="basic-definitions">Basic Definitions</h2>
 
 <h3 id="literal">Literal</h3>
 
-<pre><code>[36] Literal         ::=  ('"' [^"]* '"') | ("'" [^']* "'")
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[36] Literal         ::=  ('"' [^"]* '"') | ("'" [^']* "'")
+</code></pre></div></div>
 
 <h3 id="identifier">Identifier</h3>
 
-<pre><code>[37] Identifier      ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' )*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[37] Identifier      ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' )*
 
 [38] STIdentifier    ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' | '-' )*
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="list-separator">List Separator</h3>
 
-<pre><code>[39] ListSeparator   ::=  ',' | ';'
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[39] ListSeparator   ::=  ',' | ';'
+</code></pre></div></div>
 
 <h3 id="letters-and-digits">Letters and Digits</h3>
 
-<pre><code>[40] Letter          ::=  ['A'-'Z'] | ['a'-'z']
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[40] Letter          ::=  ['A'-'Z'] | ['a'-'z']
 
 [41] Digit           ::=  ['0'-'9']
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="reserved-keywords">Reserved keywords</h2>
 
-<pre><code>"BEGIN", "END", "__CLASS__", "__DIR__", "__FILE__", "__FUNCTION__",
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"BEGIN", "END", "__CLASS__", "__DIR__", "__FILE__", "__FUNCTION__",
 "__LINE__", "__METHOD__", "__NAMESPACE__", "abstract", "alias", "and", "args", "as",
 "assert", "begin", "break", "case", "catch", "class", "clone", "continue", "declare",
 "def", "default", "del", "delete", "do", "dynamic", "elif", "else", "elseif", "elsif",
@@ -300,7 +300,7 @@
 "return", "self", "sizeof", "static", "super", "switch", "synchronized", "then", "this",
 "throw", "transient", "try", "undef", "unless", "unsigned", "until", "use", "var",
 "virtual", "volatile", "when", "while", "with", "xor", "yield" 
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="examples">Examples</h2>
 
@@ -322,20 +322,20 @@
   <li>Do all Languages initialize them to 0, bool=false and string=””? or null, undefined?</li>
 </ul>
 
-<p>Why does position of <code>CppType</code> vary between <code>SetType</code> and <code>ListType</code>?</p>
+<p>Why does position of <code class="language-plaintext highlighter-rouge">CppType</code> vary between <code class="language-plaintext highlighter-rouge">SetType</code> and <code class="language-plaintext highlighter-rouge">ListType</code>?</p>
 
 <ul>
   <li>std::set does sort the elements automatically, that’s the design. see <a href="/docs/types">Thrift Types</a> or the <a href="http://www.cplusplus.com/reference/stl/set/">C++ std:set reference</a> for further details</li>
   <li>The question is, how other languages are doing that? What about custom objects, do they have a Compare function to set the order correctly?</li>
 </ul>
 
-<p>Why can’t <code>DefinitionType</code> be the same as <code>FieldType</code> (i.e. include <code>Identifier</code>)?</p>
+<p>Why can’t <code class="language-plaintext highlighter-rouge">DefinitionType</code> be the same as <code class="language-plaintext highlighter-rouge">FieldType</code> (i.e. include <code class="language-plaintext highlighter-rouge">Identifier</code>)?</p>
 
-<p>Examine the <code>smalltalk.prefix</code> and <code>smalltalk.category</code> status (esp <code>smalltalk.category</code>, which takes <code>STIdentifier</code> as its argument)…</p>
+<p>Examine the <code class="language-plaintext highlighter-rouge">smalltalk.prefix</code> and <code class="language-plaintext highlighter-rouge">smalltalk.category</code> status (esp <code class="language-plaintext highlighter-rouge">smalltalk.category</code>, which takes <code class="language-plaintext highlighter-rouge">STIdentifier</code> as its argument)…</p>
 
-<p>What to do about <code>ListSeparator</code>? Do we really want to be as lax as we currently are?</p>
+<p>What to do about <code class="language-plaintext highlighter-rouge">ListSeparator</code>? Do we really want to be as lax as we currently are?</p>
 
-<p>Should <code>Field*</code> really be <code>Field+</code> in <code>Struct</code>, <code>Enum</code>, etc.?</p>
+<p>Should <code class="language-plaintext highlighter-rouge">Field*</code> really be <code class="language-plaintext highlighter-rouge">Field+</code> in <code class="language-plaintext highlighter-rouge">Struct</code>, <code class="language-plaintext highlighter-rouge">Enum</code>, etc.?</p>
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=doc/specs/idl.md">doc/specs/idl.md</a>
@@ -368,7 +368,7 @@
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

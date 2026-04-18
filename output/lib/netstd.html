@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -68,7 +68,7 @@ or</li>
 <h2 id="how-to-build-on-unixlinux">How to build on Unix/Linux</h2>
 <ul>
   <li>Ensure you have a suitable .NET Core SDK installed, or use the <a href="../../build/docker/README.md">Ubuntu docker image</a></li>
-  <li>Follow common automake build practice: <code>./ bootstrap &amp;&amp; ./ configure &amp;&amp; make</code></li>
+  <li>Follow common automake build practice: <code class="language-plaintext highlighter-rouge">./ bootstrap &amp;&amp; ./ configure &amp;&amp; make</code></li>
 </ul>
 
 <h2 id="known-issues">Known issues</h2>
@@ -78,42 +78,108 @@ or</li>
 
 <h1 id="migration-to-netstd">Migration to netstd</h1>
 
-<h2 id="from-netcore">… from netcore</h2>
+<h2 id="-from-netcore">… from netcore</h2>
 
 <p>If you are migrating your code from netcore library, you will have to:</p>
 
 <ul>
-  <li>Switch to <code>thrift -gen netstd</code></li>
-  <li>the following compiler flags are no longer needed or supported: <code>hashcode</code> is now standard, while <code>nullable</code> is no longer supported.</li>
-  <li>the <code>Thrift.Transport</code> and <code>Thrift.Protocol</code> namespaces now use the singular form</li>
-  <li>add <code>using Thrift.Processor;</code> in the server code where appropriate</li>
-  <li>rename all <code>T*ClientTransport</code> to <code>T*Transport</code></li>
-  <li>rename all <code>TBaseServer</code> occurrences in your code to <code>TServer</code></li>
-  <li>the <code>SingletonTProcessorFactory</code> is now called <code>TSingletonProcessorFactory</code></li>
-  <li>and the <code>AsyncBaseServer</code> is now the <code>TSimpleAsyncServer</code></li>
+  <li>Switch to <code class="language-plaintext highlighter-rouge">thrift -gen netstd</code></li>
+  <li>the following compiler flags are no longer needed or supported: <code class="language-plaintext highlighter-rouge">hashcode</code> is now standard, while <code class="language-plaintext highlighter-rouge">nullable</code> is no longer supported.</li>
+  <li>the <code class="language-plaintext highlighter-rouge">Thrift.Transport</code> and <code class="language-plaintext highlighter-rouge">Thrift.Protocol</code> namespaces now use the singular form</li>
+  <li>add <code class="language-plaintext highlighter-rouge">using Thrift.Processor;</code> in the server code where appropriate</li>
+  <li>rename all <code class="language-plaintext highlighter-rouge">T*ClientTransport</code> to <code class="language-plaintext highlighter-rouge">T*Transport</code></li>
+  <li>rename all <code class="language-plaintext highlighter-rouge">TBaseServer</code> occurrences in your code to <code class="language-plaintext highlighter-rouge">TServer</code></li>
+  <li>the <code class="language-plaintext highlighter-rouge">SingletonTProcessorFactory</code> is now called <code class="language-plaintext highlighter-rouge">TSingletonProcessorFactory</code></li>
+  <li>and the <code class="language-plaintext highlighter-rouge">AsyncBaseServer</code> is now the <code class="language-plaintext highlighter-rouge">TSimpleAsyncServer</code></li>
 </ul>
 
 <p>You may wonder why we changed so many names. The naming scheme has been revised for two reasons: First, we want to get back the established, well-known naming consistency across the Thrift libraries which the netcore library did not fully respect. Second, by achieving that first objective, we get the additional benefit of making migration at least a bit easier for C# projects.</p>
 
-<h2 id="from-csharp">… from csharp</h2>
+<h2 id="-from-csharp">… from csharp</h2>
 
 <p>Because of the different environment requirements, migration from C# takes slightly more efforts. While the code changes related to Thrift itself are moderate, you may need to upgrade certain dependencies, components or even modules to more recent versions.</p>
 
 <ol>
   <li>Client and server applications must use at least framework 4.6.1, any version below will not work.</li>
-  <li>Switch to <code>thrift -gen netstd</code>. The following compiler flags are no longer needed or supported: <code>hashcode</code> and <code>async</code> are now standard, while <code>nullable</code> is no longer supported.</li>
-  <li><a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Familiarize yourself with the <code>async/await</code> model</a>, if you have not already done so. As netstd does not support <code>ISync</code> anymore, async is mandatory. The synchronous model is simply no longer available (that’s also the reason why we don’t need the <code>async</code> flag anymore).</li>
-  <li>Consider proper use of <code>cancellationToken</code> parameters. They are optional but may be quite helpful.</li>
+  <li>Switch to <code class="language-plaintext highlighter-rouge">thrift -gen netstd</code>. The following compiler flags are no longer needed or supported: <code class="language-plaintext highlighter-rouge">hashcode</code> and <code class="language-plaintext highlighter-rouge">async</code> are now standard, while <code class="language-plaintext highlighter-rouge">nullable</code> is no longer supported.</li>
+  <li><a href="https://msdn.microsoft.com/en-us/magazine/jj991977.aspx">Familiarize yourself with the <code class="language-plaintext highlighter-rouge">async/await</code> model</a>, if you have not already done so. As netstd does not support <code class="language-plaintext highlighter-rouge">ISync</code> anymore, async is mandatory. The synchronous model is simply no longer available (that’s also the reason why we don’t need the <code class="language-plaintext highlighter-rouge">async</code> flag anymore).</li>
+  <li>Consider proper use of <code class="language-plaintext highlighter-rouge">cancellationToken</code> parameters. They are optional but may be quite helpful.</li>
   <li>As you probably already guessed, there are a few names that have been changed:
-- add <code>using Thrift.Processor;</code> in the server code where appropriate
-- the <code>TServerSocket</code> is now called <code>TServerSocketTransport</code>
-- change <code>IProtocolFactory</code> into <code>ITProtocolFactory</code>
-- if you are looking for <code>TSimpleServer</code>, try <code>TSimpleAsyncServer</code> instead
-- similarly, the <code>TThreadPoolServer</code> is now a <code>TThreadPoolAsyncServer</code> 
-- the server’s <code>Serve()</code> method does now <code>ServeAsync()</code>
-- In case you are using Thrift server event handlers: the <code>SetEventHandler</code> method now starts with an uppercase letter
-- and you will also have to revise the method names of all <code>TServerEventHandler</code> descendants you have in your code</li>
+    <ul>
+      <li>add <code class="language-plaintext highlighter-rouge">using Thrift.Processor;</code> in the server code where appropriate</li>
+      <li>the <code class="language-plaintext highlighter-rouge">TServerSocket</code> is now called <code class="language-plaintext highlighter-rouge">TServerSocketTransport</code></li>
+      <li>change <code class="language-plaintext highlighter-rouge">IProtocolFactory</code> into <code class="language-plaintext highlighter-rouge">ITProtocolFactory</code></li>
+      <li>if you are looking for <code class="language-plaintext highlighter-rouge">TSimpleServer</code>, try <code class="language-plaintext highlighter-rouge">TSimpleAsyncServer</code> instead</li>
+      <li>similarly, the <code class="language-plaintext highlighter-rouge">TThreadPoolServer</code> is now a <code class="language-plaintext highlighter-rouge">TThreadPoolAsyncServer</code></li>
+      <li>the server’s <code class="language-plaintext highlighter-rouge">Serve()</code> method does now <code class="language-plaintext highlighter-rouge">ServeAsync()</code></li>
+      <li>In case you are using Thrift server event handlers: the <code class="language-plaintext highlighter-rouge">SetEventHandler</code> method now starts with an uppercase letter</li>
+      <li>and you will also have to revise the method names of all <code class="language-plaintext highlighter-rouge">TServerEventHandler</code> descendants you have in your code</li>
+    </ul>
+  </li>
 </ol>
+
+<h1 id="fuzzing">Fuzzing</h1>
+
+<p>We use <a href="https://github.com/Metalnem/sharpfuzz">SharpFuzz</a> (and its libfuzzer variant) to fuzz the Thrift protocol parsers. This is <strong>not</strong> integrated with oss-fuzz, so all fuzzing must be run locally. <strong>Supported platform: Linux only.</strong> The fuzzers are opt-in and are <strong>not</strong> built by <code class="language-plaintext highlighter-rouge">make check</code>; run <code class="language-plaintext highlighter-rouge">make build-fuzzers</code> (or <code class="language-plaintext highlighter-rouge">./buildfuzzers.sh</code>) explicitly.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<ol>
+  <li>
+    <p>A .NET 10 SDK (same one used for the rest of <code class="language-plaintext highlighter-rouge">lib/netstd</code>).</p>
+  </li>
+  <li>
+    <p>The SharpFuzz IL-rewriter CLI, installed as a .NET global tool:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dotnet tool <span class="nb">install</span> <span class="nt">--global</span> SharpFuzz.CommandLine
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:</span><span class="nv">$HOME</span><span class="s2">/.dotnet/tools"</span>
+</code></pre></div>    </div>
+
+    <p>Add the <code class="language-plaintext highlighter-rouge">PATH</code> export to your shell rc if you want it to persist.</p>
+  </li>
+  <li>
+    <p>The native <code class="language-plaintext highlighter-rouge">libfuzzer-dotnet</code> driver binary. Grab a prebuilt release from the
+<a href="https://github.com/Metalnem/libfuzzer-dotnet/releases">Metalnem/libfuzzer-dotnet releases page</a>
+(or build it from source). Place it in a directory of your choice and point
+<code class="language-plaintext highlighter-rouge">SHARPFUZZ_DIR</code> at that directory:</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">SHARPFUZZ_DIR</span><span class="o">=</span>/path/to/libfuzzer-dotnet-dir
+</code></pre></div>    </div>
+
+    <p><code class="language-plaintext highlighter-rouge">buildfuzzers.sh</code> and <code class="language-plaintext highlighter-rouge">runfuzzer.sh</code> expect to find <code class="language-plaintext highlighter-rouge">$SHARPFUZZ_DIR/libfuzzer-dotnet</code>.</p>
+  </li>
+</ol>
+
+<h2 id="a-temporary-note-on-dotnet_roll_forward">A temporary note on <code class="language-plaintext highlighter-rouge">DOTNET_ROLL_FORWARD</code></h2>
+
+<p>As of SharpFuzz.CommandLine 2.2.0, the global tool’s <code class="language-plaintext highlighter-rouge">runtimeconfig.json</code> pins the
+tool to .NET 9, which prevents it from running under a .NET 10-only host. Both
+<code class="language-plaintext highlighter-rouge">buildfuzzers.sh</code> and <code class="language-plaintext highlighter-rouge">runfuzzer.sh</code> therefore export <code class="language-plaintext highlighter-rouge">DOTNET_ROLL_FORWARD=Major</code>
+at the top of the script as a workaround. Upstream fix:
+<a href="https://github.com/Metalnem/sharpfuzz/pull/72">SharpFuzz PR #72</a> (merged, pending
+release as SharpFuzz 2.3.0). Once that release ships, remove the <code class="language-plaintext highlighter-rouge">DOTNET_ROLL_FORWARD</code>
+exports from both shell drivers and update the SharpFuzz package pin in
+<code class="language-plaintext highlighter-rouge">Tests/Thrift.FuzzTests/Thrift.FuzzTests.csproj</code>.</p>
+
+<h2 id="running-the-fuzzers">Running the fuzzers</h2>
+
+<p>Build all twelve fuzzer assemblies (3 protocols x 2 fuzzer types x 2 engines) and
+instrument them with SharpFuzz:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./buildfuzzers.sh
+</code></pre></div></div>
+
+<p>Run one fuzzer:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./runfuzzer.sh &lt;fuzzer-name&gt; &lt;engine&gt; <span class="o">[</span>extra-fuzzer-args...]
+</code></pre></div></div>
+
+<p>Where <code class="language-plaintext highlighter-rouge">&lt;fuzzer-name&gt;</code> is one of <code class="language-plaintext highlighter-rouge">binary</code>, <code class="language-plaintext highlighter-rouge">compact</code>, <code class="language-plaintext highlighter-rouge">json</code>, <code class="language-plaintext highlighter-rouge">binary-roundtrip</code>,
+<code class="language-plaintext highlighter-rouge">compact-roundtrip</code>, <code class="language-plaintext highlighter-rouge">json-roundtrip</code>, and <code class="language-plaintext highlighter-rouge">&lt;engine&gt;</code> is <code class="language-plaintext highlighter-rouge">libfuzzer</code> or <code class="language-plaintext highlighter-rouge">afl</code>.
+Any additional arguments are passed through to the underlying fuzzer engine, e.g.:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./runfuzzer.sh binary libfuzzer <span class="nt">-runs</span><span class="o">=</span>10000
+</code></pre></div></div>
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/netstd/README.md">lib/netstd/README.md</a>
@@ -146,7 +212,7 @@ or</li>
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

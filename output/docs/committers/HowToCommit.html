@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -98,16 +98,16 @@
   <li>
     <p>Commit the patch</p>
 
-    <pre><code> git --config user.name "Your Name"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git --config user.name "Your Name"
  git --config user.email "YourApacheID@apache.org"
  git add -A
  git commit
-</code></pre>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>The commit message should be in the format:</p>
 
-    <pre><code>THRIFT-####:&lt;Jira description&gt;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>THRIFT-####:&lt;Jira description&gt;
 Client: &lt;component&gt;
 Patch: &lt;Name of person contributing the patch&gt;
 
@@ -117,15 +117,15 @@ If this is a github pull request then add the below comment to automatically clo
 where #NNNN is the PR number:
    
  This closes #NNNN
-</code></pre>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>Double check the patch committed and that nothing was missed then push the patch</p>
 
-    <pre><code>git status
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git status
 git show HEAD
 git push origin master
-</code></pre>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>Resolve the Jira issue and set the following for the changelog</p>
@@ -168,7 +168,7 @@ git push origin master
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

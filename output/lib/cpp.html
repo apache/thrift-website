@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -57,11 +57,11 @@ in the top-level README.md</p>
 
 <p>In case you do not want to open another README.md file, do this thrift src:</p>
 
-<pre><code>./bootstrap.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
 ./configure (--with-boost=/usr/local)
 make
 sudo make install
-</code></pre>
+</code></pre></div></div>
 
 <p>Thrift is divided into two libraries.</p>
 
@@ -140,12 +140,12 @@ http://monkey.org/~provos/libevent/</p>
 <p>You can download and install thrift using the 
 <a href="https://github.com/Microsoft/vcpkg">vcpkg</a> dependency manager:</p>
 
-<pre><code>git clone https://github.com/Microsoft/vcpkg.git
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/Microsoft/vcpkg.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg integrate install
 ./vcpkg install thrift
-</code></pre>
+</code></pre></div></div>
 
 <p>The thrift port in vcpkg is kept up to date by Microsoft team members 
 and community contributors. The Apache Thrift project is <em>not</em> responsible
@@ -259,9 +259,9 @@ one of the followings is included in “keys/server.crt”,</p>
 
 <p>Run within /test/ folder,</p>
 
-<pre><code>     ./cpp/TestServer --ssl &amp;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     ./cpp/TestServer --ssl &amp;
      ./cpp/TestClient --ssl
-</code></pre>
+</code></pre></div></div>
 
 <p>If “-h <host>" is used to run client, the above "localhost" in the above
 keys/server.crt has to be replaced with that host name.</host></p>
@@ -276,42 +276,42 @@ overridden if it’s not strong enough for you.</p>
 
 <h1 id="thrift-uuid">Thrift UUID</h1>
 
-<p>The <code>uuid</code> <code>BaseType</code> is implemented in C++ by the <code>apache::thrift::TUuid</code> class. This class
+<p>The <code class="language-plaintext highlighter-rouge">uuid</code> <code class="language-plaintext highlighter-rouge">BaseType</code> is implemented in C++ by the <code class="language-plaintext highlighter-rouge">apache::thrift::TUuid</code> class. This class
 is a strong wrapper class around an internal buffer of 16 bytes.</p>
 
-<p>The <code>apache::thrift::TUuid</code> supports construction from different UUID string representations.
+<p>The <code class="language-plaintext highlighter-rouge">apache::thrift::TUuid</code> supports construction from different UUID string representations.
 Some examples of supported string formats are:</p>
 
 <ul>
-  <li><code>"hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"</code></li>
-  <li><code>"{hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh}"</code></li>
-  <li><code>"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"</code></li>
-  <li><code>"{hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh}"</code></li>
+  <li><code class="language-plaintext highlighter-rouge">"hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"</code></li>
+  <li><code class="language-plaintext highlighter-rouge">"{hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh}"</code></li>
+  <li><code class="language-plaintext highlighter-rouge">"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"</code></li>
+  <li><code class="language-plaintext highlighter-rouge">"{hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh}"</code></li>
 </ul>
 
-<h2 id="tuuid-and-boostuuidsuuid"><code>TUuid</code> and <code>boost::uuids::uuid</code></h2>
+<h2 id="tuuid-and-boostuuidsuuid"><code class="language-plaintext highlighter-rouge">TUuid</code> and <code class="language-plaintext highlighter-rouge">boost::uuids::uuid</code></h2>
 
-<p>Internally the TUuid class is implemented using the <code>boost::uuids::uuid</code> library. As a result the TUuid
+<p>Internally the TUuid class is implemented using the <code class="language-plaintext highlighter-rouge">boost::uuids::uuid</code> library. As a result the TUuid
 can seamlessly interoperate with the boost UUID type since the underlying data structure is the same.</p>
 
-<p>For convenience, when boost is already used by a project the <code>THRIFT_TUUID_SUPPORT_BOOST_UUID</code> preprocessor
-directive can be set when including the thrift library to enable construction of a <code>TUuid</code> from a
-<code>boost::uuids::uuid</code>. By default this is an implicit constructor that can be changed to be explicit
-by defining the <code>THRIFT_TUUID_BOOST_CONSTRUCTOR_EXPLICIT</code> preprocessor directive.</p>
+<p>For convenience, when boost is already used by a project the <code class="language-plaintext highlighter-rouge">THRIFT_TUUID_SUPPORT_BOOST_UUID</code> preprocessor
+directive can be set when including the thrift library to enable construction of a <code class="language-plaintext highlighter-rouge">TUuid</code> from a
+<code class="language-plaintext highlighter-rouge">boost::uuids::uuid</code>. By default this is an implicit constructor that can be changed to be explicit
+by defining the <code class="language-plaintext highlighter-rouge">THRIFT_TUUID_BOOST_CONSTRUCTOR_EXPLICIT</code> preprocessor directive.</p>
 
 <p>The thrift library does not need to be compiled differently when this constructor is needed. The preprocessor
 directives can be set on the project that uses the thrift library.</p>
 
 <h1 id="deprecations">Deprecations</h1>
 
-<h2 id="section">0.12.0</h2>
+<h2 id="0120">0.12.0</h2>
 
 <p>Support for C++03/C++98 was deprecated.
 Support for Boost at runtime was deprecated.</p>
 
 <h1 id="breaking-changes">Breaking Changes</h1>
 
-<h2 id="section-1">1.0.0</h2>
+<h2 id="100">1.0.0</h2>
 
 <p>THRIFT-4720:
 The classes Monitor and TimerManager now use std::chrono::milliseconds for timeout, the methods and functions involving THRIFT_TIMESPEC and timeval have been removed, the related tests have been modified.</p>
@@ -341,10 +341,10 @@ libraries now.  This is CMake standard behavior.</p>
 Qt4 support was removed.</p>
 
 <p>THRIFT-4762:
-Added <code>const</code> specifier to <code>TTransport::getOrigin()</code>. This changes its function signature.
-It’s recommended to add the <code>override</code> specifier in implementations derived from <code>TTransport</code>.</p>
+Added <code class="language-plaintext highlighter-rouge">const</code> specifier to <code class="language-plaintext highlighter-rouge">TTransport::getOrigin()</code>. This changes its function signature.
+It’s recommended to add the <code class="language-plaintext highlighter-rouge">override</code> specifier in implementations derived from <code class="language-plaintext highlighter-rouge">TTransport</code>.</p>
 
-<h2 id="section-2">0.11.0</h2>
+<h2 id="0110">0.11.0</h2>
 
 <p>Older versions of thrift depended on the &lt;boost/smart_ptr.hpp&gt; classes which
 were used in thrift headers to define interfaces.  Thrift now detects C++11
@@ -395,7 +395,7 @@ cleanup and leave it up to the consuming application, this requirement is not ne
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>

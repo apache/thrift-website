@@ -7,7 +7,7 @@
 
     <link href="/static/images/favicon.ico" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/codehilite.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
@@ -56,51 +56,51 @@
 
 <h2 id="update-the-system">Update the System</h2>
 
-<pre><code>sudo yum -y update
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y update
+</code></pre></div></div>
 
 <h2 id="install-the-platform-development-tools">Install the Platform Development Tools</h2>
 
-<pre><code>sudo yum -y groupinstall "Development Tools"
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y groupinstall "Development Tools"
+</code></pre></div></div>
 
 <h2 id="upgrade-autoconfautomakebison">Upgrade autoconf/automake/bison</h2>
 
-<pre><code>sudo yum install -y wget
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y wget
+</code></pre></div></div>
 
 <h3 id="upgrade-autoconf">Upgrade autoconf</h3>
 
-<pre><code>wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
 tar xvf autoconf-2.69.tar.gz
 cd autoconf-2.69
 ./configure --prefix=/usr
 make
 sudo make install
 cd ..
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="upgrade-automake">Upgrade automake</h3>
 
-<pre><code>wget http://ftp.gnu.org/gnu/automake/automake-1.14.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://ftp.gnu.org/gnu/automake/automake-1.14.tar.gz
 tar xvf automake-1.14.tar.gz
 cd automake-1.14
 ./configure --prefix=/usr
 make
 sudo make install
 cd ..
-</code></pre>
+</code></pre></div></div>
 
 <h3 id="upgrade-bison">Upgrade bison</h3>
 
-<pre><code>wget http://ftp.gnu.org/gnu/bison/bison-2.5.1.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://ftp.gnu.org/gnu/bison/bison-2.5.1.tar.gz
 tar xvf bison-2.5.1.tar.gz
 cd bison-2.5.1
 ./configure --prefix=/usr
 make
 sudo make install
 cd ..
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="add-optional-c-language-library-dependencies">Add Optional C++ Language Library Dependencies</h2>
 
@@ -110,27 +110,27 @@ cd ..
 
 <h3 id="install-c-lib-dependencies">Install C++ Lib Dependencies</h3>
 
-<pre><code>sudo yum -y install libevent-devel zlib-devel openssl-devel
-</code></pre>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y install libevent-devel zlib-devel openssl-devel
+</code></pre></div></div>
 
 <h3 id="upgrade-boost--156">Upgrade Boost &gt;= 1.56</h3>
 
-<pre><code>wget http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://sourceforge.net/projects/boost/files/boost/1.56.0/boost_1_56_0.tar.gz
 tar xvf boost_1_56_0.tar.gz
 cd boost_1_56_0
 ./bootstrap.sh
 sudo ./b2 install
-</code></pre>
+</code></pre></div></div>
 
 <h2 id="build-and-install-the-apache-thrift-idl-compiler">Build and Install the Apache Thrift IDL Compiler</h2>
 
-<pre><code>git clone https://github.com/apache/thrift.git
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/apache/thrift.git
 cd thrift
 ./bootstrap.sh
 ./configure --with-lua=no
 make
 sudo make install
-</code></pre>
+</code></pre></div></div>
 
 <p>This will build the compiler (thrift/compiler/cpp/thrift –version) and any language libraries supported. The make install step installs the compiler on the path: /usr/local/bin/thrift
 You can use the ./configure –enable-libs=no switch to build the Apache Thrift IDL Compiler only without lib builds. To run tests use “make check”.</p>
@@ -166,7 +166,7 @@ You can use the ./configure –enable-libs=no switch to build the Apache Thrift 
       </div>
       <div class="span6">
         <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
-        Copyright &copy; 2025 <a href="http://www.apache.org/">Apache Software Foundation</a>.
+        Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
       </div>
