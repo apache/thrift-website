@@ -77,7 +77,7 @@ title: Home
   </ul>
   <div class="tab-content">
     <div class="tab-pane active" id="1">
-      {% remote_snippet tutorial/tutorial.thrift text 123,150 %}
+      {% remote_snippet tutorial/tutorial.thrift thrift 123,150 %}
     </div>
     <div class="tab-pane" id="2">
       {% remote_snippet tutorial/py/PythonClient.py py 35,55 %}
