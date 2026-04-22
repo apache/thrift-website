@@ -153,6 +153,32 @@ optional native extension that accelerates protocols and buffers.</li>
 
 <h2 id="breaking-changes">Breaking Changes</h2>
 
+<h3 id="0240">0.24.0</h3>
+
+<p>Connect timeout handling changed for both <code class="language-plaintext highlighter-rouge">Thrift::Socket</code> and
+<code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code>.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">timeout == nil</code> and <code class="language-plaintext highlighter-rouge">timeout == 0</code> now use blocking connect/open semantics.
+Older releases already treated <code class="language-plaintext highlighter-rouge">nil</code> that way, but treated <code class="language-plaintext highlighter-rouge">0</code> differently
+across operations: <code class="language-plaintext highlighter-rouge">read</code> and <code class="language-plaintext highlighter-rouge">write</code> used the blocking path, plain TCP
+<code class="language-plaintext highlighter-rouge">open</code> used a zero-length poll, and TLS <code class="language-plaintext highlighter-rouge">open</code> could spin in the handshake
+retry loop.</li>
+  <li>Positive timeouts now bound the whole connect/open operation instead of
+effectively applying a fresh timeout window at each wait or address attempt.
+For plain TCP this budget is shared across address fallback. For TLS it is
+shared across the TCP connect and the SSL handshake.</li>
+  <li>Connect/open timeout expiry now raises
+<code class="language-plaintext highlighter-rouge">Thrift::TransportException::TIMED_OUT</code>. Older releases could report the same
+condition as <code class="language-plaintext highlighter-rouge">NOT_OPEN</code>, and <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> could keep retrying the
+handshake after the wait timed out.</li>
+</ul>
+
+<p>If your application matched <code class="language-plaintext highlighter-rouge">NOT_OPEN</code> for connect timeout handling, update it
+to handle <code class="language-plaintext highlighter-rouge">TIMED_OUT</code>. If you relied on <code class="language-plaintext highlighter-rouge">timeout = 0</code> meaning immediate failure
+or on repeated retries extending the effective timeout during TCP fallback or
+TLS handshake, update those call paths before upgrading.</p>
+
 <h3 id="0230">0.23.0</h3>
 
 <p>The documented source-build flow now effectively requires Ruby <code class="language-plaintext highlighter-rouge">2.7+</code>.
@@ -213,6 +239,12 @@ require 'my_namespace/calculator'
 <h2 id="migration-notes">Migration Notes</h2>
 
 <ul>
+  <li>If you upgrade to <code class="language-plaintext highlighter-rouge">0.24.0</code>, treat <code class="language-plaintext highlighter-rouge">timeout</code> on <code class="language-plaintext highlighter-rouge">Thrift::Socket</code> and
+<code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> as one budget for the whole open path. For
+<code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code>, that includes both the TCP connect and the TLS
+handshake.</li>
+  <li>If you upgrade to <code class="language-plaintext highlighter-rouge">0.24.0</code>, handle connect/open timeout expiry as
+<code class="language-plaintext highlighter-rouge">Thrift::TransportException::TIMED_OUT</code> instead of <code class="language-plaintext highlighter-rouge">NOT_OPEN</code>.</li>
   <li>If you upgrade across the stricter reply-validation changes, regenerate all
 Ruby stubs and deploy them with the matching Ruby runtime. Do not mix old
 generated code, new generated code, and new runtime code on the same client

@@ -120,7 +120,14 @@ or</li>
 
 <h1 id="fuzzing">Fuzzing</h1>
 
-<p>We use <a href="https://github.com/Metalnem/sharpfuzz">SharpFuzz</a> (and its libfuzzer variant) to fuzz the Thrift protocol parsers. This is <strong>not</strong> integrated with oss-fuzz, so all fuzzing must be run locally. <strong>Supported platform: Linux only.</strong> The fuzzers are opt-in and are <strong>not</strong> built by <code class="language-plaintext highlighter-rouge">make check</code>; run <code class="language-plaintext highlighter-rouge">make build-fuzzers</code> (or <code class="language-plaintext highlighter-rouge">./buildfuzzers.sh</code>) explicitly.</p>
+<p>We use <a href="https://github.com/Metalnem/sharpfuzz">SharpFuzz</a> (and its libfuzzer variant) to fuzz the Thrift protocol parsers. This is <strong>not</strong> integrated with oss-fuzz, so all fuzzing must be run locally. <strong>Supported platform: Linux only.</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">make check</code> compiles the 12 fuzzer variants without SharpFuzz IL
+instrumentation, so changes that break the fuzzer build will fail CI.
+Full, instrumented builds suitable for actually running a fuzzer remain
+opt-in: run <code class="language-plaintext highlighter-rouge">make build-fuzzers</code> (or <code class="language-plaintext highlighter-rouge">./buildfuzzers.sh</code>), which
+additionally requires the SharpFuzz.CommandLine global tool and the
+<code class="language-plaintext highlighter-rouge">libfuzzer-dotnet</code> native driver as described below.</p>
 
 <h2 id="prerequisites">Prerequisites</h2>
 
