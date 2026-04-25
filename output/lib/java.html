@@ -35,11 +35,13 @@
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Apache <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="http://www.apache.org/" target="_blank">Apache Home</a></li>
-              <li><a href="http://www.apache.org/licenses/" target="_blank">Apache License v2.0</a></li>
-              <li><a href="http://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
-              <li><a href="http://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
-              <li><a href="http://www.apache.org/security/" target="_blank">Security</a></li>
+              <li><a href="https://www.apache.org/" target="_blank">Apache Home</a></li>
+              <li><a href="https://www.apache.org/licenses/" target="_blank">License</a></li>
+              <li><a href="https://www.apache.org/foundation/sponsorship.html" target="_blank">Donate</a></li>
+              <li><a href="https://events.apache.org/" target="_blank">Events</a></li>
+              <li><a href="https://www.apache.org/foundation/thanks.html" target="_blank">Thanks</a></li>
+              <li><a href="https://www.apache.org/security/" target="_blank">Security</a></li>
+              <li><a href="https://privacy.apache.org/policies/privacy-policy-public.html" target="_blank">Privacy</a></li>
             </ul>
           </li>
         </ul>
@@ -229,15 +231,22 @@ http://gradle.org/</p>
 
 <h1 id="breaking-changes">Breaking Changes</h1>
 
+<h2 id="0240">0.24.0</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">TProtocolUtil.setMaxSkipDepth(int depth)</code> has been deprecated and 
+made a no-op. Use TConfiguration.setRecursionLimit() instead.</li>
+</ul>
+
 <h2 id="0130">0.13.0</h2>
 
 <ul>
   <li>
-    <p>The signature of the ‘process’ method in TAsyncProcessor and TProcessor has
-changed to remove the boolean return type and instead rely on Exceptions.</p>
+    <p>The signature of the ‘process’ method in TAsyncProcessor and TProcessor 
+has changed to remove the boolean return type and instead rely on Exceptions.</p>
   </li>
   <li>
-    <p>Per THRIFT-4805, TSaslTransportException has been removed. The same condition
+    <p>Per THRIFT-4805, TSaslTransportException has been removed. The same condition 
 is now covered by TTansportException, where <code class="language-plaintext highlighter-rouge">TTransportException.getType() == END_OF_FILE</code>.</p>
   </li>
 </ul>
