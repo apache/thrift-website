@@ -25,7 +25,7 @@
   - [ "Perl",        "CPAN",          "https://metacpan.org/release/Thrift",                                 "lib/perl/Makefile.PL",       "jking",                     "" ]
   - [ "PHP",         "Packagist",     "https://packagist.org/packages/apache/thrift",                        "composer.json",              "jfarrell, bufferoverflow, jking",  "" ]
   - [ "Python",      "pypi",          "https://pypi.python.org/pypi/thrift",                                 "lib/py/setup.py",            "jfarrell",                  "stale at 0.11.0 - see THRIFT-4687" ]
-  - [ "Ruby",        "Ruby Gem",      "https://rubygems.org/gems/thrift",                                    "lib/rb/Gemfile",             "jfarrell",                  "stale at 0.11.0 - see THRIFT-4707" ]
+  - [ "Ruby",        "RubyGems",      "https://rubygems.org/gems/thrift",                                    "lib/rb/thrift.gemspec",      "jfarrell",                  "" ]
   - [ "Rust",        "Cargo",         "https://crates.io/crates/thrift",                                     "lib/rs/cargo.toml",          "all thrift committers",     "" ]
   - [ "Smalltalk",   "",              "",                                                                    "",                           "",                          "no official ASF package available" ]
   - [ "Swift",       "",              "",                                                                    "",                           "",                          "no official ASF package available" ]
