@@ -3,10 +3,43 @@ title: Home
 ---
 
 <div class="row">
-  <div class="span8">
-    <p>
-      The Apache Thrift software framework, for scalable cross-language services development, combines a software stack with a code generation engine to build services that work efficiently and seamlessly between C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, OCaml and Delphi and other languages.
-    </p>
+  <div>
+    <div class="flex gap flex-col md:flex-row mb-lg" >
+    <div>
+      <p>The Apache Thrift is a lightweight, language-independent software stack for point-to-point RPC implementation. Thrift provides clean abstractions and implementations for data transport, data serialization, and application level processing. The code generation system takes a simple definition language as input and generates code across programming languages that uses the abstracted stack to build interoperable RPC clients and servers.</p>
+        <p>Thrift makes it easy for programs written in different programming languages to share data and call remote procedures. With support for many programming languages, chances are Thrift supports the languages that you currently use. Thrift is specifically designed to support non-atomic version changes across client and server code. This allows you to upgrade your server while still being able to service older clients; or have newer clients issue requests to older servers.</p>
+    </div>
+    <div class="well center flex-1">
+      <h2>Download</h2>
+      <p>Apache Thrift v{{ site.current_release }}</p>
+      <p>
+        <a class="btn btn-large" href="{{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz">
+            Download <small>v{{ site.current_release }}</small>
+        </a>
+      </p>
+      <p>
+        <small>
+        <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256">SHA256</a>
+        </small>
+        |
+        <small>
+        <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1">SHA1</a>
+        </small>
+        |
+        <small>
+        <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5">MD5</a>
+        </small>
+        |
+        <small>
+        <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc">PGP</a>
+        </small>
+      </p>
+      <p>
+        <h4>[<a href="/download">Other Downloads</a>]</h4>
+        <h4>[<a href="/changelog">Changelog</a>]</h4>
+      </p>
+    </div>
+    </div>
     <h3>Getting Started</h3>
     <p>
       <ul>
@@ -29,36 +62,6 @@ title: Home
     <br />
     <p>
       To learn more about Apache Thrift <a href="/static/files/thrift-20070401.pdf">Read the Whitepaper</a>
-    </p>
-  </div>
-  <div class="span3 well center pull-right">
-    <h2>Download</h2>
-    <p>Apache Thrift v{{ site.current_release }}</p>
-    <p>
-      <a class="btn btn-large" href="{{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz">
-          Download <small>v{{ site.current_release }}</small>
-      </a>
-    </p>
-    <p>
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256">SHA256</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1">SHA1</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5">MD5</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc">PGP</a>
-      </small>
-    </p>
-    <p>
-      <h4>[<a href="/download">Other Downloads</a>]</h4>
-      <h4>[<a href="/changelog">Changelog</a>]</h4>
     </p>
   </div>
 </div>
@@ -90,6 +93,6 @@ title: Home
     The CalculatorHandler:
       {% remote_snippet tutorial/java/src/CalculatorHandler.java java 27,91 %}
     </div>
+
   </div>
 </div>
-

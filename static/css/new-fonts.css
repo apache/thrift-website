@@ -1,0 +1,45 @@
+@font-face {
+  font-family: "Open Sans";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+  src: url(/static/fonts/OpenSans-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+  src: url(/static/fonts/OpenSans-Bold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 300;
+  src: url(/static/fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCs16Hw5aX8.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 600;
+  src: url(/static/fonts/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w5aX8.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 800;
+  src: url(/static/fonts/Montserrat-ExtraBold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-display: swap;
+  font-style: normal;
+  font-weight: 900;
+  src: url(/static/fonts/Montserrat-Black.ttf) format("truetype");
+}

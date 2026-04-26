@@ -1,0 +1,249 @@
+/* CSS Custom Properties - for runtime theming */
+:root {
+  --color-navy: #28265e;
+  --color-purple: #7c297d;
+  --color-red: #d22128;
+  --color-orange: #dd552c;
+  --color-lavendar: #fef4ff;
+  /* --color-link: #176060; */
+  --color-link: #4a47a3;
+  --color-text: #000000;
+  --color-footer-fg: #fff;
+  --color-footer-bg: #282661;
+  --val-baseline: 10px;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-size: 14px;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+li {
+  line-height: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  margin: 0 0 0.25rem;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+body {
+  color: var(--color-text);
+  font-family:
+    "Open Sans", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.5em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "Montserrat", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  text-transform: capitalize;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong {
+  color: #2a2a35;
+}
+a,
+a:visited {
+  color: var(--color-link);
+}
+a:hover {
+  color: color-mix(in srgb, var(--color-link) 75%, black);
+}
+
+.text-center,
+.center {
+  text-align: center;
+}
+
+.header-banner {
+  background-color: var(--color-purple);
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0.25rem 0;
+}
+
+a.logo img {
+  display: inline-block;
+  height: 100px;
+}
+
+.flex {
+  display: flex;
+}
+.flex-1 {
+  flex: 1 100%;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+.flex-row {
+  flex-direction: row;
+}
+
+.py-medium {
+  padding-top: var(--val-baseline);
+  padding-bottom: var(--val-baseline);
+}
+.my-lg {
+  margin: calc(var(--val-baseline) * 1.5) 0;
+}
+.mb-lg {
+  margin-bottom: calc(var(--val-baseline) * 1.5);
+}
+
+.gap {
+  gap: calc(var(--val-baseline) * 1.5);
+}
+
+.footer {
+  color: var(--color-footer-fg);
+  background-color: var(--color-footer-bg);
+}
+
+.footer li a {
+  color: #ddd;
+  text-decoration: none;
+  padding-bottom: 0.25rem;
+  display: block;
+}
+.footer a {
+  color: #fff;
+  display: block;
+}
+.footer a.license {
+  text-decoration: underline;
+}
+
+.footer ul {
+  list-style: none;
+}
+.footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer ul.list-unstyled {
+  margin-left: 0;
+}
+
+.footer h5 {
+  color: #fff;
+}
+
+.py-xl {
+  padding-top: calc(var(--val-baseline) * 2.5);
+  padding-bottom: calc(var(--val-baseline) * 2.5);
+}
+.inner {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: calc(var(--val-baseline) * 1.5);
+  padding-right: calc(var(--val-baseline) * 1.5);
+  width: 100%;
+}
+.inner .row {
+  margin-left: 0;
+}
+nav ul.nav-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+
+  margin: 0 auto;
+}
+nav ul.nav-list li a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: 0;
+  margin-right: 0;
+  text-decoration: none;
+  color: #333;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family:
+    "Montserrat", "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+nav ul.nav-list li a:hover {
+  color: var(--color-purple);
+}
+
+/* md: prefix */
+@media (min-width: 768px) {
+  :root {
+    --val-baseline: 20px;
+  }
+  .md\:flex-col {
+    flex-direction: column;
+  }
+  .md\:flex-row {
+    flex-direction: row;
+  }
+}
