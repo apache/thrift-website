@@ -1,5 +1,5 @@
 ---
-title: Common Lisp Library README
+title: Common Lisp library
 islib: true
 ---
 

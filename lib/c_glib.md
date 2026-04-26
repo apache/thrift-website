@@ -1,5 +1,5 @@
 ---
-title: C GLib
+title: C GLib library
 islib: true
 ---
 
