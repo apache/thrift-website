@@ -1,95 +1,69 @@
 ---
 title: Home
+home: true
 ---
 
-<div class="row">
-  <div class="span8">
-    <p>
-      The Apache Thrift software framework, for scalable cross-language services development, combines a software stack with a code generation engine to build services that work efficiently and seamlessly between C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, OCaml and Delphi and other languages.
-    </p>
-    <h3>Getting Started</h3>
-    <p>
-      <ul>
-        <li>
-          <b>Download Apache Thrift</b>
-          <p>To get started, <a href="/download">download</a> a copy of Thrift.</p>
-        </li>
-        <li>
-          <b>Build and Install the Apache Thrift compiler</b>
-          <p>You will then need to <a href="/docs/BuildingFromSource">build</a> the Apache Thrift compiler and install it. See the <a href="/docs/install">installing Thrift</a> guide for any help with this step.</p>
-        </li>
-        <li>
-          <b>Writing a .thrift file</b>
-          <p>After the Thrift compiler is installed you will need to create a thrift file. This file is an <a href="/docs/idl">interface definition</a> made up of <a href="/docs/types">thrift types</a> and Services. The services you define in this file are implemented by the server and are called by any clients. The Thrift compiler is used to generate your Thrift File into source code which is used by the different client libraries and the server you write. To generate the source from a thrift file run</p>
-          <pre><code>thrift --gen &lt;language&gt; &lt;Thrift filename&gt;</code></pre>
-          <p>The sample tutorial.thrift file used for all the client and server tutorials can be found <a href="https://github.com/apache/thrift/tree/master/tutorial">here</a>. </p>
-        </li>
-      </ul>
-    </p>
-    <br />
-    <p>
-      To learn more about Apache Thrift <a href="/static/files/thrift-20070401.pdf">Read the Whitepaper</a>
-    </p>
-  </div>
-  <div class="span3 well center pull-right">
-    <h2>Download</h2>
-    <p>Apache Thrift v{{ site.current_release }}</p>
-    <p>
-      <a class="btn btn-large" href="{{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz">
-          Download <small>v{{ site.current_release }}</small>
-      </a>
-    </p>
-    <p>
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256">SHA256</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1">SHA1</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.md5">MD5</a>
-      </small>
-      |
-      <small>
-       <a href="{{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc">PGP</a>
-      </small>
-    </p>
-    <p>
-      <h4>[<a href="/download">Other Downloads</a>]</h4>
-      <h4>[<a href="/changelog">Changelog</a>]</h4>
-    </p>
-  </div>
-</div>
-<hr />
-
-<h3>Example</h3>
-
-<p>Apache Thrift allows you to define data types and service interfaces in a simple definition file. Taking that file as input, the compiler generates code to be used to easily build RPC clients and servers that communicate seamlessly across programming languages. Instead of writing a load of boilerplate code to serialize and transport your objects and invoke remote methods, you can get right down to business.</p>
-
-<p>The following example is a simple service to store user objects for a web front end.</p>
-
-<div class="tabbable">
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="#1" data-toggle="tab">Thrift Definition File</a></li>
-    <li><a href="#2" data-toggle="tab">Python Client</a></li>
-    <li><a href="#3" data-toggle="tab">Java Server</a></li>
-  </ul>
-  <div class="tab-content">
-    <div class="tab-pane active" id="1">
-      {% remote_snippet tutorial/tutorial.thrift thrift 123,150 %}
-    </div>
-    <div class="tab-pane" id="2">
-      {% remote_snippet tutorial/py/PythonClient.py py 35,55 %}
-    </div>
-    <div class="tab-pane" id="3">
-    Initialize the Server:
-      {% remote_snippet tutorial/java/src/JavaServer.java java 64,76 %}
-
-    The CalculatorHandler:
-      {% remote_snippet tutorial/java/src/CalculatorHandler.java java 27,91 %}
-    </div>
+<div class="hero">
+  <div class="hero-content">
+    <h1>Build services without forcing one stack.</h1>
+      <p class="mb-lg">Apache Thrift combines an interface definition language, code generation, and runtime libraries so services can stay portable across C++, Java, Python, PHP, Ruby, JavaScript, Node.js, and more.</p>
+            <a class="btn my-md" href="/download">
+            Download v{{ site.current_release }}
+        </a>
   </div>
 </div>
 
+<div class="inner">
+  <div class="flex gap flex-col md:flex-row mb-lg">
+  <div class="block flex-1">
+      <div class="hrline"></div>
+      <h2>Only one IDL for many runtimes</h2>
+      <p>Model services and data in a small, readable contract, generate client and server code for the languages already in your stack.</p>
+  </div>
+  <div class="block flex-1">
+      <div class="hrline"></div>
+      <h2>Code generation with wire stack</h2>
+      <p>Thrift ships both the compiler and the runtime pieces, so transports, protocols, and serialization do not need to be rebuilt per service.</p>
+  </div>
+  <div class="block flex-1">
+    <div class="hrline"></div>
+    <h2>Portable for long-lived systems</h2>
+    <p>Generated interfaces help teams move between services and languages gradually instead of tying everything to a single framework or platform.</p>
+  </div>
+  </div>
+</div>
+
+<div class="inner py-lg">
+  <h3>Start with the contract, not the boilerplate.</h3>
+  <p>
+  Define your service once as a contract. Everything else can be generated. Clients, servers, and types all come from a single source of truth. No hand-written bindings. No duplicated logic across languages. Just the API.
+  </p>
+  
+{% highlight thrift %}
+// Define a service using a simple, language-neutral interface.
+// Methods define inputs, outputs, and optional exceptions.
+service Galaxy {
+  // Retrieves detailed information about a star system.
+  StarSystem getSystem(1:string systemId),
+  // Calculates a navigation path, accounting for distance and hazards.
+  Trajectory plotCourse(1:string fromSystem, 2:string toSystem) throws (1:NavigationError err),
+}
+
+// A star system represents a single navigable region in the galaxy.
+struct StarSystem {
+1: string id
+}
+
+// A trajectory describes a computed route between star systems.
+struct Trajectory {
+1: list<string> path
+}
+
+// Raised when a navigation request cannot be completed.
+exception NavigationError {
+1: string message
+}
+{% endhighlight %}
+
+  <p><b>Continue</b> with the  <a href="/docs/getting_started">tutorial</a> to get up and running or <b>learn</b> more about Apache Thrift in the  <a href="/static/files/thrift-20070401.pdf">Whitepaper</a>.</p>
+</div>
