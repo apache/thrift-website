@@ -27,6 +27,12 @@ class RemoteSnippet < Liquid::Tag
     content = ""
     if @range == "all"
       URI.open(url) {|f| content = f.read }
+    elsif @range.start_with?("#")
+      header, count = @range.split(",", 2)
+      header = "#{header} "
+      count = Integer(count) + 1
+      found = 0
+      URI.open(url) {|f| content = f.each_line.take_while { |line| found += (line.start_with?(header) ? 1 : 0); found <= count }.join() }
     else
       rangenums = @range.split(",", 2)
       first = 0

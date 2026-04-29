@@ -58,6 +58,7 @@ title: Home
     </p>
     <p>
       <h4>[<a href="/download">Other Downloads</a>]</h4>
+      <h4>[<a href="/changelog">Changelog</a>]</h4>
     </p>
   </div>
 </div>

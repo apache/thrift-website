@@ -5,6 +5,8 @@ title: "Download"
 ## Release
 The latest stable release of Thrift is {{ site.current_release }} (released on {{ site.current_release_date }}).
 
+See the [Apache Thrift changelog](/changelog) for release notes and development history.
+
 * [thrift-{{ site.current_release }}.tar.gz]({{ site.mirror_url }}/thrift/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz) \[[PGP]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.asc)\]
 \[[SHA256]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha256)\]
 \[[SHA1]({{ site.release_url }}/{{ site.current_release }}/thrift-{{ site.current_release }}.tar.gz.sha1)\]
