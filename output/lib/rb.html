@@ -5,7 +5,7 @@
     <meta content="en-us" http-equiv="Content-Language" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="/static/images/favicon.ico" rel="shortcut icon" />
+    <link href="/static/images/favicon.png" rel="shortcut icon" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -84,9 +84,9 @@ installed on supported runtimes.</li>
 <p>The Ruby library does not include the Thrift compiler. Use a compiler built
 from the root of this repository to generate Ruby bindings:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift --gen rb path/to/service.thrift
-# with namespaced modules
-thrift --gen rb:namespaced --recurse path/to/service.thrift
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift <span class="nt">--gen</span> rb path/to/service.thrift
+<span class="c"># with namespaced modules</span>
+thrift <span class="nt">--gen</span> rb:namespaced <span class="nt">--recurse</span> path/to/service.thrift
 </code></pre></div></div>
 
 <p>Generated files are typically written to <code class="language-plaintext highlighter-rouge">gen-rb/</code> and can be required
@@ -94,41 +94,41 @@ directly from your application.</p>
 
 <h2 id="basic-client-usage">Basic Client Usage</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$:.push File.expand_path('gen-rb', __dir__)
-require 'thrift'
-require 'calculator'
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vg">$:</span><span class="p">.</span><span class="nf">push</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'gen-rb'</span><span class="p">,</span> <span class="n">__dir__</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s1">'thrift'</span>
+<span class="nb">require</span> <span class="s1">'calculator'</span>
 
-socket     = Thrift::Socket.new('localhost', 9090)
-transport  = Thrift::BufferedTransport.new(socket)
-protocol   = Thrift::BinaryProtocol.new(transport)
-client     = Calculator::Client.new(protocol)
+<span class="n">socket</span>     <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">Socket</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="mi">9090</span><span class="p">)</span>
+<span class="n">transport</span>  <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">BufferedTransport</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+<span class="n">protocol</span>   <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">BinaryProtocol</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">transport</span><span class="p">)</span>
+<span class="n">client</span>     <span class="o">=</span> <span class="no">Calculator</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
 
-transport.open
-puts client.add(1, 1)
-transport.close
+<span class="n">transport</span><span class="p">.</span><span class="nf">open</span>
+<span class="nb">puts</span> <span class="n">client</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">transport</span><span class="p">.</span><span class="nf">close</span>
 </code></pre></div></div>
 
 <h2 id="basic-server-usage">Basic Server Usage</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$:.push File.expand_path('gen-rb', __dir__)
-require 'thrift'
-require 'calculator'
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vg">$:</span><span class="p">.</span><span class="nf">push</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'gen-rb'</span><span class="p">,</span> <span class="n">__dir__</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s1">'thrift'</span>
+<span class="nb">require</span> <span class="s1">'calculator'</span>
 
-class CalculatorHandler
-  def add(a, b)
-    a + b
-  end
-end
+<span class="k">class</span> <span class="nc">CalculatorHandler</span>
+  <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-handler            = CalculatorHandler.new
-processor          = Calculator::Processor.new(handler)
-server_transport   = Thrift::ServerSocket.new(9090)
-transport_factory  = Thrift::BufferedTransportFactory.new
-protocol_factory   = Thrift::BinaryProtocolFactory.new
+<span class="n">handler</span>            <span class="o">=</span> <span class="no">CalculatorHandler</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">processor</span>          <span class="o">=</span> <span class="no">Calculator</span><span class="o">::</span><span class="no">Processor</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+<span class="n">server_transport</span>   <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">ServerSocket</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">9090</span><span class="p">)</span>
+<span class="n">transport_factory</span>  <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">BufferedTransportFactory</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">protocol_factory</span>   <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">BinaryProtocolFactory</span><span class="p">.</span><span class="nf">new</span>
 
-server = Thrift::ThreadedServer.new(processor, server_transport,
-                                    transport_factory, protocol_factory)
-server.serve
+<span class="n">server</span> <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">ThreadedServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">processor</span><span class="p">,</span> <span class="n">server_transport</span><span class="p">,</span>
+                                    <span class="n">transport_factory</span><span class="p">,</span> <span class="n">protocol_factory</span><span class="p">)</span>
+<span class="n">server</span><span class="p">.</span><span class="nf">serve</span>
 </code></pre></div></div>
 
 <h2 id="development-and-tests">Development and Tests</h2>
@@ -229,11 +229,11 @@ any old <code class="language-plaintext highlighter-rouge">T*</code> constants o
 <code class="language-plaintext highlighter-rouge">thrift --gen rb</code> and namespaced output from <code class="language-plaintext highlighter-rouge">thrift --gen rb:namespaced</code>
 use different require paths, so switch them atomically with regenerated code.</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># --gen rb
-require 'calculator'
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># --gen rb</span>
+<span class="nb">require</span> <span class="s1">'calculator'</span>
 
-# --gen rb:namespaced
-require 'my_namespace/calculator'
+<span class="c1"># --gen rb:namespaced</span>
+<span class="nb">require</span> <span class="s1">'my_namespace/calculator'</span>
 </code></pre></div>    </div>
   </li>
 </ul>
@@ -315,7 +315,7 @@ performs a hostname check against the host you pass in.</li>
         </ul>
       </div>
       <div class="span6">
-        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" /></a>
+        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" width="32" /></a>
         Copyright &copy; 2026 <a href="http://www.apache.org/">Apache Software Foundation</a>.
         Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
         Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
