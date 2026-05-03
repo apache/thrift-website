@@ -1,32 +1,133 @@
-<div class="container">
-  <hr>
-  <footer class="footer">
-    <div class="row">
-      <div class="span3">
-        <h3>Links</h3>
-        <ul class="unstyled">
-          <li><a href="/download">Download</a></li>
-          <li><a href="/developers">Developers</a></li>
-          <li><a href="/tutorial">Tutorials</a></li>
-        </ul>
-        <ul class="unstyled">
-          <li><a href="/sitemap">Sitemap</a></li>
-        </ul>
+<footer class="footer">
+  <div class="inner py-xl">
+    <div class="flex gap mb-lg flex-col md:flex-row">
+      <div class="flex-1 flex flex-col gap">
+        <img
+          src="/static/images/asf_logo_full_horizontal_white.svg"
+          width="300"
+          alt="ASF White Logo"
+        />
+        <p>
+          Apache, Apache Thrift and the Apache logo are trademarks of
+          <a href="https://www.apache.org">The Apache Software Foundation</a>
+        </p>
       </div>
-      <div class="span3">
-        <h3>Get Involved</h3>
-        <ul class="unstyled">
-          <li><a href="/mailing">Mailing Lists</a></li>
-          <li><a href="{{ site.jira_url }}">Issue Tracking</a></li>
-          <li><a href="/docs/HowToContribute">How To Contribute</a></li>
-        </ul>
-      </div>
-      <div class="span6">
-        <a href="http://www.apache.org/"><img src="/static/images/feather.svg" onerror="this.src='/static/images/feather.png';this.onerror=null;" width="32" /></a>
-        Copyright &copy; {{ 'now' | date: "%Y" }} <a href="http://www.apache.org/">Apache Software Foundation</a>.
-        Licensed under the <a href="http://www.apache.org/licenses/">Apache License v2.0</a>.
-        Apache, Apache Thrift, and the Apache feather logo are trademarks of The Apache Software Foundation.
+      <div class="flex-1 flex gap-medium">
+        <div class="flex flex-col flex-1">
+          <div class="footer-nav-group">
+            <h5>Resources</h5>
+            <ul class="list-unstyled" role="menu">
+              <li role="none">
+                <a role="menuitem" href="/docs/">Docs</a>
+              </li>
+              <li role="none">
+                <a href="/tutorial/">Guides</a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="/download">Download</a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="/changelog">Changelog</a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="/lib/">Libraries</a>
+              </li>
+              <li role="none">
+                <a href="/static/files/thrift-20070401.pdf">Whitepaper</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1">
+          <div class="footer-nav-group">
+            <h5>Community</h5>
+            <ul class="list-unstyled" role="menu">
+              <li role="none">
+                <a role="menuitem" href="/mailing"> Mailing Lists </a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="{{ site.jira_url }}" target="_blank">
+                  Issue Tracking
+                </a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="/docs/HowToContribute">
+                  How To Contribute
+                </a>
+              </li>
+              <li role="none">
+                <a role="menuitem" href="/developers">Developers</a>
+              </li>
+              <li role="none">
+                <a href="{{ site.git_repo }}" target="_blank">Github</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1">
+          <div class="footer-nav-group">
+            <h5>ASF</h5>
+            <ul class="list-unstyled" role="menu">
+              <li role="none">
+                <a href="https://www.apache.org/" target="_blank" role="menu"
+                  >Foundation</a
+                >
+              </li>
+              <li role="none">
+                <a
+                  href="https://www.apache.org/licenses/"
+                  target="_blank"
+                  role="menu"
+                  >License</a
+                >
+              </li>
+              <li role="none">
+                <a
+                  href="https://www.apache.org/foundation/sponsorship.html"
+                  target="_blank"
+                  role="menu"
+                  >Donate</a
+                >
+              </li>
+              <li role="none">
+                <a href="https://events.apache.org/" target="_blank" role="menu"
+                  >Events</a
+                >
+              </li>
+              <li role="none">
+                <a
+                  href="https://www.apache.org/foundation/thanks.html"
+                  target="_blank"
+                  role="menu"
+                  >Thanks</a
+                >
+              </li>
+              <li role="none">
+                <a
+                  href="https://www.apache.org/security/"
+                  target="_blank"
+                  role="menu"
+                  >Security</a
+                >
+              </li>
+              <li role="none">
+                <a
+                  href="https://privacy.apache.org/policies/privacy-policy-public.html"
+                  target="_blank"
+                  role="menu"
+                  >Privacy</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-  </footer>
-</div>
+    <p class="text-center">
+      Copyright © 2026 The Apache Software Foundation, Licensed under the
+      <a class="license" href="https://www.apache.org/licenses/LICENSE-2.0"
+        >Apache License, Version 2.0</a
+      >
+    </p>
+  </div>
+</footer>

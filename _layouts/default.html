@@ -6,10 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="/static/images/favicon.png" rel="shortcut icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300..700&family=Open+Sans:ital,wght@1,300..400&family=Open+Sans:wght@300..400&display=fallback&text=latin" rel="stylesheet" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="/static/css/new-style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/new-code.css" rel="stylesheet" type="text/css" />
 
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap-dropdown.js"></script>
@@ -20,9 +25,9 @@
   </head>
   <body>
     {% include header.html %}
-    <div class="container">
+    <main class="my-lg inner">
       {{ content }}
-    </div>
+    </main>
     {% include footer.html %}
   </body>
 </html>
