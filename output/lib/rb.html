@@ -181,12 +181,27 @@ to handle <code class="language-plaintext highlighter-rouge">TIMED_OUT</code>. I
 or on repeated retries extending the effective timeout during TCP fallback or
 TLS handshake, update those call paths before upgrading.</p>
 
+<p>Ruby server socket transports now apply a 5-second timeout to accepted client
+sockets by default. This prevents stalled clients from blocking server threads
+indefinitely during response writes. Applications that intentionally require
+blocking accepted sockets can pass <code class="language-plaintext highlighter-rouge">client_timeout: nil</code> or <code class="language-plaintext highlighter-rouge">client_timeout: 0</code>
+when constructing <code class="language-plaintext highlighter-rouge">Thrift::ServerSocket</code>, <code class="language-plaintext highlighter-rouge">Thrift::SSLServerSocket</code>, or
+<code class="language-plaintext highlighter-rouge">Thrift::UNIXServerSocket</code>.</p>
+
 <p>Generated Ruby structs and unions now suffix field ID constants as
 <code class="language-plaintext highlighter-rouge">*_FIELD_ID</code> instead of exposing bare uppercased field names. For example,
 <code class="language-plaintext highlighter-rouge">MyStruct::FOO</code> becomes <code class="language-plaintext highlighter-rouge">MyStruct::FOO_FIELD_ID</code>. This avoids collisions with
 the generated <code class="language-plaintext highlighter-rouge">FIELDS</code> metadata hash for field names such as <code class="language-plaintext highlighter-rouge">fields</code>, but it
 is a source-compatible break if your application referenced the old constants
 directly. Regenerate Ruby code and update those constant references atomically.</p>
+
+<p>Ruby binary protocol writers now enforce signed Thrift integer ranges before
+serializing values. <code class="language-plaintext highlighter-rouge">byte</code>, <code class="language-plaintext highlighter-rouge">i16</code>, <code class="language-plaintext highlighter-rouge">i32</code>, and <code class="language-plaintext highlighter-rouge">i64</code> writes reject values outside
+their declared signed ranges, and binary/string/container sizes must fit in a
+non-negative signed <code class="language-plaintext highlighter-rouge">i32</code> length. Older releases could silently wrap or clip
+some out-of-range values, such as writing <code class="language-plaintext highlighter-rouge">255</code> as a byte that read back as
+<code class="language-plaintext highlighter-rouge">-1</code>. This applies to both <code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocol</code> and
+<code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocolAccelerated</code>.</p>
 
 <h3 id="0230">0.23.0</h3>
 
