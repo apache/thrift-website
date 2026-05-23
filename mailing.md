@@ -29,6 +29,13 @@ This list receives notifications about all code changes made to Apache Thrift.
 
 ---
 
+### Motifications Mailing List
+This list receives all other automated notifications around Apache Thrift.
+
+[Subscribe](mailto:notifications-subscribe@thrift.apache.org) | [Unsubscribe](mailto:notifications-unsubscribe@thrift.apache.org) | [View Archives](http://mail-archives.apache.org/mod_mbox/thrift-notifications) | [View Archives (Incubator)](http://mail-archives.apache.org/mod_mbox/incubator-thrift-notifications)
+
+---
+
 Note: subscription is required to post to all lists.
 
 ### IRC
