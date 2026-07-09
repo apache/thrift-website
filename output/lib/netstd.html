@@ -56,6 +56,20 @@
 
 <p>Thrift client library for Microsoft .NET Standard</p>
 
+<h1 id="nuget-packages">NuGet packages</h1>
+
+<p>The library ships as two packages so that non-web projects no longer pull in the ASP.NET Core stack:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">ApacheThrift</code></strong> – the core library (protocols, transports, processors and the
+<code class="language-plaintext highlighter-rouge">TSimpleAsyncServer</code>/<code class="language-plaintext highlighter-rouge">TThreadPoolAsyncServer</code> servers). It only depends on
+<code class="language-plaintext highlighter-rouge">Microsoft.Extensions.Logging.Abstractions</code> and has no ASP.NET Core dependency.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ApacheThrift.AspNetCore</code></strong> – the ASP.NET Core HTTP server middleware
+(<code class="language-plaintext highlighter-rouge">THttpServerTransport</code>, namespace <code class="language-plaintext highlighter-rouge">Thrift.Transport.Server</code>). Reference this package
+<em>in addition to</em> <code class="language-plaintext highlighter-rouge">ApacheThrift</code> only when you host Thrift over ASP.NET Core. Existing code
+keeps compiling unchanged once the package reference is added.</li>
+</ul>
+
 <h1 id="build-the-library">Build the library</h1>
 
 <h2 id="how-to-build-on-windows">How to build on Windows</h2>
