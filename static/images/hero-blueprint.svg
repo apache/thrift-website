@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 900" fill="none" role="img" aria-labelledby="title desc">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="2400" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fcfbff"/>
+      <stop offset="0.5" stop-color="#f7f5fc"/>
+      <stop offset="1" stop-color="#eef4f9"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#4a47a3" stroke-opacity="0.015" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="wash-left" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 200) rotate(10) scale(430 240)">
+      <stop stop-color="#d8cdf7" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#d8cdf7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="wash-right" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(2060 610) rotate(-10) scale(520 290)">
+      <stop stop-color="#d8e7f0" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#d8e7f0" stop-opacity="0"/>
+    </radialGradient>
+    <style>
+      .trace {
+        stroke: #2f3f79;
+        stroke-opacity: 0.04;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .trace2 {
+        stroke: #7c297d;
+        stroke-opacity: 0.04;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+
+  <rect width="2400" height="900" fill="url(#bg)"/>
+  <rect width="2400" height="900" fill="url(#grid)"/>
+  <ellipse cx="300" cy="200" rx="430" ry="240" fill="url(#wash-left)"/>
+  <ellipse cx="2060" cy="610" rx="520" ry="290" fill="url(#wash-right)"/>
+
+  <g>
+    <path d="M90 0H280V240H450V340H620V270H760V460H900V380H940V470H1140V380H1240V480H1480" class="trace"/>
+    <path d="M80 610H230V510H380V440H560V550H720V660H840V840H1400V750H1480V600" class="trace2"/>
+    <path d="M1480 480V250H1660V180H1810V300H1930V220H2140V280H2310" class="trace"/>
+    <path d="M1480 600H1620V510H1750V590H1920V480H2090V520H2190V2400" class="trace2"/>
+  </g>
+
+  <g fill="#fff" fill-opacity="0.95" stroke="#4a47a3" stroke-opacity="0.08">
+    <circle cx="780" cy="660" r="10"/>
+    <circle cx="450" cy="290" r="10"/>
+    <circle cx="760" cy="420" r="16"/>
+    <circle cx="230" cy="510" r="10"/>
+    <circle cx="560" cy="550" r="10"/>
+    <circle cx="1660" cy="180" r="10"/>
+    <circle cx="1970" cy="220" r="20"/>
+    <circle cx="1620" cy="510" r="14"/>
+    <circle cx="1920" cy="480" r="10"/>
+    <circle cx="2140" cy="280" r="10"/>
+  </g>
+</svg>

@@ -2,8 +2,6 @@
 title: Documentation
 ---
 
-# Apache Thrift Documentation
-
 ## Documentation Topics
 
 Each supported language needs the Apache Thrift Libraries and the generated code made by the Apache Thrift Compiler.
@@ -27,3 +25,6 @@ If you want to do a real deep dive into the various language bindings, consider 
 [The Programmer's Guide to Apache Thrift](https://www.manning.com/books/programmers-guide-to-apache-thrift).
 The book comes with a lot of inside knowlegde and is packed with practical examples.
 
+Curious how Thrift messages look byte by byte? Check out [Thrift Illustrated](https://thrift.dmytro.sh) - a great way to explore every detail.
+
+Working with Thrift in VS Code? [Weaver for Apache Thrift](https://marketplace.visualstudio.com/items?itemName=kpumuk.thrift-weaver-vscode) brings linting, formatting, and language intelligence right into your editor.

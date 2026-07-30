@@ -1,8 +1,7 @@
 ---
-title: Library
+title: Libraries
+header: true
 ---
-
-# Apache Thrift Libraries
 
 ## Source Tree
 
@@ -21,28 +20,26 @@ Some language specific documentation is for the Apache Thrift Libraries are gene
 ## Package manager information and references
 
 <!-- place table outside filter/endfilter -->
-<div class="packages">
-    <table class="table table-bordered table-striped">
-        <tbody>
-        <tr>
-            <td><b>Language Bindings</b></td>
-            <td><b>Package Manager</b></td>
-            <td><b>Direct link (URL)</b></td>
-            <td><b>Control file in source tree</b></td>
-            <td><b>Maintainer</b></td>
-            <td><b>Remarks</b></td>
-        </tr>
-        {% for item in site.data.external_packages %}
-        <tr class="">
-            <td class="language">{{ item[0] }}</td>
-            <td class="packman">{{ item[1] }}</td>
-            <td class="packurl"><a href="{{ item[2] }}">{{ item[2] }}</a></td>
-            <td class="ctrlfile">{{ item[3] }}</td>
-            <td class="maintainer">{{ item[4] }}</td>
-            <td class="remarks">{{ item[5] }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
 
+<table class="table">
+  <thead>
+    <tr>
+      <th>Language Bindings</th>
+      <th>Package Manager</th>
+      <th>Direct link (URL)</th>
+      <th>Control file in source tree</th>
+      <th>Remarks</th>
+  </tr>
+</thead>
+  <tbody>
+  {% for item in site.data.external_packages %}
+  <tr class="">
+      <td class="language">{{ item[0] }}</td>
+      <td class="packman">{{ item[1] }}</td>
+      <td class="packurl"><a href="{{ item[2] }}">{{ item[2] }}</a></td>
+      <td class="ctrlfile">{{ item[3] }}</td>
+      <td class="remarks">{{ item[5] }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
