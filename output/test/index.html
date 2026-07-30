@@ -93,6 +93,12 @@ Java TBinaryProtocol:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>test/test.py --regex "java.*binary"
 </code></pre></div></div>
 
+<p>Use <code class="language-plaintext highlighter-rouge">--dry-run</code> to print the selected test names without running them. All
+other filters still apply:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>test/test.py --dry-run --client rb --regex "_http-"
+</code></pre></div></div>
+
 <h2 id="test-case-definition-file">Test case definition file</h2>
 
 <p>The cross test cases are defined in <a href="tests.json">tests.json</a>.
@@ -140,8 +146,15 @@ definition root:</p>
 }
 </code></pre></div></div>
 
+<p>List values in <code class="language-plaintext highlighter-rouge">client</code> and <code class="language-plaintext highlighter-rouge">server</code> definitions are appended to matching
+root values. They do not replace them. Some targets need combinations that
+cannot share the same lists. Such targets may use more than one definition
+with the same <code class="language-plaintext highlighter-rouge">name</code>. The runner treats those definitions as one target. Each
+test name includes its protocol, transport, and socket, so reports and known
+failures still identify the exact case. Use <code class="language-plaintext highlighter-rouge">--regex</code> to select one profile.</p>
+
 <p>For the complete list of supported keys and their effect, see source code
-comment at the opt of <a href="crossrunner/collect.py">crossrunner/collect.py</a>.</p>
+comment at the top of <a href="crossrunner/collect.py">crossrunner/collect.py</a>.</p>
 
 <h2 id="list-of-known-failures">List of known failures</h2>
 

@@ -131,6 +131,29 @@ directly from your application.</p>
 <span class="n">server</span><span class="p">.</span><span class="nf">serve</span>
 </code></pre></div></div>
 
+<h2 id="rack-http-endpoint">Rack HTTP Endpoint</h2>
+
+<p>Ruby HTTP transport can be mounted as a Rack application, so applications can
+run Thrift on an existing Rack server such as Puma or Falcon.
+The examples below use the generated <code class="language-plaintext highlighter-rouge">Calculator::Processor</code> and the
+<code class="language-plaintext highlighter-rouge">CalculatorHandler</code> from <a href="#basic-server-usage">Basic Server Usage</a>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config.ru</span>
+<span class="nb">require</span> <span class="s1">'thrift'</span>
+<span class="nb">require</span> <span class="s1">'thrift/server/rack_application'</span>
+
+<span class="n">processor</span> <span class="o">=</span> <span class="no">Calculator</span><span class="o">::</span><span class="no">Processor</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">CalculatorHandler</span><span class="p">.</span><span class="nf">new</span><span class="p">)</span>
+<span class="n">run</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">RackApplication</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">processor</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>For Rails or another Rack router, mount the endpoint at the route that should
+receive Thrift HTTP requests:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/routes.rb</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="no">Calculator</span><span class="o">::</span><span class="no">Processor</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">CalculatorHandler</span><span class="p">.</span><span class="nf">new</span><span class="p">)</span>
+<span class="n">mount</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">RackApplication</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">processor</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">"/thrift"</span>
+</code></pre></div></div>
+
 <h2 id="development-and-tests">Development and Tests</h2>
 
 <ul>
@@ -154,6 +177,33 @@ optional native extension that accelerates protocols and buffers.</li>
 </ul>
 
 <h2 id="breaking-changes">Breaking Changes</h2>
+
+<h3 id="0250">0.25.0</h3>
+
+<p>Ruby HTTP servers now share one Rack endpoint. Run <code class="language-plaintext highlighter-rouge">Thrift::RackApplication</code>
+as a Rack app, or mount it at one path in an app such as Rails. The
+cross-language HTTP tests now cover Puma and Falcon.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::MongrelHTTPServer</code> has been removed because Mongrel no longer works
+with supported Ruby versions. To migrate, mount <code class="language-plaintext highlighter-rouge">Thrift::RackApplication</code> in
+a supported Rack server. See <a href="#rack-http-endpoint">Rack HTTP Endpoint</a>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::ThinHTTPServer</code> is deprecated because Thin is no longer maintained.
+Its EventMachine dependency also does not build on new Ruby development
+versions. Creating a Thin server now prints a warning. Move to
+<code class="language-plaintext highlighter-rouge">Thrift::RackApplication</code> with a supported Rack server such as Puma or Falcon.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> now verifies peers by default when no SSL context is
+provided. It creates a context that uses the system certificate store. A
+supplied SSL context is not reconfigured by Thrift, so the application is
+responsible for its verification mode and trust sources. A newly constructed
+<code class="language-plaintext highlighter-rouge">OpenSSL::SSL::SSLContext</code> defaults to <code class="language-plaintext highlighter-rouge">OpenSSL::SSL::VERIFY_NONE</code>; configuring
+a trust source alone does not enable certificate chain verification. The server
+certificate must still match the connection hostname.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::Socket#open</code> now raises
+<code class="language-plaintext highlighter-rouge">Thrift::TransportException::ALREADY_OPEN</code> when the TCP transport is already
+open. Close the transport before opening it again.</p>
 
 <h3 id="0240">0.24.0</h3>
 
@@ -263,6 +313,14 @@ use different require paths, so switch them atomically with regenerated code.</p
 <h2 id="migration-notes">Migration Notes</h2>
 
 <ul>
+  <li>If you upgrade to <code class="language-plaintext highlighter-rouge">0.25.0</code>, note that <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> now verifies peers
+by default when it creates the SSL context. Supplied contexts are used
+unchanged and must configure their own verification mode and trust sources.
+A blank supplied context defaults to <code class="language-plaintext highlighter-rouge">OpenSSL::SSL::VERIFY_NONE</code>. Hostname
+checking is performed for both supplied and default contexts.</li>
+  <li>If you upgrade to <code class="language-plaintext highlighter-rouge">0.25.0</code>, close a <code class="language-plaintext highlighter-rouge">Thrift::Socket</code> before calling <code class="language-plaintext highlighter-rouge">open</code>
+again. A duplicate open now raises
+<code class="language-plaintext highlighter-rouge">Thrift::TransportException::ALREADY_OPEN</code>.</li>
   <li>If you upgrade to <code class="language-plaintext highlighter-rouge">0.24.0</code>, treat <code class="language-plaintext highlighter-rouge">timeout</code> on <code class="language-plaintext highlighter-rouge">Thrift::Socket</code> and
 <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> as one budget for the whole open path. For
 <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code>, that includes both the TCP connect and the TLS
@@ -303,8 +361,22 @@ request and reply state on a single transport stream.</li>
   <li>Client and server must agree on transport and protocol choices. If you
 switch to SSL, HTTP, header transport, compact protocol, or namespaced
 generated code, update both ends together.</li>
-  <li>HTTPS client transport verifies peers by default, and <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code>
-performs a hostname check against the host you pass in.</li>
+  <li>
+    <p>HTTPS client transport and <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> verify peers by default.
+When no SSL context is provided, <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> creates one with peer
+verification and the system certificate store. Thrift passes a supplied
+context to OpenSSL without reconfiguring it. <code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> always
+checks the certificate against <code class="language-plaintext highlighter-rouge">server_hostname</code> (or the connection host by
+default). <code class="language-plaintext highlighter-rouge">OpenSSL::SSL::SSLContext.new</code> defaults to
+<code class="language-plaintext highlighter-rouge">OpenSSL::SSL::VERIFY_NONE</code>, and setting <code class="language-plaintext highlighter-rouge">ca_file</code>, <code class="language-plaintext highlighter-rouge">ca_path</code>, or <code class="language-plaintext highlighter-rouge">cert_store</code>
+does not enable verification by itself. Set <code class="language-plaintext highlighter-rouge">verify_mode</code> explicitly when
+supplying a context. For example, to disable certificate chain verification:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">context</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">SSLContext</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">context</span><span class="p">.</span><span class="nf">verify_mode</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="no">Thrift</span><span class="o">::</span><span class="no">SSLSocket</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
 </ul>
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
