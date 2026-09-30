@@ -54,6 +54,63 @@
       
 <h2 id="release-notes">Release Notes</h2>
 
+<h3 id="0250">0.25.0</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">exceptions_include_traces</code> application variable now defaults to <code class="language-plaintext highlighter-rouge">false</code>.
+When a handler crashes, the <code class="language-plaintext highlighter-rouge">TApplicationException</code> sent back to the caller no
+longer carries the crash term and the Erlang stack trace; the crash is still
+logged locally in full through <code class="language-plaintext highlighter-rouge">error_logger</code>. Set it back if you want the old
+behaviour:</p>
+
+<div class="language-erl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">application</span><span class="p">:</span><span class="nf">set_env</span><span class="p">(</span><span class="n">thrift</span><span class="p">,</span> <span class="n">exceptions_include_traces</span><span class="p">,</span> <span class="n">true</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>or, in <code class="language-plaintext highlighter-rouge">sys.config</code>:</p>
+
+<div class="language-erl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">thrift</span><span class="p">,</span> <span class="p">[{</span><span class="n">exceptions_include_traces</span><span class="p">,</span> <span class="n">true</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">thrift_json_protocol</code> now reads the messages it writes, and a read ends where
+its message does, so the protocol also works over socket and framed
+transports. Strings are written as quoted and escaped JSON strings, also when
+given as binaries. Booleans are still written as <code class="language-plaintext highlighter-rouge">true</code> and <code class="language-plaintext highlighter-rouge">false</code>, and
+binary fields as plain strings, where the other bindings’ JSON protocols use
+<code class="language-plaintext highlighter-rouge">1</code>/<code class="language-plaintext highlighter-rouge">0</code> and base64.</p>
+
+<p><code class="language-plaintext highlighter-rouge">thrift_http_transport</code> no longer reads a reply of any length. It gives up on
+one longer than 100 MB, the default maximum message size of the other Thrift
+bindings, as soon as it is past that, and the flush that sent the request
+returns <code class="language-plaintext highlighter-rouge">{error, {message_size_exceeds_maximum, Max}}</code>. Set another limit for
+all HTTP transports with</p>
+
+<div class="language-erl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">application</span><span class="p">:</span><span class="nf">set_env</span><span class="p">(</span><span class="n">thrift</span><span class="p">,</span> <span class="n">max_message_size</span><span class="p">,</span> <span class="nv">Bytes</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>or, in <code class="language-plaintext highlighter-rouge">sys.config</code>, <code class="language-plaintext highlighter-rouge">{thrift, [{max_message_size, Bytes}]}</code>, and for a
+single one with the <code class="language-plaintext highlighter-rouge">{max_message_size, Bytes}</code> option of
+<code class="language-plaintext highlighter-rouge">thrift_http_transport:new/3</code>.</p>
+
+<p>httpc hands a <code class="language-plaintext highlighter-rouge">200</code> (or <code class="language-plaintext highlighter-rouge">206</code>) reply over as it arrives, but reads any other
+reply whole before the transport sees it. Such a reply is held to the limit
+only where httpc takes the <code class="language-plaintext highlighter-rouge">max_body_size</code> request option (OTP 27.3.4.17,
+28.5.0.6, 29.0.6 and later), and only when it declares its length or is
+chunked.</p>
+
+<p><code class="language-plaintext highlighter-rouge">thrift_http_transport:new/3</code> takes a <code class="language-plaintext highlighter-rouge">{scheme, https}</code> option; <code class="language-plaintext highlighter-rouge">http</code> stays
+the default. For https, the transport has the server’s certificate and host
+name checked against the system’s trusted roots, as
+<code class="language-plaintext highlighter-rouge">httpc:ssl_verify_host_options(true)</code> would, also on OTP 25, where httpc
+checks nothing unless asked to. TLS options of your own go into
+<code class="language-plaintext highlighter-rouge">{http_options, [{ssl, TlsOptions}]}</code> and take the place of the matching
+defaults. Naming roots with <code class="language-plaintext highlighter-rouge">cacerts</code> or <code class="language-plaintext highlighter-rouge">cacertfile</code> replaces the system’s
+roots:</p>
+
+<div class="language-erl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">thrift_http_transport</span><span class="p">:</span><span class="nf">new</span><span class="p">(</span><span class="nv">Host</span><span class="p">,</span> <span class="nv">Path</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="n">scheme</span><span class="p">,</span> <span class="n">https</span><span class="p">},</span>
+    <span class="p">{</span><span class="n">http_options</span><span class="p">,</span> <span class="p">[{</span><span class="n">ssl</span><span class="p">,</span> <span class="p">[{</span><span class="n">cacertfile</span><span class="p">,</span> <span class="s">"/path/to/ca.pem"</span><span class="p">}]}]}</span>
+<span class="p">]).</span>
+</code></pre></div></div>
+
 <h3 id="092">0.9.2</h3>
 
 <p>as of 0.9.2 struct and function naming conventions have changed. to retain the

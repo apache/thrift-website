@@ -148,7 +148,7 @@ All Apache Thrift tutorials require that you have:
 </span><span class="s">"</span><span class="p">);</span>
         <span class="p">}</span>
 
-        <span class="k">public</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="nf">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">Main</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">args</span> <span class="o">??=</span> <span class="p">[];</span>
 
@@ -156,17 +156,18 @@ All Apache Thrift tutorials require that you have:
             <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"--help"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-h"</span><span class="p">)</span> <span class="o">||</span> <span class="n">x</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="s">"-?"</span><span class="p">)))</span>
             <span class="p">{</span>
                 <span class="n">DisplayHelp</span><span class="p">();</span>
-                <span class="k">return</span><span class="p">;</span>
+                <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
             <span class="p">}</span>
 
             <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Starting client..."</span><span class="p">);</span>
 
             <span class="k">using</span> <span class="n">var</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">CancellationTokenSource</span><span class="p">();</span>
-            <span class="n">await</span> <span class="nf">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
+            <span class="n">var</span> <span class="n">succeeded</span> <span class="o">=</span> <span class="n">await</span> <span class="nf">RunAsync</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">source</span><span class="p">.</span><span class="n">Token</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">succeeded</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
         <span class="p">}</span>
 
         
-        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="nf">RunAsync</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">RunAsync</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="n">var</span> <span class="n">numClients</span> <span class="o">=</span> <span class="n">GetNumberOfClients</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
@@ -177,7 +178,6 @@ All Apache Thrift tutorials require that you have:
             <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="p">.</span><span class="n">IsEnabled</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Information</span><span class="p">))</span>
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected client transport: {transport}"</span><span class="p">,</span> <span class="n">transport</span><span class="p">);</span>
 
-            <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">MakeProtocol</span><span class="p">(</span> <span class="n">args</span><span class="p">,</span> <span class="n">MakeTransport</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="p">.</span><span class="n">IsEnabled</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Information</span><span class="p">))</span>
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Selected client protocol: {GetProtocol(args)}"</span><span class="p">,</span> <span class="n">GetProtocol</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
 
@@ -185,14 +185,17 @@ All Apache Thrift tutorials require that you have:
             <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="p">.</span><span class="n">IsEnabled</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Information</span><span class="p">))</span>
                 <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"Multiplex {mplex}"</span><span class="p">,</span> <span class="n">mplex</span><span class="p">);</span>
 
-            <span class="n">var</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Task</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">[</span><span class="n">numClients</span><span class="p">];</span>
             <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numClients</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
             <span class="p">{</span>
+                <span class="c1">// each client gets a transport and protocol of its own</span>
+                <span class="n">var</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">MakeProtocol</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">MakeTransport</span><span class="p">(</span><span class="n">args</span><span class="p">));</span>
                 <span class="n">var</span> <span class="n">task</span> <span class="o">=</span> <span class="n">RunClientAsync</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">mplex</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
                 <span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span><span class="p">;</span>
             <span class="p">}</span>
 
             <span class="n">Task</span><span class="p">.</span><span class="n">WaitAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">tasks</span><span class="p">.</span><span class="n">All</span><span class="p">(</span><span class="n">task</span> <span class="o">=&gt;</span> <span class="n">task</span><span class="p">.</span><span class="n">Result</span><span class="p">);</span>
         <span class="p">}</span>
 
         <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">GetMultiplex</span><span class="p">(</span><span class="n">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
@@ -361,7 +364,7 @@ All Apache Thrift tutorials require that you have:
             <span class="p">};</span>
         <span class="p">}</span>
 
-        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="nf">RunClientAsync</span><span class="p">(</span><span class="n">TProtocol</span> <span class="n">protocol</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">multiplex</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
+        <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">RunClientAsync</span><span class="p">(</span><span class="n">TProtocol</span> <span class="n">protocol</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">multiplex</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
         <span class="p">{</span>
             <span class="k">try</span>
             <span class="p">{</span>
@@ -372,6 +375,7 @@ All Apache Thrift tutorials require that you have:
 
                     <span class="n">var</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="p">);</span>
                     <span class="n">await</span> <span class="n">ExecuteCalculatorClientOperations</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
+                    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
                 <span class="p">}</span>
                 <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span>
                 <span class="p">{</span>
@@ -388,6 +392,7 @@ All Apache Thrift tutorials require that you have:
                 <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="p">.</span><span class="n">IsEnabled</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Error</span><span class="p">))</span>
                     <span class="n">Logger</span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="s">"{x}"</span><span class="p">,</span><span class="n">x</span><span class="p">);</span>
             <span class="p">}</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
         <span class="p">}</span>
 
         <span class="k">private</span> <span class="k">static</span> <span class="n">async</span> <span class="n">Task</span> <span class="nf">ExecuteCalculatorClientOperations</span><span class="p">(</span> <span class="n">Calculator</span><span class="p">.</span><span class="n">Client</span> <span class="n">client</span><span class="p">,</span> <span class="n">CancellationToken</span> <span class="n">cancellationToken</span><span class="p">)</span>
@@ -404,11 +409,6 @@ All Apache Thrift tutorials require that you have:
 
             <span class="n">var</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cancellationToken</span><span class="p">);</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="p">.</span><span class="n">IsEnabled</span><span class="p">(</span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Information</span><span class="p">))</span>
-                <span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">"{client.ClientId} Add(1,1)={sum}"</span><span class="p">,</span> <span class="n">client</span><span class="p">.</span><span class="n">ClientId</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
-
-            <span class="n">var</span> <span class="n">work</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Work</span>
-            <span class="p">{</span>
 </code></pre></figure>
 <p class="snippet_footer">This snippet was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=tutorial/netstd/Client/Program.cs">tutorial/netstd/Client/Program.cs</a>
@@ -764,7 +764,7 @@ All Apache Thrift tutorials require that you have:
                 <span class="p">{</span>
                     <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="p">;</span>
                     <span class="n">_</span> <span class="o">=</span> <span class="n">loggerFactory</span><span class="p">;</span>
-                    <span class="n">app</span><span class="p">.</span><span class="n">UseMiddleware</span><span class="o">&lt;</span><span class="n">THttpServerTransport</span><span class="o">&gt;</span><span class="p">();</span>
+                    <span class="n">app</span><span class="p">.</span><span class="n">UseMiddleware</span><span class="o">&lt;</span><span class="n">THttpServerTransport</span><span class="o">&gt;</span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">ApplicationServices</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">ITAsyncProcessor</span><span class="o">&gt;</span><span class="p">(),</span> <span class="k">new</span> <span class="n">TConfiguration</span><span class="p">());</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">}</span>

@@ -224,6 +224,78 @@ company internal server if you add this to the command line or in the
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gradle <span class="nt">-Pmaven-repository-url</span><span class="o">=</span>https://my.company.com/service/local/staging/deploy/maven2 <span class="nt">-Prelease</span><span class="o">=</span><span class="nb">true</span> <span class="nt">-Pthrift</span>.version<span class="o">=</span>0.11.0 publish
 </code></pre></div></div>
 
+<h1 id="using-thrift-in-maven-projects">Using Thrift in Maven Projects</h1>
+
+<p>To compile Thrift IDL (<code class="language-plaintext highlighter-rouge">.thrift</code>) files in a Maven application, use <code class="language-plaintext highlighter-rouge">exec-maven-plugin</code> to execute the <code class="language-plaintext highlighter-rouge">thrift</code> compiler during the <code class="language-plaintext highlighter-rouge">generate-sources</code> phase, together with <code class="language-plaintext highlighter-rouge">build-helper-maven-plugin</code> to register the generated source directory with the Java compiler:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;project&gt;</span>
+  <span class="c">&lt;!-- ... --&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.thrift<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>libthrift<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${thrift.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="c">&lt;!-- 1. Generate Java sources from Thrift IDL files --&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>exec-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.5.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;id&gt;</span>generate-thrift-sources<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;phase&gt;</span>generate-sources<span class="nt">&lt;/phase&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+              <span class="nt">&lt;goal&gt;</span>exec<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+              <span class="nt">&lt;executable&gt;</span>thrift<span class="nt">&lt;/executable&gt;</span>
+              <span class="nt">&lt;arguments&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>-r<span class="nt">&lt;/argument&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>--gen<span class="nt">&lt;/argument&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>java<span class="nt">&lt;/argument&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>-out<span class="nt">&lt;/argument&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>${project.build.directory}/generated-sources/thrift<span class="nt">&lt;/argument&gt;</span>
+                <span class="nt">&lt;argument&gt;</span>${project.basedir}/src/main/thrift/service.thrift<span class="nt">&lt;/argument&gt;</span>
+              <span class="nt">&lt;/arguments&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+
+      <span class="c">&lt;!-- 2. Add the generated directory to the compile classpath --&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>build-helper-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.6.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;executions&gt;</span>
+          <span class="nt">&lt;execution&gt;</span>
+            <span class="nt">&lt;id&gt;</span>add-thrift-sources<span class="nt">&lt;/id&gt;</span>
+            <span class="nt">&lt;phase&gt;</span>generate-sources<span class="nt">&lt;/phase&gt;</span>
+            <span class="nt">&lt;goals&gt;</span>
+              <span class="nt">&lt;goal&gt;</span>add-source<span class="nt">&lt;/goal&gt;</span>
+            <span class="nt">&lt;/goals&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+              <span class="nt">&lt;sources&gt;</span>
+                <span class="nt">&lt;source&gt;</span>${project.build.directory}/generated-sources/thrift<span class="nt">&lt;/source&gt;</span>
+              <span class="nt">&lt;/sources&gt;</span>
+            <span class="nt">&lt;/configuration&gt;</span>
+          <span class="nt">&lt;/execution&gt;</span>
+        <span class="nt">&lt;/executions&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note:</strong> The <code class="language-plaintext highlighter-rouge">thrift</code> executable must be installed and available in your system <code class="language-plaintext highlighter-rouge">PATH</code>, or configured with its absolute path in <code class="language-plaintext highlighter-rouge">&lt;executable&gt;</code>.</p>
+</blockquote>
+
 <h1 id="dependencies">Dependencies</h1>
 
 <p>Gradle

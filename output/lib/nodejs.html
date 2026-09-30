@@ -57,6 +57,16 @@
 <p>Node.js 10.18 or later is required, matching the <code class="language-plaintext highlighter-rouge">engines</code> field in the
 package’s <a href="../../package.json"><code class="language-plaintext highlighter-rouge">package.json</code></a>.</p>
 
+<h2 id="tls-minimum-version">TLS minimum version</h2>
+
+<p><code class="language-plaintext highlighter-rouge">createSSLConnection</code> and the TLS server no longer set a protocol method of
+their own when the caller passes neither <code class="language-plaintext highlighter-rouge">secureProtocol</code> nor <code class="language-plaintext highlighter-rouge">secureOptions</code>.
+Such a connection now follows Node’s default minimum TLS version – TLS 1.2 on
+current Node releases – where it previously also accepted TLS 1.0 and 1.1.</p>
+
+<p>Pass <code class="language-plaintext highlighter-rouge">secureProtocol</code>, <code class="language-plaintext highlighter-rouge">secureOptions</code>, or <code class="language-plaintext highlighter-rouge">minVersion</code> in the connect or
+server options to choose a different floor.</p>
+
 <h2 id="install">Install</h2>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install thrift 

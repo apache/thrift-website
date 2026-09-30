@@ -54,7 +54,7 @@
       
 <h2 id="thrift-interface-description-language">Thrift interface description language</h2>
 
-<p>For Thrift version 0.25.0.</p>
+<p>For Thrift version 0.26.0.</p>
 
 <p>The Thrift interface definition language (IDL) allows for the definition of <a href="/docs/types">Thrift Types</a>. A Thrift IDL file is processed by the Thrift code generator to produce code for the various target languages to support the defined structs and services in the IDL file.</p>
 
@@ -266,26 +266,30 @@
 
 <h3 id="literal">Literal</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[36] Literal         ::=  ('"' [^"]* '"') | ("'" [^']* "'")
+<p>A literal is enclosed in double or single quotes and cannot contain a line break. Inside a literal, a backslash starts one of the escape sequences listed below; a backslash followed by any other character is an error.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[36] Literal         ::=  ('"' ( [^"\] | Escape )* '"') | ("'" ( [^'\] | Escape )* "'")
+
+[37] Escape          ::=  '\' ( '"' | "'" | '\' | 'n' | 'r' | 't' )
 </code></pre></div></div>
 
 <h3 id="identifier">Identifier</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[37] Identifier      ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' )*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[38] Identifier      ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' )*
 
-[38] STIdentifier    ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' | '-' )*
+[39] STIdentifier    ::=  ( Letter | '_' ) ( Letter | Digit | '.' | '_' | '-' )*
 </code></pre></div></div>
 
 <h3 id="list-separator">List Separator</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[39] ListSeparator   ::=  ',' | ';'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[40] ListSeparator   ::=  ',' | ';'
 </code></pre></div></div>
 
 <h3 id="letters-and-digits">Letters and Digits</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[40] Letter          ::=  ['A'-'Z'] | ['a'-'z']
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[41] Letter          ::=  ['A'-'Z'] | ['a'-'z']
 
-[41] Digit           ::=  ['0'-'9']
+[42] Digit           ::=  ['0'-'9']
 </code></pre></div></div>
 
 <h2 id="reserved-keywords">Reserved keywords</h2>

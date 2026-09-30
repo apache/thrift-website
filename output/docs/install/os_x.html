@@ -52,28 +52,79 @@
 
     <div class="container">
       
-<h2 id="os-x-setup">OS X Setup</h2>
-<p>The following command install all the required tools and libraries to build and install the Apache Thrift compiler on a OS X based system.</p>
+<h2 id="macos-setup">macOS Setup</h2>
 
-<h3 id="install-boost">Install Boost</h3>
-<p>Download the boost library from <a href="http://www.boost.org">boost.org</a> untar compile with</p>
+<p>This document describes how to install the Apache Thrift compiler on macOS using Homebrew or build it from source.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
-sudo ./b2 threading=multi address-model=64 variant=release stage install
+<h3 id="install-via-homebrew">Install via Homebrew</h3>
+
+<p>The easiest and recommended way to install the Apache Thrift compiler on macOS is using <a href="https://brew.sh">Homebrew</a>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>thrift
 </code></pre></div></div>
 
-<h3 id="install-libevent">Install libevent</h3>
-<p>Download <a href="http://monkey.org/~provos/libevent">libevent</a>, untar and compile with</p>
+<p>Verify the installation:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --prefix=/usr/local 
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift <span class="nt">-version</span>
+</code></pre></div></div>
+
+<h3 id="building-from-source-using-homebrew-dependencies">Building from Source using Homebrew Dependencies</h3>
+
+<p>To build the Apache Thrift compiler from source, install the build tools using Homebrew:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>automake libtool pkg-config cmake bison flex
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note</strong>: The default <code class="language-plaintext highlighter-rouge">bison</code> binary shipped with macOS is outdated (v2.3) and incompatible with Thrift’s grammar files. Homebrew installs a newer version as keg-only, so ensure it is available in your <code class="language-plaintext highlighter-rouge">PATH</code> or passed explicitly.</p>
+</blockquote>
+
+<p>The recipes below build only the compiler. To build the C++ library as well, add <code class="language-plaintext highlighter-rouge">boost libevent openssl</code> to the <code class="language-plaintext highlighter-rouge">brew install</code> line. With CMake, replace <code class="language-plaintext highlighter-rouge">-DBUILD_LIBRARIES=OFF</code> with <code class="language-plaintext highlighter-rouge">-DWITH_JAVASCRIPT=OFF -DWITH_NODEJS=OFF -DWITH_JAVA=OFF -DWITH_PYTHON=OFF</code>: every library whose tools CMake finds is built by default, and the JavaScript and Node.js ones run <code class="language-plaintext highlighter-rouge">npm install</code> without checking for Node.js first. With Autotools, drop <code class="language-plaintext highlighter-rouge">--disable-libs</code> and pass <code class="language-plaintext highlighter-rouge">--without-&lt;lang&gt;</code> for each other language whose tools are installed; <code class="language-plaintext highlighter-rouge">./configure --help</code> lists them.</p>
+
+<h4 id="building-with-cmake">Building with CMake</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-B</span> cmake-build <span class="se">\</span>
+  <span class="nt">-DBISON_EXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>brew <span class="nt">--prefix</span> bison<span class="si">)</span><span class="s2">/bin/bison"</span> <span class="se">\</span>
+  <span class="nt">-DBUILD_LIBRARIES</span><span class="o">=</span>OFF <span class="nt">-DBUILD_TESTING</span><span class="o">=</span>OFF <span class="nt">-DBUILD_TUTORIALS</span><span class="o">=</span>OFF
+cmake <span class="nt">--build</span> cmake-build
+<span class="nb">sudo </span>cmake <span class="nt">--install</span> cmake-build
+</code></pre></div></div>
+
+<h4 id="building-with-autotools">Building with Autotools</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>brew <span class="nt">--prefix</span> bison<span class="si">)</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+
+./bootstrap.sh
+./configure <span class="nt">--disable-libs</span> <span class="nt">--disable-tests</span>
 make
-sudo make install
+<span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
-<h3 id="building-apache-thrift">Building Apache Thrift</h3>
-<p>Download the latest version of <a href="/download">Apache Thrift</a>, untar and compile with</p>
+<h3 id="manual-dependency-installation-alternative">Manual Dependency Installation (Alternative)</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure --prefix=/usr/local/ --with-boost=/usr/local --with-libevent=/usr/local
+<p>If you prefer not to use Homebrew, you can build the dependencies manually:</p>
+
+<h4 id="install-boost">Install Boost</h4>
+<p>Download the Boost library from <a href="https://www.boost.org">boost.org</a>, extract and compile with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./bootstrap.sh
+<span class="nb">sudo</span> ./b2 <span class="nv">threading</span><span class="o">=</span>multi address-model<span class="o">=</span>64 <span class="nv">variant</span><span class="o">=</span>release stage <span class="nb">install</span>
+</code></pre></div></div>
+
+<h4 id="install-libevent">Install libevent</h4>
+<p>Download <a href="https://libevent.org">libevent</a>, extract and compile with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure <span class="nt">--prefix</span><span class="o">=</span>/usr/local 
+make
+<span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h4 id="building-apache-thrift">Building Apache Thrift</h4>
+<p>Download the latest release of <a href="https://thrift.apache.org/download">Apache Thrift</a>, extract and compile with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure <span class="nt">--prefix</span><span class="o">=</span>/usr/local <span class="nt">--with-boost</span><span class="o">=</span>/usr/local <span class="nt">--with-libevent</span><span class="o">=</span>/usr/local
+make
+<span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h2 id="additional-reading">Additional reading</h2>

@@ -61,7 +61,7 @@ clients and services.</p>
 <h2 id="compatibility">Compatibility</h2>
 
 <ul>
-  <li>Ruby MRI &gt;= 2.7 (tested against current supported releases).</li>
+  <li>Ruby MRI &gt;= 3.0 (tested against current supported releases).</li>
   <li>JRuby works with the pure-Ruby implementation; the native extension is
 skipped automatically.</li>
   <li>For the repo-wide transport, protocol, and server support matrix, see
@@ -72,7 +72,7 @@ behavior and migration notes.</li>
 <h2 id="installation">Installation</h2>
 
 <ul>
-  <li>Requirements: Ruby &gt;= 2.7.</li>
+  <li>Requirements: Ruby &gt;= 3.0.</li>
   <li>From RubyGems: <code class="language-plaintext highlighter-rouge">gem install thrift</code></li>
   <li>From source: <code class="language-plaintext highlighter-rouge">bundle install</code>, <code class="language-plaintext highlighter-rouge">gem build thrift.gemspec</code>, then install the
 resulting <code class="language-plaintext highlighter-rouge">thrift-*.gem</code>. The native accelerator is built when the gem is
@@ -180,6 +180,11 @@ optional native extension that accelerates protocols and buffers.</li>
 
 <h3 id="0250">0.25.0</h3>
 
+<p>Ruby 2.7 support has been removed because the runtime reached end of life on
+March 31, 2023. The Thrift gem now requires Ruby 3.0 or newer. Applications
+still running Ruby 2.7 must upgrade Ruby before installing Thrift 0.25.0 or
+remain on an earlier Thrift release.</p>
+
 <p>Ruby HTTP servers now share one Rack endpoint. Run <code class="language-plaintext highlighter-rouge">Thrift::RackApplication</code>
 as a Rack app, or mount it at one path in an app such as Rails. The
 cross-language HTTP tests now cover Puma and Falcon.</p>
@@ -201,9 +206,34 @@ responsible for its verification mode and trust sources. A newly constructed
 a trust source alone does not enable certificate chain verification. The server
 certificate must still match the connection hostname.</p>
 
+<p><code class="language-plaintext highlighter-rouge">Thrift::NonblockingServer</code> now closes a connection whose frame declares more than
+<code class="language-plaintext highlighter-rouge">max_frame_size</code> before it collects the frame. <code class="language-plaintext highlighter-rouge">max_frame_size</code> is a new keyword argument
+and defaults to <code class="language-plaintext highlighter-rouge">Thrift::FramedTransport::DEFAULT_MAX_FRAME_SIZE</code> (16,384,000 bytes), the
+limit <code class="language-plaintext highlighter-rouge">FramedTransport</code> already applies to the frame the worker reads back. A server that
+accepted larger frames must pass a higher <code class="language-plaintext highlighter-rouge">max_frame_size:</code> to keep doing so.</p>
+
 <p><code class="language-plaintext highlighter-rouge">Thrift::Socket#open</code> now raises
 <code class="language-plaintext highlighter-rouge">Thrift::TransportException::ALREADY_OPEN</code> when the TCP transport is already
 open. Close the transport before opening it again.</p>
+
+<p>Ruby struct, union, and exception serialization methods now accept an optional
+remaining struct depth: <code class="language-plaintext highlighter-rouge">read(protocol, depth = 64)</code> and
+<code class="language-plaintext highlighter-rouge">write(protocol, depth = 64)</code>.
+Unknown and mismatched fields remain independently bounded by
+<code class="language-plaintext highlighter-rouge">Thrift::BaseProtocol#skip</code>. The <code class="language-plaintext highlighter-rouge">write_field</code> and <code class="language-plaintext highlighter-rouge">write_type</code> helpers accept
+an optional <code class="language-plaintext highlighter-rouge">remaining_depth</code>: custom writers must use
+<code class="language-plaintext highlighter-rouge">write_field(field_info, fid, value, remaining_depth)</code> or
+<code class="language-plaintext highlighter-rouge">write_type(field_info, value, remaining_depth)</code> for struct values. Custom
+protocols and custom struct, union, or exception serialization overrides with
+exact argument counts must accept and forward the optional depth argument (or
+use <code class="language-plaintext highlighter-rouge">*args</code>) before upgrading.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocol</code>, <code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocolAccelerated</code> and <code class="language-plaintext highlighter-rouge">Thrift::CompactProtocol</code>
+now refuse a string or binary field longer than <code class="language-plaintext highlighter-rouge">max_string_size</code> before reading it,
+with a <code class="language-plaintext highlighter-rouge">ProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code>. The maximum defaults to
+<code class="language-plaintext highlighter-rouge">Thrift::BaseProtocol::DEFAULT_MAX_STRING_SIZE</code>, 16384000 bytes, the frame size limit
+the framed transports apply, and is a keyword argument of the three protocols and
+their factories. Pass <code class="language-plaintext highlighter-rouge">max_string_size: nil</code> to read strings of any length, as before.</p>
 
 <h3 id="0240">0.24.0</h3>
 

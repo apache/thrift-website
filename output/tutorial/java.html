@@ -123,7 +123,7 @@ All Apache Thrift tutorials require that you have:
          * For this example it's a self-signed cert.
          */</span>
         <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
-        <span class="n">params</span><span class="o">.</span><span class="na">setTrustStore</span><span class="o">(</span><span class="s">"../../lib/java/test/resources/.truststore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="s">"SunX509"</span><span class="o">,</span> <span class="s">"JKS"</span><span class="o">);</span>
+        <span class="n">params</span><span class="o">.</span><span class="na">setTrustStore</span><span class="o">(</span><span class="s">"../../lib/java/src/crossTest/resources/.truststore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="s">"SunX509"</span><span class="o">,</span> <span class="s">"JKS"</span><span class="o">);</span>
         <span class="cm">/*
          * Get a client transport instead of a server transport. The connection is opened on
          * invocation of the factory method, no need to specifically call open()
@@ -139,6 +139,7 @@ All Apache Thrift tutorials require that you have:
       <span class="n">transport</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">TException</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
       <span class="n">x</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
     <span class="o">}</span>
   <span class="o">}</span>
 
@@ -369,7 +370,7 @@ All Apache Thrift tutorials require that you have:
        */</span>
       <span class="nc">TSSLTransportParameters</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TSSLTransportParameters</span><span class="o">();</span>
       <span class="c1">// The Keystore contains the private key</span>
-      <span class="n">params</span><span class="o">.</span><span class="na">setKeyStore</span><span class="o">(</span><span class="s">"../../lib/java/test/resources/.keystore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+      <span class="n">params</span><span class="o">.</span><span class="na">setKeyStore</span><span class="o">(</span><span class="s">"../../lib/java/src/crossTest/resources/.serverkeystore"</span><span class="o">,</span> <span class="s">"thrift"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
 
       <span class="cm">/*
        * Use any of the TSSLTransportFactory to get a server transport with the appropriate

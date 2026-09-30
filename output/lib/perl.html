@@ -155,6 +155,39 @@ you can deal with these changes in a backwards compatible way in your projects u
 <p><code class="language-plaintext highlighter-rouge">eval  { require Thrift::Exception; require Thrift::MessageType; require Thrift::Type; }
  or do { require Thrift; }</code></p>
 
+<h2 id="0250">0.25.0</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::SSLSocket</code> no longer sets <code class="language-plaintext highlighter-rouge">SSL_verify_mode</code> on the connections it creates,
+so <code class="language-plaintext highlighter-rouge">IO::Socket::SSL</code> applies its own defaults instead: it verifies the server’s
+certificate chain – against <code class="language-plaintext highlighter-rouge">ca</code> when one is given, and against the system trust
+store otherwise – and checks the host name it derives from the peer address
+against the certificate.</p>
+
+<p>Clients that pass <code class="language-plaintext highlighter-rouge">ca</code> are unaffected; that combination already verified both the
+chain and the name. Clients that do not pass <code class="language-plaintext highlighter-rouge">ca</code> now require the server’s
+certificate to be trusted by the system store, and will fail a handshake they
+previously completed.</p>
+
+<p>The new <code class="language-plaintext highlighter-rouge">verify</code> option, default true, restores the previous handshake for callers
+who need it:</p>
+
+<p><code class="language-plaintext highlighter-rouge">my $socket = Thrift::SSLSocket-&gt;new(host =&gt; $host, port =&gt; $port, verify =&gt; 0);</code></p>
+
+<p>A false <code class="language-plaintext highlighter-rouge">verify</code> accepts any certificate, which leaves the connection open to
+interception, and is only appropriate on a network you already trust.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::SSLServerSocket</code> is unchanged. The same branch on a listener means “do not
+demand a client certificate”, which is the ordinary posture for a TLS server.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocol</code> now refuses a string or binary field longer than its maximum
+string size before reading it, with a <code class="language-plaintext highlighter-rouge">Thrift::TProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code>.
+The maximum defaults to <code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocol::DEFAULT_MAX_STRING_SIZE</code>, 16384000
+bytes, the frame size limit the framed transports apply. It is the optional second
+argument of <code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocol-&gt;new</code> and the first of
+<code class="language-plaintext highlighter-rouge">Thrift::BinaryProtocolFactory-&gt;new</code>; pass <code class="language-plaintext highlighter-rouge">0</code> to read strings of any length, as before:</p>
+
+<p><code class="language-plaintext highlighter-rouge">my $protocol = Thrift::BinaryProtocol-&gt;new($transport, 0);</code></p>
+
 <h1 id="deprecations">Deprecations</h1>
 
 <h2 id="0110-1">0.11.0</h2>

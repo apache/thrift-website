@@ -54,7 +54,7 @@
       
 <h1 id="using-thrift-with-php">Using Thrift with PHP</h1>
 
-<p>Thrift requires PHP 8.1 Thrift makes as few assumptions about your PHP
+<p>Thrift requires PHP 8.2 Thrift makes as few assumptions about your PHP
 environment as possible while trying to make some more advanced PHP
 features (i.e. APCu cacheing using asbolute path URLs) as simple as possible.</p>
 
@@ -88,6 +88,23 @@ Thrift will fill in null stub function definitions.
 </code></pre></div></div>
 
 <h1 id="breaking-changes">Breaking Changes</h1>
+
+<h2 id="0250">0.25.0</h2>
+
+<ol>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">TJSONProtocol</code> now holds a string, binary or numeric value to the same maximum string size as <code class="language-plaintext highlighter-rouge">TBinaryProtocol</code> and <code class="language-plaintext highlighter-rouge">TCompactProtocol</code>, and reports a longer one with a <code class="language-plaintext highlighter-rouge">TProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code>. A JSON value carries no length in front of it, so the maximum applies to the bytes it takes on the wire while it is read. The maximum defaults to <code class="language-plaintext highlighter-rouge">TProtocol::DEFAULT_MAX_STRING_SIZE</code>, 16384000 bytes; it is an optional constructor argument of <code class="language-plaintext highlighter-rouge">TJSONProtocol</code> and of <code class="language-plaintext highlighter-rouge">TJSONProtocolFactory</code>; pass <code class="language-plaintext highlighter-rouge">0</code> to read values of any length, as before.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">TCurlClient</code> follows a redirect only within the origin of the URL it is configured with, that is to the same scheme, host and port. It sends the request again there, with its headers and body, and follows at most one redirect, as before. A redirect to another origin, including one from <code class="language-plaintext highlighter-rouge">http</code> to <code class="language-plaintext highlighter-rouge">https</code>, now fails the request with a <code class="language-plaintext highlighter-rouge">TTransportException</code>, as any redirect does with <code class="language-plaintext highlighter-rouge">THttpClient</code>. Configure the client with the scheme, host and port that serve the requests.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">TBinaryProtocol</code>, <code class="language-plaintext highlighter-rouge">TBinaryProtocolAccelerated</code> and <code class="language-plaintext highlighter-rouge">TCompactProtocol</code> now refuse a string or binary field longer than their maximum string size before reading it, with a <code class="language-plaintext highlighter-rouge">TProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code>. The maximum defaults to <code class="language-plaintext highlighter-rouge">TProtocol::DEFAULT_MAX_STRING_SIZE</code>, 16384000 bytes, the frame size limit the framed transports apply. It is an optional constructor argument of the three protocols and of their factories; pass <code class="language-plaintext highlighter-rouge">0</code> to read strings of any length, as before.</p>
+  </li>
+  <li>
+    <p>The legacy callable/string <code class="language-plaintext highlighter-rouge">$debugHandler</code> argument has been removed from <code class="language-plaintext highlighter-rouge">TSocket</code>, <code class="language-plaintext highlighter-rouge">TSSLSocket</code> and <code class="language-plaintext highlighter-rouge">TSocketPool</code>. The constructors now accept a PSR-3 logger via the <code class="language-plaintext highlighter-rouge">$logger</code> parameter instead. <code class="language-plaintext highlighter-rouge">TSocket::setDebug()</code>, <code class="language-plaintext highlighter-rouge">TSocket::DEFAULT_DEBUG_HANDLER</code> and <code class="language-plaintext highlighter-rouge">TSSLServerSocket::getSSLHost()</code> have also been removed. The <code class="language-plaintext highlighter-rouge">ssl://</code> prefix is still applied automatically by <code class="language-plaintext highlighter-rouge">TSSLServerSocket</code> and <code class="language-plaintext highlighter-rouge">TSSLSocket</code>. Additionally, <code class="language-plaintext highlighter-rouge">TSocket::open()</code> no longer falls back to the send timeout for the connect step; use <code class="language-plaintext highlighter-rouge">TSocket::setConnectTimeout()</code> to configure a dedicated connect timeout. The default connect timeout is now 1 second.</p>
+  </li>
+</ol>
 
 <h2 id="0120">0.12.0</h2>
 

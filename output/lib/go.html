@@ -171,6 +171,101 @@ excessive cpu overhead.</p>
 
 <p>This feature is also only enabled on non-oneway endpoints.</p>
 
+<h1 id="a-note-about-maps-with-container-keys">A note about maps with container keys</h1>
+
+<p>Go maps cannot be keyed by a slice or a map, so a thrift <code class="language-plaintext highlighter-rouge">map</code> whose key type
+is a <code class="language-plaintext highlighter-rouge">list</code>, <code class="language-plaintext highlighter-rouge">set</code>, <code class="language-plaintext highlighter-rouge">map</code>, or a typedef of one of those is generated as a
+slice of key/value pairs instead:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct S { 1: map&lt;list&lt;string&gt;, i32&gt; m }
+
+type S struct {
+    M []thrift.MapEntry[[]string, int32]
+}
+</code></pre></div></div>
+
+<p>Entries are written to the wire in slice order. As with <code class="language-plaintext highlighter-rouge">set</code> fields, writing
+a slice that contains two equal keys fails with an <code class="language-plaintext highlighter-rouge">INVALID_DATA</code> protocol
+exception. A map is unordered, so <code class="language-plaintext highlighter-rouge">Equals</code> compares the entries as a
+collection: two values holding the same entries in a different order are
+equal. Maps keyed by <code class="language-plaintext highlighter-rouge">binary</code> remain Go maps keyed by <code class="language-plaintext highlighter-rouge">string</code>.</p>
+
+<p>Maps keyed by a struct, an exception or a union are generated as <code class="language-plaintext highlighter-rouge">map[*K]V</code> by
+default. Because the key is a pointer, two decoded keys with equal contents are
+distinct map keys, and <code class="language-plaintext highlighter-rouge">Equals</code> compares them by identity. Pass the
+<code class="language-plaintext highlighter-rouge">struct_key_entries</code> option to generate those fields as
+<code class="language-plaintext highlighter-rouge">[]thrift.MapEntry[*K, V]</code> as well:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>thrift --gen go:struct_key_entries file.thrift
+</code></pre></div></div>
+
+<p>The option changes more than the Go type. <code class="language-plaintext highlighter-rouge">Equals</code> starts comparing key
+contents, which is the point. Writing a slice that holds two keys with equal
+contents fails with <code class="language-plaintext highlighter-rouge">INVALID_DATA</code>, where the map form silently wrote both.</p>
+
+<p>How that uniqueness check is done depends on the key. When every field of the
+key struct is a non-pointer scalar, the struct value is itself a valid Go map
+key and <code class="language-plaintext highlighter-rouge">==</code> on it agrees with <code class="language-plaintext highlighter-rouge">Equals</code>, so the check collects the keys in a
+set and runs in linear time. In a local benchmark, writing a field of 5000 such
+keys came within about 20 percent of the same data in <code class="language-plaintext highlighter-rouge">map[*K]V</code>, at the cost
+of one temporary set sized to the entry count.</p>
+
+<p>Any other key falls back to comparing every pair, which is quadratic: 5000
+entries cost about 12.5 million calls to <code class="language-plaintext highlighter-rouge">Equals</code> on every write. A key struct
+takes that path if it has an optional field, a field holding another struct, or
+a <code class="language-plaintext highlighter-rouge">binary</code>, <code class="language-plaintext highlighter-rouge">list</code>, <code class="language-plaintext highlighter-rouge">set</code> or <code class="language-plaintext highlighter-rouge">map</code> field, because none of those compare by
+content under <code class="language-plaintext highlighter-rouge">==</code>. Unions always take it, since all of their fields are
+optional. Container keys take it too. Keep those maps small, or keep the key
+struct to plain scalars.</p>
+
+<p>A typedef of a struct used as a key is the struct itself, since the generated
+<code class="language-plaintext highlighter-rouge">type KeyAlias = Key</code> is an alias, so the entry type is <code class="language-plaintext highlighter-rouge">[]thrift.MapEntry[*Key, V]</code>
+and the key compares like <code class="language-plaintext highlighter-rouge">Key</code> does.</p>
+
+<h1 id="a-note-about-typedefs-of-structs">A note about typedefs of structs</h1>
+
+<p>A typedef of a struct, union or exception is generated as a Go type alias:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>typedef Inner Alias
+
+type Alias = Inner
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Alias</code> is the struct itself, with its <code class="language-plaintext highlighter-rouge">Read</code>, <code class="language-plaintext highlighter-rouge">Write</code> and <code class="language-plaintext highlighter-rouge">Equals</code> methods,
+and a field or argument declared with it is a <code class="language-plaintext highlighter-rouge">*Inner</code> like any other struct
+field. Earlier releases generated <code class="language-plaintext highlighter-rouge">type Alias *Inner</code>, a defined type over a
+pointer with no methods, so a package that used such a typedef in a field or a
+service signature did not compile. A typedef of a base type is unchanged and
+stays a defined type, <code class="language-plaintext highlighter-rouge">type TimestampMilliseconds int64</code>, with its <code class="language-plaintext highlighter-rouge">&lt;Name&gt;Ptr</code>
+helper.</p>
+
+<p>What changes for hand-written code that used an alias the IDL declared but
+never used, the only shape that compiled before:</p>
+
+<ul>
+  <li>A variable of the alias type held a <code class="language-plaintext highlighter-rouge">*Inner</code>; it now holds an <code class="language-plaintext highlighter-rouge">Inner</code>, and
+the pointer moves outside the alias (<code class="language-plaintext highlighter-rouge">*Alias</code>).</li>
+  <li>The <code class="language-plaintext highlighter-rouge">&lt;Name&gt;Ptr</code> helper is no longer generated for such a typedef, because
+the struct has none either.</li>
+  <li>Two typedefs of one struct are the same type, so a value of one is assignable
+to the other, and <code class="language-plaintext highlighter-rouge">%T</code> prints the struct’s name rather than the alias.</li>
+</ul>
+
+<h1 id="a-note-about-undefined-enum-values">A note about undefined enum values</h1>
+
+<p>An enum holding an integer the IDL does not define used to print <code class="language-plaintext highlighter-rouge">&lt;UNSET&gt;</code>
+from <code class="language-plaintext highlighter-rouge">String()</code>, which reads as “no value was sent” even though the integer
+arrived intact and is written back to the wire unchanged. <code class="language-plaintext highlighter-rouge">String()</code> now
+formats such a value as <code class="language-plaintext highlighter-rouge">Color(999)</code>, the shape <code class="language-plaintext highlighter-rouge">stringer</code> produces.
+<code class="language-plaintext highlighter-rouge">MarshalText</code>, and with it <code class="language-plaintext highlighter-rouge">encoding/json</code>, follow <code class="language-plaintext highlighter-rouge">String()</code>, so the text and
+JSON encoding of an undefined value changes the same way. Neither form
+round-trips through <code class="language-plaintext highlighter-rouge">UnmarshalText</code>, which still rejects any string that is not
+a defined name.</p>
+
+<p>Every enum also gains an <code class="language-plaintext highlighter-rouge">IsDefined() bool</code> method that reports whether the
+value is one of the IDL-defined constants. Code that compared <code class="language-plaintext highlighter-rouge">String()</code>
+against the literal <code class="language-plaintext highlighter-rouge">"&lt;UNSET&gt;"</code> should call <code class="language-plaintext highlighter-rouge">IsDefined()</code> instead.</p>
+
 <h1 id="a-note-about-server-stop-implementations">A note about server stop implementations</h1>
 
 <p><a href="https://pkg.go.dev/github.com/apache/thrift/lib/go/thrift#TSimpleServer.Stop">TSimpleServer.Stop</a> will wait for all client connections to be closed after 
@@ -196,6 +291,46 @@ zero err time. Otherwise, the stop will wait for all the client
 connections to be closed gracefully util thrift.ServerStopTimeout is 
 reached, and client connections that are not closed after thrift.ServerStopTimeout 
 will be closed abruptly which may cause some client errors.</p>
+
+<h1 id="a-note-about-the-minimum-tls-version">A note about the minimum TLS version</h1>
+
+<p>The TLS socket constructors no longer pin a minimum protocol version of their
+own when the caller leaves <code class="language-plaintext highlighter-rouge">tls.Config.MinVersion</code> unset. Such a config now
+follows the <code class="language-plaintext highlighter-rouge">crypto/tls</code> default minimum – TLS 1.2 in current Go releases –
+where the constructors previously set TLS 1.0.</p>
+
+<p>A <code class="language-plaintext highlighter-rouge">MinVersion</code> the caller sets is left untouched, so a caller that needs an
+older floor can ask for it explicitly:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conf := &amp;thrift.TConfiguration{
+    TLSConfig: &amp;tls.Config{MinVersion: tls.VersionTLS10},
+}
+</code></pre></div></div>
+
+<h1 id="a-note-about-the-frames-theadertransport-writes">A note about the frames THeaderTransport writes</h1>
+
+<p><code class="language-plaintext highlighter-rouge">THeaderTransport.Flush</code> now holds the frames it writes to the transport’s
+configured <code class="language-plaintext highlighter-rouge">MaxFrameSize</code>, the limit <code class="language-plaintext highlighter-rouge">ReadFrame</code> already applies to the frames
+it reads. A larger frame is not written; <code class="language-plaintext highlighter-rouge">Flush</code> returns a
+<code class="language-plaintext highlighter-rouge">TProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code> instead. The same applies to a
+header block larger than the frame format can describe (65535 words of four
+bytes).</p>
+
+<p>A client that sends frames larger than the default of 16384000 bytes needs a
+larger <code class="language-plaintext highlighter-rouge">MaxFrameSize</code> in its own configuration, not only in the server’s:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conf := &amp;thrift.TConfiguration{
+    MaxFrameSize: 64 * 1024 * 1024,
+}
+</code></pre></div></div>
+
+<h1 id="a-note-about-the-frames-tframedtransport-writes">A note about the frames TFramedTransport writes</h1>
+
+<p><code class="language-plaintext highlighter-rouge">TFramedTransport.Flush</code> holds the frames it writes to the same limit, through
+the same check. A larger frame is not written: <code class="language-plaintext highlighter-rouge">Flush</code> returns a
+<code class="language-plaintext highlighter-rouge">TProtocolException</code> of type <code class="language-plaintext highlighter-rouge">SIZE_LIMIT</code> and drops the frame, where it
+previously returned no error and wrote a frame <code class="language-plaintext highlighter-rouge">readFrame</code> refuses. The note
+above on raising <code class="language-plaintext highlighter-rouge">MaxFrameSize</code> applies to it as well.</p>
 
 <p class="snippet_footer">This page was generated by Apache Thrift's <strong>source tree docs</strong>:
 <a href="https://gitbox.apache.org/repos/asf?p=thrift.git;a=blob;hb=HEAD;f=lib/go/README.md">lib/go/README.md</a>
