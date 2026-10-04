@@ -6,23 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="/static/images/favicon.png" rel="shortcut icon" />
-    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="preload" href="/static/fonts/Montserrat-Bold.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/static/fonts/OpenSans-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/static/fonts/OpenSans-Bold.ttf" as="font" type="font/ttf" crossorigin />
+    <link href="/static/css/new-style.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/rouge.css" rel="stylesheet" type="text/css" />
-    <link href="/static/css/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css" />
-    <link href="/static/css/thrift.css" media="screen, projection" rel="stylesheet" type="text/css" />
 
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap-dropdown.js"></script>
-    <script src="/static/js/bootstrap-tab.js"></script>
-    <script src="/static/js/thrift.js"></script>
+    <script src="/static/js/thrift.js" defer></script>
 
     <title>{{ site.title }} - {{ page.title }}</title>
   </head>
   <body>
     {% include header.html %}
-    <div class="container">
-      {{ content }}
+    {% unless page.home %}
+    <div class="head py-lg"> 
+      <div class="inner">
+        <h1>{{ page.title }}</h1>
+      </div>
     </div>
+    {% endunless %}
+    <main class="{% if page.home %}home{% else %}my-lg inner{% endif %}">
+      {{ content }}
+    </main>
     {% include footer.html %}
   </body>
 </html>
